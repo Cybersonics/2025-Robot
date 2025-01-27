@@ -17,4 +17,21 @@ public final class Constants {
     public static final int driverControllerPort = 0;
     public static final int operatorControllerPort = 1;
   }
+  public static class DriveConstants {
+    public static final int FrontLeftSteer = 20;
+    public static final int FrontLeftDrive = 10;
+    public static final int FrontLeftEncoderOffset = 0;
+
+    public static final int FrontRightSteer = 23;
+    public static final int FrontRightDrive = 13;
+    public static final int FrontRightEncoderOffset = 0;
+
+    public static final int BackLeftSteer = 21;
+    public static final int BackLeftDrive = 11;
+    public static final int BackLeftEncoderOffset = 0;
+
+    public static final int BackRightSteer = 22;
+    public static final int BackRightDrive = 12;
+    public static final int BackRightEncoderOffset = 0;
+  }
 }

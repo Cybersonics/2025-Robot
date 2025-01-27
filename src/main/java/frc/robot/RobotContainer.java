@@ -5,6 +5,11 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -20,6 +25,11 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.driverControllerPort);
   private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.operatorControllerPort);
+
+  
+  // Setup Sendable chooser for picking autonomous program in SmartDashboard
+  private SendableChooser<Command> m_chooser = new SendableChooser<>();
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -37,6 +47,9 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    
+    // Configure Autonomous Options
+    autonomousOptions();
   }
 
   /**
@@ -47,5 +60,15 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return null;
+  }
+  
+  /**
+   * Use this to set Autonomous options for selection in Smart Dashboard
+   */
+  private void autonomousOptions() {
+    // Example adding Autonomous option to chooser
+    m_chooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
+    SmartDashboard.putData("Auto Mode", m_chooser);
+
   }
 }
