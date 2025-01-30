@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.RobotConfig;
 
 public class Drive extends SubsystemBase {
 
@@ -71,27 +72,35 @@ public class Drive extends SubsystemBase {
 		 odometer = new SwerveDriveOdometry(DriveConstants.FrameConstants.kDriveKinematics,
 		 		this._gyro.getNavXRotation2D(), getPositions());
 
-		// Configure AutoBuilder
-		AutoBuilder.configureHolonomic(
-				this::getPose,
-				this::resetPose,
-				this::getSpeeds,
-				this::driveRobotRelative,
-				DriveConstants.pathFollowerConfig,
-				() -> {
-					// Boolean supplier that controls when the path will be mirrored for the red alliance
-					// This will flip the path being followed to the red side of the field.
-					// THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+		RobotConfig robotConfig;
+		try{
+			robotConfig = RobotConfig.fromGUISettings();
+			
+			// Configure AutoBuilder
+			AutoBuilder.configure(
+					this::getPose,
+					this::resetPose,
+					this::getSpeeds,
+					this::driveRobotRelative,
+					DriveConstants.pathFollowerConfig,
+					robotConfig,
+					() -> {
+						// Boolean supplier that controls when the path will be mirrored for the red alliance
+						// This will flip the path being followed to the red side of the field.
+						// THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-					var alliance = DriverStation.getAlliance();
-					if (alliance.isPresent()) {
-						return alliance.get() == DriverStation.Alliance.Red;
-					}
-					return false;
-				},
-				this
-			);
-
+						var alliance = DriverStation.getAlliance();
+						if (alliance.isPresent()) {
+							return alliance.get() == DriverStation.Alliance.Red;
+						}
+						return false;
+					},
+					this
+				);
+		} catch (Exception e) {
+			// Handle exception as needed
+			e.printStackTrace();
+		}
 	}
 
 	// Public Methods

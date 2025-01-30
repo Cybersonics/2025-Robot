@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -20,10 +19,8 @@ import frc.robot.utility.AprilTag;
 
 public class Constants {
     public static class OperatorConstants {
-        public static final int LeftStick = 0;
-        public static final int RightStick = 1;
-        public static final int OpController = 2;
-        public static final int xboxDriveController = 1;
+        public static final int DriveController = 0;
+        public static final int OpController = 1;
     }
 
     public static class AutoConstants {
@@ -153,12 +150,9 @@ public class Constants {
             public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * Math.PI;
         }
 
-        public static final HolonomicPathFollowerConfig pathFollowerConfig = new HolonomicPathFollowerConfig(
+        public static final PPHolonomicDriveController pathFollowerConfig = new PPHolonomicDriveController(
                 new PIDConstants(2.3, 0, 0.01), // Translation constants P=5.0, I=0, D=0
-                new PIDConstants(2.0, 0, 0), // Rotation constants P=5.0, I=0, D=0
-                ModuleConstants.maxSpeed,
-                FrameConstants.flModuleOffset.getNorm(), // Drive base radius (distance from center to furthest module)
-                new ReplanningConfig());
+                new PIDConstants(2.0, 0, 0)); // Rotation constants P=5.0, I=0, D=0
     }
 
     public static final class IntakeConstants {

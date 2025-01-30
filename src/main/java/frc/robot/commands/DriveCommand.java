@@ -29,7 +29,6 @@ public class DriveCommand extends Command {
   private Drive _drive;
   private CommandJoystick leftStick;
   private CommandJoystick rightStick;
-  private CommandXboxController xboxController;
   private CommandXboxController _driveController;
   //private XboxController _driveController_HID = _driveController.getHID();
   private JoystickButton _leftBumper;
@@ -58,63 +57,40 @@ public class DriveCommand extends Command {
   private Trigger _rightJoystickButtonThree;
 
   /**
-   * Creates a new DriveCommand using a standard set of joysticks as the driver
-   * joysticks.
+   * UNCOMMENT TO USE JOYSTICKS
+   * Creates a new DriveCommand using a standard set of joysticks as the driver joysticks.
    */
-  public DriveCommand(Drive drive, CommandJoystick leftStick, CommandJoystick rightStick, NavXGyro gyro, Camera camera) {
-    this._drive = drive;
-    this.leftStick = leftStick;
-    this.rightStick = rightStick;
-    this._navXGyro = gyro;
-
-    this._camera = camera;
-    this._photonCamera = _camera.getPhotonCamera();
-    
-    _rightJoystickButtonThree = rightStick.button(3);
-
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(drive);
-  }
-
-    public DriveCommand(Drive drive, CommandJoystick leftStick, CommandJoystick rightStick, JoystickButton xboxA, NavXGyro gyro, Camera camera) {
-    this._drive = drive;
-    this.leftStick = leftStick;
-    this.rightStick = rightStick;
-    this.xboxController = xboxController;
-    this._navXGyro = gyro;
-    this._camera = camera;
-    this._photonCamera = _camera.getPhotonCamera();
-
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(drive);
-  }
-
-  public DriveCommand(Drive drive, CommandXboxController driveController, NavXGyro gyro, Camera camera, JoystickButton rightBumper, JoystickButton leftBumper) {
-    this._drive = drive;
-    this._driveController = driveController;
-    this._navXGyro = gyro;
-    this._rightBumper = rightBumper;
-    this._leftBumper = leftBumper;
-    
-    this._camera = camera;
-    this._photonCamera = _camera.getPhotonCamera();
-
-    //this.leftBumper = new JoystickButton(_driveController_HID, XboxController.Button.kLeftBumper.value);
-    //this.rightBumper = new JoystickButton(_driveController_HID, XboxController.Button.kRightBumper.value);
-    
-    //_rightJoystickButtonThree = rightStick.button(3);
-
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(drive);
-  }
-
-  // public DriveCommand(Drive drive, CommandXboxController xboxController, NavXGyro gyro) {
+  // public DriveCommand(Drive drive, CommandJoystick leftStick, CommandJoystick rightStick, NavXGyro gyro, Camera camera) {
   //   this._drive = drive;
-  //   this.xboxController = xboxController;
+  //   this.leftStick = leftStick;
+  //   this.rightStick = rightStick;
   //   this._navXGyro = gyro;
 
+  //   this._camera = camera;
+  //   this._photonCamera = _camera.getPhotonCamera();
+    
+  //   _rightJoystickButtonThree = rightStick.button(3);
+
+  //   // Use addRequirements() here to declare subsystem dependencies.
   //   addRequirements(drive);
   // }
+
+  /*
+   * Creates a new DriveCommand using a CommandXboxController for driving
+   */
+  public DriveCommand(Drive drive, CommandXboxController driveController, NavXGyro gyro, Camera camera) {
+    this._drive = drive;
+    this._driveController = driveController;
+    this._leftBumper = new JoystickButton(this._driveController.getHID(), XboxController.Button.kLeftBumper.value);
+    this._rightBumper = new JoystickButton(this._driveController.getHID(), XboxController.Button.kRightBumper.value);
+    this._navXGyro = gyro;
+    
+    this._camera = camera;
+    this._photonCamera = _camera.getPhotonCamera();
+
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(drive);
+  }
 
   // Called when the command is initially scheduled.
   @Override
