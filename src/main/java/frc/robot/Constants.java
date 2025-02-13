@@ -50,6 +50,8 @@ public class Constants {
     }
 
     public static class DriveConstants {
+        public static final int PigeonCANId = 5;
+
         public static final int FrontLeftSteer = 20;
         public static final int FrontLeftDrive = 10;
         public static final int FrontLeftEncoderOffset = 0;
@@ -155,37 +157,10 @@ public class Constants {
                 new PIDConstants(2.0, 0, 0)); // Rotation constants P=5.0, I=0, D=0
     }
 
-    public static final class IntakeConstants {
-        public static final int intakeMotor = 30;
-        public static final int feederMotor = 34;
-
-        public static final int topNoteTripInput = 0;       
-        public static final int bottomNoteTripInput = 1;
-
-    }
-
-    public static final class LauncherConstants {
-        public static final int launcherTopMotor = 32;
-        public static final int launcherBottomMotor = 31;
-        public static final int feederMotor = 33;
-
-        public static final double topFarShotRPM = 5300; // 5255; // avg drop down
-        public static final double bottomFarShotRPM = 5440; // 5051; // avg drop down
-        
-        public static final double topShortShotRPM = 5300; // 5255; // avg drop down
-        public static final double bottomShortShotRPM = 5440; // 5051; // avg drop down
-
-        public static final double topFarLobRPM = 5000; // ;
-        public static final double bottomFarLobRPM = 5100; // ;
-
-        public static final double topSourceLobRPM = 3900;
-        public static final double bottomSourceLobRPM = 3900;
-
-        public static final double topAmpShotRPM = 4000;
-        public static final double bottomAmpShotRPM = 4000;
-
-        public static final double topTrapShotRPM = 4800;
-        public static final double bottomTrapShotRPM = 4800;
+    public static class ElevatorConstants {
+      public final static int leftMotorCANId = 30;
+      public final static int rightMotorCANId = 31;
+      public final static int stringPotChannel = 0;
     }
 
     public static final class ShuffleBoardConstants {
@@ -211,11 +186,8 @@ public class Constants {
     public static final class PneumaticConstants {
         public static final int compressorInput = 1;
         
-        public static final int launcherUp = 0;
-        public static final int launcherDown = 1;
-
-        public static final int AmpArmOut = 3;
-        public static final int AmptArmIn = 2;
+        public static final int algeaOut = 0;
+        public static final int algeaIn = 1;
     }
 
     public static final class ClimberConstants {
@@ -225,10 +197,6 @@ public class Constants {
         public static final double kSpoolDiameterMeters = Units.inchesToMeters(2); // 4
         public static final double kClimberMotorGearRatio = 1 / 64;
         public static final double kClimberEncoderRot2Meter = kClimberMotorGearRatio * Math.PI * kSpoolDiameterMeters;
-    }
-
-    public static final class TrapConstants {
-        public static final double AngleOffset = 15; // 15 degree angle to right (counterclock wise)
     }
 
     public static final class CameraConstants {

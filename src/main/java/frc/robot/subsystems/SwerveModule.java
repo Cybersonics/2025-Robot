@@ -14,7 +14,9 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.AlternateEncoderConfig.Type;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
@@ -49,8 +51,9 @@ public class SwerveModule extends SubsystemBase {
 
   public double currentPosition;
 
-  private SparkMax driveMotor;
-  private SparkMaxConfig driveConfig;
+  private SparkFlex driveMotor;
+  private SparkFlexConfig driveConfig;
+  
   private SparkMaxConfig steerConfig;
   private SparkMax steerMotor;
 
@@ -84,8 +87,8 @@ public class SwerveModule extends SubsystemBase {
     //     .withPosition(this.driveData.colPos, this.driveData.rowPos).withSize(3, 1).getEntry();
 
     // Create and configure a new Drive motor
-    driveMotor = new SparkMax(driveNum, MotorType.kBrushless);
-    driveConfig = new SparkMaxConfig();
+    driveMotor = new SparkFlex(driveNum, MotorType.kBrushless);
+    driveConfig = new SparkFlexConfig();
     driveConfig.openLoopRampRate(RAMP_RATE);// This provides a motor ramp up time to prevent brown outs.
     driveConfig.idleMode(IdleMode.kBrake);
     driveConfig.smartCurrentLimit(55);

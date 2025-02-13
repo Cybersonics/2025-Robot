@@ -42,7 +42,8 @@ public class Drive extends SubsystemBase {
 
 	private final boolean invertDrive = false;//true;
 	private final boolean invertSteer = true; //true;
-	private NavXGyro _gyro;
+	private NavXGyro _navXGyro;
+	private PigeonGyro _pigeonGyro;
 	private boolean _driveCorrect;
 
 	private final SwerveDriveOdometry odometer;
@@ -53,9 +54,9 @@ public class Drive extends SubsystemBase {
 	 * Note the order that the modules are in. Be consistant with the order in the
 	 * odometry.
 	 */
-	private Drive(NavXGyro gyro) {
+	private Drive(PigeonGyro gyro) {
 
-		this._gyro = gyro;
+		this._pigeonGyro = gyro;
 
 		frontLeft = new SwerveModule(DriveConstants.FrontLeftSteer, DriveConstants.FrontLeftDrive, invertDrive,
 				invertSteer, DriveConstants.frontLeft);
@@ -70,7 +71,63 @@ public class Drive extends SubsystemBase {
 		 		invertSteer, DriveConstants.backRight);
 
 		 odometer = new SwerveDriveOdometry(DriveConstants.FrameConstants.kDriveKinematics,
-		 		this._gyro.getNavXRotation2D(), getPositions());
+		 		this._pigeonGyro.getNavXRotation2D(), getPositions());
+
+		RobotConfig robotConfig;
+		try{
+			robotConfig = RobotConfig.fromGUISettings();
+			
+			// Configure AutoBuilder
+			AutoBuilder.configure(
+					this::getPose,
+					this::resetPose,
+					this::getSpeeds,
+					this::driveRobotRelative,
+					DriveConstants.pathFollowerConfig,
+					robotConfig,
+					() -> {
+						// Boolean supplier that controls when the path will be mirrored for the red alliance
+						// This will flip the path being followed to the red side of the field.
+						// THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+						var alliance = DriverStation.getAlliance();
+						if (alliance.isPresent()) {
+							return alliance.get() == DriverStation.Alliance.Red;
+						}
+						return false;
+					},
+					this
+				);
+		} catch (Exception e) {
+			// Handle exception as needed
+			e.printStackTrace();
+		}
+	}
+
+	/*
+	 * Set up the drive by passing in the gyro and then configuring the individual
+	 * swerve modules.
+	 * Note the order that the modules are in. Be consistant with the order in the
+	 * odometry.
+	 */
+	private Drive(NavXGyro gyro) {
+
+		this._navXGyro = gyro;
+
+		frontLeft = new SwerveModule(DriveConstants.FrontLeftSteer, DriveConstants.FrontLeftDrive, invertDrive,
+				invertSteer, DriveConstants.frontLeft);
+
+		frontRight = new SwerveModule(DriveConstants.FrontRightSteer, DriveConstants.FrontRightDrive, invertDrive,
+		 		invertSteer, DriveConstants.frontRight);
+
+		backLeft = new SwerveModule(DriveConstants.BackLeftSteer, DriveConstants.BackLeftDrive, invertDrive,
+		 		invertSteer, DriveConstants.backLeft);
+
+		backRight = new SwerveModule(DriveConstants.BackRightSteer, DriveConstants.BackRightDrive, invertDrive,
+		 		invertSteer, DriveConstants.backRight);
+
+		 odometer = new SwerveDriveOdometry(DriveConstants.FrameConstants.kDriveKinematics,
+		 		this._navXGyro.getNavXRotation2D(), getPositions());
 
 		RobotConfig robotConfig;
 		try{
@@ -110,7 +167,11 @@ public class Drive extends SubsystemBase {
 	}
 
 	public void resetPose(Pose2d pose) {
-		odometer.resetPosition(this._gyro.getNavXRotation2D(), getPositions(), pose);
+		if(this._navXGyro != null) {
+			odometer.resetPosition(this._navXGyro.getNavXRotation2D(), getPositions(), pose);
+		} else if (this._pigeonGyro != null) {
+			odometer.resetPosition(this._pigeonGyro.getNavXRotation2D(), getPositions(), pose);
+		}
 	}
 
 	public ChassisSpeeds getSpeeds() {
@@ -129,7 +190,11 @@ public class Drive extends SubsystemBase {
 	}
 
 	public void resetOdometry(Pose2d pose) {
-		odometer.resetPosition(this._gyro.getRotation2d(), getPositions(), pose);
+		if(this._navXGyro != null) {
+			odometer.resetPosition(this._navXGyro.getRotation2d(), getPositions(), pose);
+		} else if (this._pigeonGyro != null) {
+			odometer.resetPosition(this._pigeonGyro.getRotation2d(), getPositions(), pose);
+		}
 	}
 
 	// public void resetOdometryForState(PathPlannerState state) {
@@ -139,6 +204,13 @@ public class Drive extends SubsystemBase {
 	// }
 
 	public static Drive getInstance(NavXGyro gyro) {
+		if (instance == null) {
+			instance = new Drive(gyro);
+		}
+		return instance;
+	}
+
+	public static Drive getInstance(PigeonGyro gyro) {
 		if (instance == null) {
 			instance = new Drive(gyro);
 		}
@@ -276,10 +348,14 @@ public class Drive extends SubsystemBase {
 		 * The state of the robot gyro and individual swerve modules are
 		 * sent to odometer on each cycle of the program.
 		 */
+		if(this._navXGyro != null) {
+			odometer.update(this._navXGyro.getRotation2d(), getPositions());
+			SmartDashboard.putNumber("Robot Heading", this._navXGyro.getHeading());
+		} else if (this._pigeonGyro != null) {
+			odometer.update(this._pigeonGyro.getRotation2d(), getPositions());
+			SmartDashboard.putNumber("Robot Heading", this._pigeonGyro.getHeading());
+		}
 
-		odometer.update(this._gyro.getRotation2d(), getPositions());
-
-		SmartDashboard.putNumber("Robot Heading", this._gyro.getHeading());
 		SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
 		SmartDashboard.putNumber("Robot DistanceX", odometer.getPoseMeters().getX());
 		SmartDashboard.putNumber("Robot DistanceY", odometer.getPoseMeters().getY());

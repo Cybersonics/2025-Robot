@@ -12,6 +12,7 @@ import frc.robot.Constants.DriveConstants.ModuleConstants;
 import frc.robot.subsystems.Camera;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.NavXGyro;
+import frc.robot.subsystems.PigeonGyro;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utility.AprilTag;
@@ -19,6 +20,8 @@ import frc.robot.utility.LimelightHelpers;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonTrackedTarget;
+
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -36,6 +39,7 @@ public class DriveCommand extends Command {
     
 
   private NavXGyro _navXGyro;
+  private PigeonGyro _pigeonGyro;
   private Camera _camera;
   private PhotonCamera _photonCamera;
 
@@ -57,23 +61,40 @@ public class DriveCommand extends Command {
   private Trigger _rightJoystickButtonThree;
 
   /**
-   * UNCOMMENT TO USE JOYSTICKS
    * Creates a new DriveCommand using a standard set of joysticks as the driver joysticks.
    */
-  // public DriveCommand(Drive drive, CommandJoystick leftStick, CommandJoystick rightStick, NavXGyro gyro, Camera camera) {
-  //   this._drive = drive;
-  //   this.leftStick = leftStick;
-  //   this.rightStick = rightStick;
-  //   this._navXGyro = gyro;
+  public DriveCommand(Drive drive, CommandJoystick leftStick, CommandJoystick rightStick, NavXGyro gyro, Camera camera) {
+    this._drive = drive;
+    this.leftStick = leftStick;
+    this.rightStick = rightStick;
+    this._navXGyro = gyro;
 
-  //   this._camera = camera;
-  //   this._photonCamera = _camera.getPhotonCamera();
+    this._camera = camera;
+    this._photonCamera = _camera.getPhotonCamera();
     
-  //   _rightJoystickButtonThree = rightStick.button(3);
+    _rightJoystickButtonThree = rightStick.button(3);
 
-  //   // Use addRequirements() here to declare subsystem dependencies.
-  //   addRequirements(drive);
-  // }
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(drive);
+  }  
+  
+  /**
+  * Creates a new DriveCommand using a standard set of joysticks as the driver joysticks and Pigeon Gyro.
+  */
+ public DriveCommand(Drive drive, CommandJoystick leftStick, CommandJoystick rightStick, PigeonGyro gyro, Camera camera) {
+   this._drive = drive;
+   this.leftStick = leftStick;
+   this.rightStick = rightStick;
+   this._pigeonGyro = gyro;
+
+   this._camera = camera;
+   this._photonCamera = _camera.getPhotonCamera();
+   
+   _rightJoystickButtonThree = rightStick.button(3);
+
+   // Use addRequirements() here to declare subsystem dependencies.
+   addRequirements(drive);
+ }
 
   /*
    * Creates a new DriveCommand using a CommandXboxController for driving
@@ -91,6 +112,23 @@ public class DriveCommand extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drive);
   }
+  
+  /*
+  * Creates a new DriveCommand using a CommandXboxController and Pigeon Gyro for driving
+  */
+ public DriveCommand(Drive drive, CommandXboxController driveController, PigeonGyro gyro, Camera camera) {
+   this._drive = drive;
+   this._driveController = driveController;
+   this._leftBumper = new JoystickButton(this._driveController.getHID(), XboxController.Button.kLeftBumper.value);
+   this._rightBumper = new JoystickButton(this._driveController.getHID(), XboxController.Button.kRightBumper.value);
+   this._pigeonGyro = gyro;
+   
+   this._camera = camera;
+   this._photonCamera = _camera.getPhotonCamera();
+
+   // Use addRequirements() here to declare subsystem dependencies.
+   addRequirements(drive);
+ }
 
   // Called when the command is initially scheduled.
   @Override
@@ -100,7 +138,11 @@ public class DriveCommand extends Command {
      * This will be used as the initial angle of the robot for field centric
      * control.
      */
-    originHeading = _navXGyro.getZeroAngle();
+    if(this._navXGyro != null) {
+      originHeading = _navXGyro.getZeroAngle();
+    } else if (this._pigeonGyro != null) {
+      originHeading = _navXGyro.getZeroAngle();
+    }
     // _drive.setDrivesMode(IdleMode.kCoast);
     _driveRotationPID = new PIDController(_driveRotationP, _driveRotationI, _driveRotationD);
     _driveRotationPID.setTolerance(0.8);
@@ -209,7 +251,12 @@ public class DriveCommand extends Command {
        * to determine
        * the angle of the robot to the field.
        */
-      final double originCorrection = Math.toRadians(originHeading - _navXGyro.getNavAngle());
+      double originCorrection = 0;
+      if(this._navXGyro != null){
+        originCorrection = Math.toRadians(originHeading - this._navXGyro.getNavAngle());
+      } else if (this._pigeonGyro != null) {
+        originCorrection = Math.toRadians(originHeading - this._pigeonGyro.getNavAngle());
+      }
   
       /*
        * Field centric code only affects the forward and strafe action, not rotation.

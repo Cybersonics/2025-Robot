@@ -6,10 +6,15 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DriveCommand;
+import frc.robot.subsystems.AlgeaMechanism;
 import frc.robot.subsystems.Camera;
+import frc.robot.subsystems.CoralMechanism;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.NavXGyro;
+import frc.robot.subsystems.PigeonGyro;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -30,11 +35,16 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
 
-  public static NavXGyro _gyro = NavXGyro.getInstance(); // This must be called before Drive as it is used by the Drive
+   // Setting up Gyro must be done before Drive as it is used by the Drive
+  // public static NavXGyro _gyro = NavXGyro.getInstance();
+  public static PigeonGyro _gyro = PigeonGyro.getInstance();
+
   public static Drive _drive = Drive.getInstance(_gyro);
-  //public static BlinkinLEDController _blinkinLEDController = BlinkinLEDController.getInstance();
-  //public static Pneumatics _pneumatics = Pneumatics.getInstance();
-  //public static Climber _climber = Climber.getInstance();
+  
+  public static Elevator _elevator = Elevator.getInstance();
+  public static AlgeaMechanism _algeaMechanism = AlgeaMechanism.getInstance();
+  public static CoralMechanism _coralMechanism = CoralMechanism.getInstance();
+
   public static Camera _camera = Camera.getInstance();
   
   // Replace with CommandPS4Controller or CommandJoystick if needed
