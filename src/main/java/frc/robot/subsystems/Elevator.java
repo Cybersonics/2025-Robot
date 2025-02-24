@@ -11,6 +11,10 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
 
@@ -23,7 +27,8 @@ public class Elevator extends SubsystemBase {
   private SparkFlex _rightMotor;
   private SparkFlexConfig _rightMotorConfig;
 
-  private AnalogInput extPot;
+  private AnalogInput _potInput;
+ 
 
   /** Creates a new Elevator. */
   private Elevator() {
@@ -32,12 +37,11 @@ public class Elevator extends SubsystemBase {
     _rightMotor = new SparkFlex(ElevatorConstants.rightMotorCANId, MotorType.kBrushless);
 
     // Setup String Pot    
-    extPot = new AnalogInput(ElevatorConstants.stringPotChannel);
-
+    _potInput = new AnalogInput(ElevatorConstants.stringPotChannel);
+    
     //Configure Left motor
     _leftMotorConfig = new SparkFlexConfig();
     _leftMotorConfig.follow(_rightMotor);
-    _leftMotorConfig.inverted(true);
 
     //Configure Right Motor
     _rightMotorConfig = new SparkFlexConfig();
@@ -57,8 +61,31 @@ public class Elevator extends SubsystemBase {
     return _instance;
   }
 
+  public void setSpeed(double speed) {
+    SmartDashboard.putNumber("Current Elevator Position", getAlgeaHeight());
+    this._leftMotor.set(speed);
+    this._rightMotor.set(speed);
+  }
+
+  public void stop() {
+    setSpeed(0);
+  }
+
+  public void raiseElevator(double speed, double distance) {
+
+  }
+
+  public void lowerElevator(double speed, double distance) {
+
+  }
+
+  public double getAlgeaHeight() {
+    return this._potInput.getValue();
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-  }
+    SmartDashboard.putNumber("Current Elevator Position", getAlgeaHeight());
+    }
 }

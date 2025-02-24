@@ -141,7 +141,7 @@ public class DriveCommand extends Command {
     if(this._navXGyro != null) {
       originHeading = _navXGyro.getZeroAngle();
     } else if (this._pigeonGyro != null) {
-      originHeading = _navXGyro.getZeroAngle();
+      originHeading = _pigeonGyro.getZeroAngle();
     }
     // _drive.setDrivesMode(IdleMode.kCoast);
     _driveRotationPID = new PIDController(_driveRotationP, _driveRotationI, _driveRotationD);

@@ -6,6 +6,10 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.IntakeCoralCommand;
+import frc.robot.commands.RaiseElevatorCommand;
+import frc.robot.commands.EjectCoralCommand;
 import frc.robot.subsystems.AlgeaMechanism;
 import frc.robot.subsystems.Camera;
 import frc.robot.subsystems.CoralMechanism;
@@ -13,6 +17,9 @@ import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.NavXGyro;
 import frc.robot.subsystems.PigeonGyro;
+import frc.robot.subsystems.Pneumatics;
+
+import java.time.InstantSource;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -21,6 +28,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -44,6 +53,7 @@ public class RobotContainer {
   public static Elevator _elevator = Elevator.getInstance();
   public static AlgeaMechanism _algeaMechanism = AlgeaMechanism.getInstance();
   public static CoralMechanism _coralMechanism = CoralMechanism.getInstance();
+  public static Pneumatics _pneumatics = Pneumatics.getInstance();
 
   public static Camera _camera = Camera.getInstance();
   
@@ -61,6 +71,9 @@ public class RobotContainer {
 
     CommandScheduler.getInstance()
     .setDefaultCommand(_drive, new DriveCommand(_drive, driverController, _gyro, _camera));
+
+    CommandScheduler.getInstance()
+    .setDefaultCommand(_elevator, new ElevatorCommand(_elevator, driverController));
 
     // Configure the trigger bindings
     configureBindings();
@@ -81,6 +94,23 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    this.driverController.x().whileTrue(new InstantCommand(() -> _algeaMechanism.setSpeed(-.05)));
+    this.driverController.x().whileFalse(new InstantCommand(() -> _algeaMechanism.setSpeed(0)));
+
+    this.driverController.y().whileTrue(new RaiseElevatorCommand(_elevator, 350));
+
+    this.driverController.leftBumper().whileTrue(new InstantCommand(() -> _algeaMechanism.intakeAlgea()));
+    this.driverController.leftBumper().whileFalse(new InstantCommand(() -> _algeaMechanism.setSpeed(0)));
+    this.driverController.rightBumper().whileTrue(new InstantCommand(() -> _algeaMechanism.ejectAlgea()));
+    this.driverController.rightBumper().whileFalse(new InstantCommand(() -> _algeaMechanism.setSpeed(0)));
+
+    this.driverController.leftTrigger().onTrue(new IntakeCoralCommand(_coralMechanism));
+    this.driverController.rightTrigger().onTrue(new EjectCoralCommand(_coralMechanism));
+
+    this.driverController.a().onChange(new ConditionalCommand(
+      new InstantCommand(() -> _pneumatics.algeaOut()),
+      new InstantCommand(() -> _pneumatics.algeaIn()),
+      this.driverController.a()));
 
     // Configure Autonomous Options
     autonomousOptions();

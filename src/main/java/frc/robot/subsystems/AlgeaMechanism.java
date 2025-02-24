@@ -4,14 +4,33 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.AlgeaConstants;
 
 public class AlgeaMechanism extends SubsystemBase {
 
   private static AlgeaMechanism _instance;
+
+  private SparkMax _algeaSparkMax;
+  private SparkMaxConfig _algeaSparkConfig;
   
   /** Creates a new AlgeaMechanism. */
-  private AlgeaMechanism() {}
+  private AlgeaMechanism() {
+    this._algeaSparkMax = new SparkMax(AlgeaConstants.algeaMotorCANId, MotorType.kBrushless);
+
+    this._algeaSparkConfig = new SparkMaxConfig();
+    this._algeaSparkConfig.idleMode(IdleMode.kBrake);
+
+    this._algeaSparkMax.configure(_algeaSparkConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+  }
   
   /*
    * Setup Singleton for subsystem
@@ -21,6 +40,22 @@ public class AlgeaMechanism extends SubsystemBase {
       _instance = new AlgeaMechanism();
     }
     return _instance;
+  }
+
+  public void setSpeed(double speed) {
+    this._algeaSparkMax.set(speed);
+  }
+
+  public void intakeAlgea() {
+    setSpeed(1);
+  }
+
+  public void ejectAlgea() {
+    setSpeed(-1);
+  }
+  
+  public void stop() {
+    setSpeed(0);
   }
 
   @Override

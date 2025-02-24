@@ -54,8 +54,8 @@ public class SwerveModule extends SubsystemBase {
   private SparkFlex driveMotor;
   private SparkFlexConfig driveConfig;
   
-  private SparkMaxConfig steerConfig;
-  private SparkMax steerMotor;
+  private SparkFlexConfig steerConfig;
+  private SparkFlex steerMotor;
 
   private RelativeEncoder driveMotorEncoder; // Set up integrated Drive motor encoder in Spark Max/Neo
   private AbsoluteEncoder steerMotorEncoder; // Set up integrated Steer motor encoder in Spark Max/550
@@ -107,9 +107,8 @@ public class SwerveModule extends SubsystemBase {
         ModuleConstants.kDrivingMaxOutput);
     
     // Create and configure a new Steering motor
-    steerMotor = new SparkMax(steerNum, MotorType.kBrushless);
-    steerConfig = new SparkMaxConfig();
-    // steerMotor.restoreFactoryDefaults();
+    steerMotor = new SparkFlex(steerNum, MotorType.kBrushless);
+    steerConfig = new SparkFlexConfig();
     steerConfig.inverted(invertSteer);
     steerConfig.idleMode(IdleMode.kBrake);
     steerConfig.smartCurrentLimit(30);
@@ -117,12 +116,12 @@ public class SwerveModule extends SubsystemBase {
     // Apply position and velocity conversion factors for the turning encoder. We
     // want these in radians and radians per second to use with WPILib's swerve
     // APIs.
-    steerConfig.encoder.positionConversionFactor(ModuleConstants.kTurningEncoderPositionFactor);
-    steerConfig.encoder.velocityConversionFactor(ModuleConstants.kTurningEncoderVelocityFactor);
+    steerConfig.absoluteEncoder.positionConversionFactor(ModuleConstants.kTurningEncoderPositionFactor);
+    steerConfig.absoluteEncoder.velocityConversionFactor(ModuleConstants.kTurningEncoderVelocityFactor);
     
     // Invert the turning encoder, since the output shaft rotates in the opposite direction of
     // the steering motor in the MAXSwerve Module.
-    steerConfig.encoder.inverted(ModuleConstants.kTurningEncoderInverted);
+    steerConfig.absoluteEncoder.inverted(ModuleConstants.kTurningEncoderInverted);
 
     steerConfig.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
     // Set the PID gains for the turning motor. Note these are example gains, and you

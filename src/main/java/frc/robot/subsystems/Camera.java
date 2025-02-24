@@ -42,7 +42,7 @@ public class Camera extends SubsystemBase {
     }
 
     public double getRange() {
-        TARGET_HEIGHT_METERS = getTarget().getHeight();
+        TARGET_HEIGHT_METERS = 0.0;
         double range = PhotonUtils.calculateDistanceToTargetMeters(
                 CAMERA_HEIGHT_METERS,
                 TARGET_HEIGHT_METERS,

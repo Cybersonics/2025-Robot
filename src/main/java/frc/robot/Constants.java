@@ -163,6 +163,18 @@ public class Constants {
       public final static int stringPotChannel = 0;
     }
 
+    public static class AlgeaConstants {
+        public final static int algeaMotorCANId = 42;
+    }
+
+    public static class CoralConstants {
+        public final static int leftCoralMotorCANId = 41;
+        public final static int rightCoralMotorCANId = 40;
+
+        public final static int coralFeedSesorId = 0;
+        public final static int coralTripSensorId = 1;
+    }
+
     public static final class ShuffleBoardConstants {
         private static ShuffleboardTab driveTab = Shuffleboard.getTab("Drive Tab");
     }
