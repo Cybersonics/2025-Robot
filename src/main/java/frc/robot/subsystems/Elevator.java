@@ -9,6 +9,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
@@ -42,9 +43,13 @@ public class Elevator extends SubsystemBase {
     //Configure Left motor
     _leftMotorConfig = new SparkFlexConfig();
     _leftMotorConfig.follow(_rightMotor);
+    _leftMotorConfig.idleMode(IdleMode.kBrake);
+    _leftMotorConfig.openLoopRampRate(1);
 
     //Configure Right Motor
     _rightMotorConfig = new SparkFlexConfig();
+    _rightMotorConfig.idleMode(IdleMode.kBrake);
+    _rightMotorConfig.openLoopRampRate(1);
 
     //Flash Flex Controllers
      _leftMotor.configure(_leftMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -69,14 +74,6 @@ public class Elevator extends SubsystemBase {
 
   public void stop() {
     setSpeed(0);
-  }
-
-  public void raiseElevator(double speed, double distance) {
-
-  }
-
-  public void lowerElevator(double speed, double distance) {
-
   }
 
   public double getAlgeaHeight() {

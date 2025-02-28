@@ -23,10 +23,25 @@ public class ElevatorCommand extends Command {
 
     @Override
     public void execute() {
-        if(this._opController.pov(0).getAsBoolean()) {
-            this._elevatorSubsystems.setSpeed(.1);
+        if (this._opController.pov(0).getAsBoolean()) {
+            // Don't go all the way to top.
+            if(this._elevatorSubsystems.getAlgeaHeight() < 3700) {
+                this._elevatorSubsystems.setSpeed(.7);
+            } else {
+                this._elevatorSubsystems.stop();
+            }
         } else if (this._opController.pov(180).getAsBoolean()) {
-            this._elevatorSubsystems.setSpeed(-.1);
+            // 70 is bottom stop before then let it settle on own with gravity.
+            if (this._elevatorSubsystems.getAlgeaHeight() > 100) {
+                // Don't jam into bottom slow
+                if (this._elevatorSubsystems.getAlgeaHeight() < 1200) {
+                    this._elevatorSubsystems.setSpeed(-.3);
+                } else {
+                    this._elevatorSubsystems.setSpeed(-.5);
+                }
+            } else {
+                this._elevatorSubsystems.stop();
+            }
         } else {
             this._elevatorSubsystems.stop();
         }

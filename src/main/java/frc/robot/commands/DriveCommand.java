@@ -255,7 +255,7 @@ public class DriveCommand extends Command {
       if(this._navXGyro != null){
         originCorrection = Math.toRadians(originHeading - this._navXGyro.getNavAngle());
       } else if (this._pigeonGyro != null) {
-        originCorrection = Math.toRadians(originHeading - this._pigeonGyro.getNavAngle());
+        originCorrection = Math.toRadians(originHeading - this._pigeonGyro.getHeading());
       }
   
       /*
@@ -274,7 +274,7 @@ public class DriveCommand extends Command {
     }
 
    
-    var latestResult = _photonCamera.getLatestResult();
+    //var latestResult = _photonCamera.getLatestResult();
     
     /*if(_rightJoystickButtonThree.getAsBoolean()) {
       if(latestResult.hasTargets()) {

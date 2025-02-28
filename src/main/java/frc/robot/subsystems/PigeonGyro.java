@@ -31,6 +31,11 @@ public class PigeonGyro extends SubsystemBase {
       return instance;
     }
   
+    public double getYamValue() {
+      double heading = pigeon.getYaw().getValueAsDouble();
+      return heading;
+    }
+
     public double getNavHeading() {
       double heading = pigeon.getYaw().getValueAsDouble();
       return heading;
@@ -75,6 +80,7 @@ public class PigeonGyro extends SubsystemBase {
      * counter-clockwise positive.
      */
     public double getHeading() {
+      //return Math.IEEEremainder(-getNavAngle(), 360);
       return Math.IEEEremainder(-getNavAngle(), 360);
     }
   

@@ -193,7 +193,7 @@ public class Constants {
 
     public static final class VortexMotorConstants {
         public static final double kFreeSpeedRpm = 6784;
-      }
+    }
 
     public static final class PneumaticConstants {
         public static final int compressorInput = 1;

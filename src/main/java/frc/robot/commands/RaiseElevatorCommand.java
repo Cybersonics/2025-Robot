@@ -4,8 +4,6 @@
 
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.Kelvin;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Elevator;
 
@@ -13,7 +11,9 @@ public class RaiseElevatorCommand extends Command {
 
   private Elevator _elevatorSubsytem;
   private double _levelHeight;
-  
+  private double _upSpeed;
+  private double _downSpeed;
+
   public RaiseElevatorCommand(Elevator elevator, double levelHeight) {
     this._elevatorSubsytem = elevator;
     this._levelHeight = levelHeight;
@@ -24,19 +24,31 @@ public class RaiseElevatorCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    _upSpeed = .7;
+    _downSpeed = .5;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     double currentHeight = this._elevatorSubsytem.getAlgeaHeight();
-    System.out.println("Moving from " + currentHeight +" to " +_levelHeight);
-    if(currentHeight > _levelHeight) {
+    System.out.println("Moving from " + currentHeight + " to " + _levelHeight);
+    if (currentHeight > _levelHeight) {
       System.out.println("Lowering Elevator");
-      this._elevatorSubsytem.setSpeed(-.2);
+      // 70 is bottom stop before then let it settle on own with gravity.
+      if (this._elevatorSubsytem.getAlgeaHeight() > 100) {
+        // Don't jam into bottom slow
+        if (this._elevatorSubsytem.getAlgeaHeight() < 1200) {
+          this._elevatorSubsytem.setSpeed(-_downSpeed);
+        } else {
+          this._elevatorSubsytem.setSpeed(-_downSpeed);
+        }
+      } else {
+        this._elevatorSubsytem.stop();
+      }
     } else if (currentHeight < _levelHeight) {
       System.out.println("Raising Elevator");
-      this._elevatorSubsytem.setSpeed(.2);
+      this._elevatorSubsytem.setSpeed(_upSpeed);
     }
   }
 
@@ -49,7 +61,7 @@ public class RaiseElevatorCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return this._elevatorSubsytem.getAlgeaHeight() >= _levelHeight - 10
-      && this._elevatorSubsytem.getAlgeaHeight() <= _levelHeight + 10;
+    return this._elevatorSubsytem.getAlgeaHeight() >= _levelHeight - 35
+        && this._elevatorSubsytem.getAlgeaHeight() <= _levelHeight + 35;
   }
 }

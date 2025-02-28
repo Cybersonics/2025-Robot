@@ -353,6 +353,7 @@ public class Drive extends SubsystemBase {
 			SmartDashboard.putNumber("Robot Heading", this._navXGyro.getHeading());
 		} else if (this._pigeonGyro != null) {
 			odometer.update(this._pigeonGyro.getRotation2d(), getPositions());
+			SmartDashboard.putNumber("Yaw Value", this._pigeonGyro.getYamValue());
 			SmartDashboard.putNumber("Robot Heading", this._pigeonGyro.getHeading());
 		}
 

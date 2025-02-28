@@ -7,9 +7,13 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.AlgaeMechanismCommand;
 import frc.robot.commands.IntakeCoralCommand;
 import frc.robot.commands.RaiseElevatorCommand;
-import frc.robot.commands.EjectCoralCommand;
+import frc.robot.commands.autos.ScoreCoralLevelFour;
+import frc.robot.commands.autos.ScoreCoralLevelThree;
+import frc.robot.commands.autos.ScoreCoralLevelTwo;
+import frc.robot.commands.ScoreCoralCommand;
 import frc.robot.subsystems.AlgeaMechanism;
 import frc.robot.subsystems.Camera;
 import frc.robot.subsystems.CoralMechanism;
@@ -73,8 +77,10 @@ public class RobotContainer {
     .setDefaultCommand(_drive, new DriveCommand(_drive, driverController, _gyro, _camera));
 
     CommandScheduler.getInstance()
-    .setDefaultCommand(_elevator, new ElevatorCommand(_elevator, driverController));
+    .setDefaultCommand(_elevator, new ElevatorCommand(_elevator, operatorController));
 
+    CommandScheduler.getInstance()
+    .setDefaultCommand(_algeaMechanism, new AlgaeMechanismCommand(_algeaMechanism, operatorController.rightBumper(), operatorController.leftBumper(), false));
     // Configure the trigger bindings
     configureBindings();
   }
@@ -94,23 +100,26 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    this.driverController.x().whileTrue(new InstantCommand(() -> _algeaMechanism.setSpeed(-.05)));
-    this.driverController.x().whileFalse(new InstantCommand(() -> _algeaMechanism.setSpeed(0)));
+    // Zero Gyro on Drive B press
+    this.driverController.b().onTrue(new InstantCommand(() -> _gyro.zeroNavHeading()));
 
-    this.driverController.y().whileTrue(new RaiseElevatorCommand(_elevator, 350));
 
-    this.driverController.leftBumper().whileTrue(new InstantCommand(() -> _algeaMechanism.intakeAlgea()));
-    this.driverController.leftBumper().whileFalse(new InstantCommand(() -> _algeaMechanism.setSpeed(0)));
-    this.driverController.rightBumper().whileTrue(new InstantCommand(() -> _algeaMechanism.ejectAlgea()));
-    this.driverController.rightBumper().whileFalse(new InstantCommand(() -> _algeaMechanism.setSpeed(0)));
+    // Test Score Level Two Coral
+    this.operatorController.y().whileTrue(new ScoreCoralLevelTwo(_elevator, _coralMechanism));
+    this.operatorController.x().whileTrue(new ScoreCoralLevelThree(_elevator, _coralMechanism));
+    this.operatorController.b().whileTrue(new ScoreCoralLevelFour(_elevator, _coralMechanism));
 
-    this.driverController.leftTrigger().onTrue(new IntakeCoralCommand(_coralMechanism));
-    this.driverController.rightTrigger().onTrue(new EjectCoralCommand(_coralMechanism));
+    this.operatorController.rightTrigger().onTrue(new IntakeCoralCommand(_coralMechanism, _elevator));
+    this.operatorController.leftTrigger().onTrue(new ScoreCoralCommand(_coralMechanism));
 
-    this.driverController.a().onChange(new ConditionalCommand(
+    // Slow Algea Intake to Hold
+    this.operatorController.leftTrigger().whileTrue(new InstantCommand(() -> _algeaMechanism.setSpeed(-.05)));
+    this.operatorController.leftTrigger().whileFalse(new InstantCommand(() -> _algeaMechanism.setSpeed(0)));
+
+    this.operatorController.a().onChange(new ConditionalCommand(
       new InstantCommand(() -> _pneumatics.algeaOut()),
       new InstantCommand(() -> _pneumatics.algeaIn()),
-      this.driverController.a()));
+      this.operatorController.a()));
 
     // Configure Autonomous Options
     autonomousOptions();

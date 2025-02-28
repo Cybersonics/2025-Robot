@@ -3,11 +3,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CoralMechanism;
 
-public class EjectCoralCommand extends Command {
+public class ScoreCoralCommand extends Command {
 
     private CoralMechanism _coralSubsystems;
 
-    public EjectCoralCommand(CoralMechanism coral) {
+    public ScoreCoralCommand(CoralMechanism coral) {
         this._coralSubsystems = coral;
 
         addRequirements(_coralSubsystems);
