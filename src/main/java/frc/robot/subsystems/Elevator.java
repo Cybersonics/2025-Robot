@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -29,13 +30,13 @@ public class Elevator extends SubsystemBase {
   private SparkFlexConfig _rightMotorConfig;
 
   private AnalogInput _potInput;
- 
 
   /** Creates a new Elevator. */
   private Elevator() {
     // Setup Motors
     _leftMotor = new SparkFlex(ElevatorConstants.leftMotorCANId, MotorType.kBrushless);
     _rightMotor = new SparkFlex(ElevatorConstants.rightMotorCANId, MotorType.kBrushless);
+
 
     // Setup String Pot    
     _potInput = new AnalogInput(ElevatorConstants.stringPotChannel);
@@ -72,6 +73,15 @@ public class Elevator extends SubsystemBase {
     this._rightMotor.set(speed);
   }
 
+  public void setVoltage(double volt) {
+    this._leftMotor.setVoltage(volt);
+    this._rightMotor.setVoltage(volt);
+  }
+
+  public double getEncoderVelocity() {
+    return _leftMotor.getEncoder().getVelocity();
+  }
+  
   public void stop() {
     setSpeed(0);
   }

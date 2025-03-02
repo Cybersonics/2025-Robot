@@ -10,7 +10,9 @@ import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.AlgaeMechanismCommand;
 import frc.robot.commands.IntakeCoralCommand;
 import frc.robot.commands.RaiseElevatorCommand;
+import frc.robot.commands.autos.ScoreAlgaeInBarge;
 import frc.robot.commands.autos.ScoreCoralLevelFour;
+import frc.robot.commands.autos.ScoreCoralLevelOne;
 import frc.robot.commands.autos.ScoreCoralLevelThree;
 import frc.robot.commands.autos.ScoreCoralLevelTwo;
 import frc.robot.commands.ScoreCoralCommand;
@@ -27,6 +29,7 @@ import java.time.InstantSource;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -66,13 +69,22 @@ public class RobotContainer {
   private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.OpController);
 
   // Setup Sendable chooser for picking autonomous program in SmartDashboard
-  private SendableChooser<Command> m_chooser = new SendableChooser<>();
+  private SendableChooser<Command> autoChooser = new SendableChooser<>();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    // Configured Named commands for pathplanner
+    configureNamedCommands();
+    
+    // Configure Autonomous Options
+    autonomousOptions();
+    
+    // Configure the trigger bindings
+    configureBindings();
 
+    // Default Comands always running
     CommandScheduler.getInstance()
     .setDefaultCommand(_drive, new DriveCommand(_drive, driverController, _gyro, _camera));
 
@@ -80,9 +92,8 @@ public class RobotContainer {
     .setDefaultCommand(_elevator, new ElevatorCommand(_elevator, operatorController));
 
     CommandScheduler.getInstance()
-    .setDefaultCommand(_algeaMechanism, new AlgaeMechanismCommand(_algeaMechanism, operatorController.rightBumper(), operatorController.leftBumper(), false));
-    // Configure the trigger bindings
-    configureBindings();
+    .setDefaultCommand(_algeaMechanism, new AlgaeMechanismCommand(_algeaMechanism, operatorController.rightBumper(), operatorController.leftBumper(), operatorController.pov(180), false));
+    
   }
 
   /**
@@ -103,26 +114,29 @@ public class RobotContainer {
     // Zero Gyro on Drive B press
     this.driverController.b().onTrue(new InstantCommand(() -> _gyro.zeroNavHeading()));
 
-
-    // Test Score Level Two Coral
-    this.operatorController.y().whileTrue(new ScoreCoralLevelTwo(_elevator, _coralMechanism));
+    // Score Coral Levels     
+    this.operatorController.pov(90).whileTrue(new ScoreCoralLevelOne(_elevator, _coralMechanism));
+    this.operatorController.b().whileTrue(new ScoreCoralLevelTwo(_elevator, _coralMechanism));
     this.operatorController.x().whileTrue(new ScoreCoralLevelThree(_elevator, _coralMechanism));
-    this.operatorController.b().whileTrue(new ScoreCoralLevelFour(_elevator, _coralMechanism));
+    this.operatorController.y().whileTrue(new ScoreCoralLevelFour(_elevator, _coralMechanism));
 
-    this.operatorController.rightTrigger().onTrue(new IntakeCoralCommand(_coralMechanism, _elevator));
+    this.operatorController.rightTrigger().onTrue(new IntakeCoralCommand(_coralMechanism));
     this.operatorController.leftTrigger().onTrue(new ScoreCoralCommand(_coralMechanism));
-
-    // Slow Algea Intake to Hold
-    this.operatorController.leftTrigger().whileTrue(new InstantCommand(() -> _algeaMechanism.setSpeed(-.05)));
-    this.operatorController.leftTrigger().whileFalse(new InstantCommand(() -> _algeaMechanism.setSpeed(0)));
 
     this.operatorController.a().onChange(new ConditionalCommand(
       new InstantCommand(() -> _pneumatics.algeaOut()),
       new InstantCommand(() -> _pneumatics.algeaIn()),
       this.operatorController.a()));
+  }
 
-    // Configure Autonomous Options
-    autonomousOptions();
+  public void configureNamedCommands() {
+      NamedCommands.registerCommand("ScoreLevelOne", new ScoreCoralLevelOne(_elevator, _coralMechanism));
+      NamedCommands.registerCommand("ScoreLevelTwo", new ScoreCoralLevelTwo(_elevator, _coralMechanism));
+      NamedCommands.registerCommand("ScoreLevelThree", new ScoreCoralLevelThree(_elevator, _coralMechanism));
+      NamedCommands.registerCommand("ScoreLevelFour", new ScoreCoralLevelFour(_elevator, _coralMechanism));  
+      NamedCommands.registerCommand("ScoreAlgeaInBarge", new ScoreAlgaeInBarge(_elevator, _algeaMechanism));
+
+      NamedCommands.registerCommand("IntakeCoral", new IntakeCoralCommand(_coralMechanism));
   }
 
   /**
@@ -132,7 +146,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return null;
+    return autoChooser.getSelected();
   }
 
   /**
@@ -140,8 +154,8 @@ public class RobotContainer {
    */
   private void autonomousOptions() {
     // Example adding Autonomous option to chooser
-    m_chooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
-    SmartDashboard.putData("Auto Mode", m_chooser);
+    autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
+    SmartDashboard.putData("Auto Mode", autoChooser);
 
   }
 }

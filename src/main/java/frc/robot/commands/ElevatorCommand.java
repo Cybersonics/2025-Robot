@@ -9,6 +9,10 @@ public class ElevatorCommand extends Command {
     private Elevator _elevatorSubsystems;
     private CommandXboxController _opController;
 
+    private double maxSpeedUp = .7;
+    private double slowedSpeed = .3;
+    private double maxSpeedDown = .5;
+
     public ElevatorCommand(Elevator elevator, CommandXboxController opController) {
         this._elevatorSubsystems = elevator;
         this._opController = opController;
@@ -17,34 +21,33 @@ public class ElevatorCommand extends Command {
     }
 
     @Override
-    public void initialize() {
-
-    }
+    public void initialize() { }
 
     @Override
     public void execute() {
-        if (this._opController.pov(0).getAsBoolean()) {
-            // Don't go all the way to top.
-            if(this._elevatorSubsystems.getAlgeaHeight() < 3700) {
-                this._elevatorSubsystems.setSpeed(.7);
-            } else {
-                this._elevatorSubsystems.stop();
-            }
-        } else if (this._opController.pov(180).getAsBoolean()) {
-            // 70 is bottom stop before then let it settle on own with gravity.
-            if (this._elevatorSubsystems.getAlgeaHeight() > 100) {
+        double stickSpeed = -this._opController.getLeftY();
+            if(this._elevatorSubsystems.getAlgeaHeight() < 3700 && stickSpeed > 0) {
+                if(this._elevatorSubsystems.getAlgeaHeight() > 3000) {
+                    // Go slow close to top out
+                    this._elevatorSubsystems.setSpeed(stickSpeed * slowedSpeed);
+                } else {
+                    // "full" speed when moving form bottom
+                    this._elevatorSubsystems.setSpeed(stickSpeed * maxSpeedUp);
+                }
+            } else if (this._elevatorSubsystems.getAlgeaHeight() > 100 && stickSpeed < 0) {
+                // 70 is bottom stop before then let it settle on own with gravity.
                 // Don't jam into bottom slow
                 if (this._elevatorSubsystems.getAlgeaHeight() < 1200) {
-                    this._elevatorSubsystems.setSpeed(-.3);
+                    // Once below L2 slow down to bottom
+                    this._elevatorSubsystems.setSpeed(stickSpeed * slowedSpeed);
                 } else {
-                    this._elevatorSubsystems.setSpeed(-.5);
+                    // "full" speed down from higher up
+                    this._elevatorSubsystems.setSpeed(stickSpeed * maxSpeedDown);
                 }
             } else {
+                // When above Soft Max or below Soft Low don't allow movement in that direction
                 this._elevatorSubsystems.stop();
             }
-        } else {
-            this._elevatorSubsystems.stop();
-        }
     }
 
     // Called once the command ends or is interrupted.

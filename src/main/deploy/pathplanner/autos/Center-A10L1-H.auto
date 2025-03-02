@@ -1,0 +1,37 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterToA10"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreLevelOne"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A10-ToHumanPlayerLeft"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeCoral"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

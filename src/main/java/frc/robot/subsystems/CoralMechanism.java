@@ -79,6 +79,11 @@ public class CoralMechanism extends SubsystemBase {
     setSpeed(-.5);
   }
 
+  public void levelOneEjectCoral(double leftMotorSpeed, double rightMotorSpeed) {
+    this._coralLeftSparkMax.set(leftMotorSpeed);
+    this._coralLeftSparkMax.set(rightMotorSpeed);
+  }
+
   public boolean hasCoral() {
     return !this._coralTrip.get();
   }

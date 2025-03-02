@@ -129,11 +129,11 @@ public class Constants {
 
         public static final class FrameConstants {
             // Distance between right and left wheels
-            public static final double WHEEL_BASE_WIDTH = 21;
+            public static final double WHEEL_BASE_WIDTH = 22;
             public static final double kTrackWidth = Units.inchesToMeters(WHEEL_BASE_WIDTH);
 
             // Distance between front and back wheels
-            public static final double WHEEL_BASE_LENGTH = 17.25;
+            public static final double WHEEL_BASE_LENGTH = 22;
             public static final double kWheelBase = Units.inchesToMeters(WHEEL_BASE_LENGTH);
 
             public static final Translation2d flModuleOffset = new Translation2d(kWheelBase / 2, kTrackWidth / 2);
@@ -153,8 +153,8 @@ public class Constants {
         }
 
         public static final PPHolonomicDriveController pathFollowerConfig = new PPHolonomicDriveController(
-                new PIDConstants(2.3, 0, 0.01), // Translation constants P=5.0, I=0, D=0
-                new PIDConstants(2.0, 0, 0)); // Rotation constants P=5.0, I=0, D=0
+                new PIDConstants(7, 0, 0.01), // Translation constants P=5.0, I=0, D=0 kP=2.3
+                new PIDConstants(.65, 0, 0)); // Rotation constants P=5.0, I=0, D=0  kP=2.8
     }
 
     public static class ElevatorConstants {

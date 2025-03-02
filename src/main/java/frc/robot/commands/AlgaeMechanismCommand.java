@@ -16,15 +16,17 @@ public class AlgaeMechanismCommand extends Command {
   private boolean _isAuto;
   private BooleanSupplier _shouldIntake;
   private BooleanSupplier _shouldEject;
+  private BooleanSupplier _shouldSlowPull;
 
   private Timer _timer;
 
   public AlgaeMechanismCommand(AlgeaMechanism algea, BooleanSupplier shouldIntake, BooleanSupplier shouldEject,
-      boolean isAuto) {
+      BooleanSupplier shouldSlowPull, boolean isAuto) {
     this._algea = algea;
     this._isAuto = isAuto;
     this._shouldIntake = shouldIntake;
     this._shouldEject = shouldEject;
+    this._shouldSlowPull = shouldSlowPull;
 
     addRequirements(algea);
   }
@@ -43,6 +45,8 @@ public class AlgaeMechanismCommand extends Command {
       this._algea.intakeAlgea();
     } else if (this._shouldEject.getAsBoolean()) {
       this._algea.ejectAlgea();
+    } else if (this._shouldSlowPull.getAsBoolean()) {
+      this._algea.setSpeed(-.05);
     } else {
       this._algea.stop();
     }

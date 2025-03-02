@@ -222,10 +222,10 @@ public class Drive extends SubsystemBase {
 		double omegaL2 = omega * (DriveConstants.FrameConstants.WHEEL_BASE_LENGTH / 2.0);
 		double omegaW2 = omega * (DriveConstants.FrameConstants.WHEEL_BASE_WIDTH / 2.0);
 
-		// SmartDashboard.putNumber("OmegaL2", omegaL2);
-		// SmartDashboard.putNumber("OmegaW2", omegaW2);
-		// SmartDashboard.putNumber("Forward", forward);
-		// SmartDashboard.putNumber("Strafe", strafe);
+		SmartDashboard.putNumber("OmegaL2", omegaL2);
+		SmartDashboard.putNumber("OmegaW2", omegaW2);
+		SmartDashboard.putNumber("Forward", forward);
+		SmartDashboard.putNumber("Strafe", strafe);
 		// SmartDashboard.putNumber("NavX", _gyro.getNavAngle());
 		// Compute the constants used later for calculating speeds and angles
 		double A = strafe - omegaL2;
