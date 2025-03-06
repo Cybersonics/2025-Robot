@@ -253,7 +253,7 @@ public class DriveCommand extends Command {
        */
       double originCorrection = 0;
       if(this._navXGyro != null){
-        originCorrection = Math.toRadians(originHeading - this._navXGyro.getNavAngle());
+        originCorrection = Math.toRadians(originHeading - this._navXGyro.getHeading());
       } else if (this._pigeonGyro != null) {
         originCorrection = Math.toRadians(originHeading - this._pigeonGyro.getHeading());
       }

@@ -112,7 +112,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Zero Gyro on Drive B press
-    this.driverController.b().onTrue(new InstantCommand(() -> _gyro.zeroNavHeading()));
+    this.driverController.b().onTrue(new InstantCommand(() -> _gyro.zeroGyroHeading()));
 
     // Score Coral Levels     
     this.operatorController.pov(90).whileTrue(new ScoreCoralLevelOne(_elevator, _coralMechanism));

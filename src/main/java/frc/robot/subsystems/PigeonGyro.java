@@ -18,8 +18,8 @@ public class PigeonGyro extends SubsystemBase {
     private PigeonGyro() {
       pigeon = new Pigeon2(DriveConstants.PigeonCANId);
   
-      zeroHeading = getNavHeading();
-      zeroAngle = getNavAngle();
+      zeroHeading = getGyroAngle();
+      zeroAngle = getGyroAngle();
       //System.out.println("Setup ZeroAngle " + zeroAngle);
     }
   
@@ -31,17 +31,17 @@ public class PigeonGyro extends SubsystemBase {
       return instance;
     }
   
-    public double getYamValue() {
+    public double getGyroYawValue() {
       double heading = pigeon.getYaw().getValueAsDouble();
       return heading;
     }
 
-    public double getNavHeading() {
-      double heading = pigeon.getYaw().getValueAsDouble();
-      return heading;
-    }
+    // public double getNavHeading() {
+    //   double heading = pigeon.getYaw().getValueAsDouble();
+    //   return heading;
+    // }
   
-    public double getNavAngle() {
+    public double getGyroAngle() {
       double angle = pigeon.getYaw().getValueAsDouble();
       return angle;
     }
@@ -50,11 +50,11 @@ public class PigeonGyro extends SubsystemBase {
       pigeon.setYaw(offset);
     }
   
-    public void zeroNavHeading() {
+    public void zeroGyroHeading() {
       //navX.zeroYaw();
       pigeon.reset();
-      zeroHeading = getNavHeading();
-      zeroAngle = getNavAngle();
+      zeroHeading = getGyroAngle();
+      zeroAngle = getGyroAngle();
       System.out.println("ZeroHeading: " + zeroHeading);
       System.out.println("ZeroAngle: " + zeroAngle);
     }
@@ -67,9 +67,11 @@ public class PigeonGyro extends SubsystemBase {
       return zeroAngle;
     }
   
-    public Rotation2d getNavXRotation2D() {
+    public Rotation2d getGyroRotation2D() {
       //return Rotation2d.fromDegrees(navX.getAngle());
-      return pigeon.getRotation2d();
+      //return pigeon.getRotation2d();
+      return getRotation2d();
+  
     }
   
     /*
@@ -81,7 +83,7 @@ public class PigeonGyro extends SubsystemBase {
      */
     public double getHeading() {
       //return Math.IEEEremainder(-getNavAngle(), 360);
-      return Math.IEEEremainder(-getNavAngle(), 360);
+      return Math.IEEEremainder(-getGyroAngle(), 360);
     }
   
     public Rotation2d getRotation2d() {

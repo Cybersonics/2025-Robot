@@ -14,6 +14,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.utility.shuffleBoardDrive;
+import frc.robot.Constants.DriveConstants.ModuleConstants;
 import frc.robot.utility.AprilTag;
 
 
@@ -24,8 +25,8 @@ public class Constants {
     }
 
     public static class AutoConstants {
-        public static final double kPhysicalMaxSpeedMetersPerSecond = 6;
-        public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * Math.PI;
+        public static final double kPhysicalMaxSpeedMetersPerSecond = ModuleConstants.kPhysicalMaxSpeedMetersPerSecond;
+        public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = ModuleConstants.kTurningEncoderPositionFactor;
 
         public static final double kMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond / 2;
         public static final double kMaxAngularSpeedRadiansPerSecond = kPhysicalMaxAngularSpeedRadiansPerSecond / 5;
@@ -68,24 +69,21 @@ public class Constants {
         public static final int BackRightDrive = 12;
         public static final int BackRightEncoderOffset = 0;
 
-        public static final shuffleBoardDrive frontLeft = new shuffleBoardDrive("LF Set Angle", 0, 0);
-        public static final shuffleBoardDrive backLeft = new shuffleBoardDrive("LB Set Angle", 0, 1);
-
-        public static final shuffleBoardDrive frontRight = new shuffleBoardDrive("RF Set Angle", 4, 0);
-        public static final shuffleBoardDrive backRight = new shuffleBoardDrive("RBack Set Angle", 4, 1);
-
         public static final class ModuleConstants {
             public static final double kWheelDiameterMeters = Units.inchesToMeters(4.1); // 4
+            public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
+
             public static final double kDriveMotorGearRatio = 1 / 6.429;
-            public static final double kTurningMotorGearRatio = 1 / 1024;
-            public static final double kDriveEncoderRot2Meter = kDriveMotorGearRatio * Math.PI * kWheelDiameterMeters;
-            public static final double kTurningEncoderRot2Rad = kTurningMotorGearRatio * 2 * Math.PI;
-            public static final double kDriveEncoderRPM2MeterPerSec = kDriveEncoderRot2Meter / 60;
-            public static final double kTurningEncoderRPM2RadPerSec = kTurningEncoderRot2Rad / 60;
+            //public static final double kTurningMotorGearRatio = 1 / 1024;
 
-            public static final double maxSpeed = 6.5; // M/S
+            public static final double kDrivingEncoderPositionFactor = kDriveMotorGearRatio * kWheelCircumferenceMeters;//kDriveMotorGearRatio * Math.PI * kWheelDiameterMeters;
+            public static final double kTurningEncoderPositionFactor = 2 * Math.PI; //kTurningMotorGearRatio * 2 * Math.PI;
+            public static final double kDrivingEncoderVelocityFactor = kDrivingEncoderPositionFactor / 60;
+            public static final double kTurningEncoderVelocityFactor = kTurningEncoderPositionFactor / 60;
 
-            public static final double kPTurning = 0.5;
+            public static final double kPhysicalMaxSpeedMetersPerSecond = 5.0; // M/S
+
+            //public static final double kPTurning = 0.5;
 
             // Invert the turning encoder if necessary. If pivots snap back and forth when setting up
             // inversion may be needed as the encoder can be reading in the opposite direction 
@@ -95,18 +93,28 @@ public class Constants {
 
             // Calculations required for driving motor conversion factors and feed forward
             public static final double kDrivingMotorFreeSpeedRps = VortexMotorConstants.kFreeSpeedRpm / 60;
-            public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
-            public static final double kDriveWheelFreeSpeedRps = (kDrivingMotorFreeSpeedRps * kDriveMotorGearRatio)
-             * kWheelCircumferenceMeters;
+         
+            //public static final double kDriveWheelFreeSpeedRps = (kDrivingMotorFreeSpeedRps * kDriveMotorGearRatio)
+            // * kWheelCircumferenceMeters;
 
-            public static final double kDrivingEncoderPositionFactor = (kWheelDiameterMeters * Math.PI)
-            * kDriveMotorGearRatio; // meters
+            public static final double kDriveWheelFreeSpeedRps = (kDrivingMotorFreeSpeedRps * kDrivingEncoderPositionFactor);
 
-            public static final double kDrivingEncoderVelocityFactor = ((kWheelDiameterMeters * Math.PI)
-            * kDriveMotorGearRatio) / 60.0; // meters per second
+            // public static final double kDrivingEncoderPositionFactor = (kWheelDiameterMeters * Math.PI)
+            // * kDriveMotorGearRatio; // meters
 
-            public static final double kTurningEncoderPositionFactor = (2 * Math.PI); // radians
-            public static final double kTurningEncoderVelocityFactor = (2 * Math.PI) / 60.0; // radians per second
+            
+            //public static final double kDrivingEncoderPositionFactor = kDriveEncoderRot2Meter; // meters
+
+            // public static final double kDrivingEncoderVelocityFactor = ((kWheelDiameterMeters * Math.PI)
+            // * kDriveMotorGearRatio) / 60.0; // meters per second
+
+            //public static final double kDrivingEncoderVelocityFactor = kDriveEncoderRPM2MeterPerSec; // meters per second
+
+            // public static final double kTurningEncoderPositionFactor = (2 * Math.PI); // radians
+            // public static final double kTurningEncoderVelocityFactor = (2 * Math.PI) / 60.0; // radians per second
+
+            //public static final double kTurningEncoderPositionFactor = kTurningEncoderRot2Rad; // radians
+            //public static final double kTurningEncoderVelocityFactor = kTurningEncoderRPM2RadPerSec; // radians per second
         
             public static final double kTurningEncoderPositionPIDMinInput = 0; // radians
             public static final double kTurningEncoderPositionPIDMaxInput = kTurningEncoderPositionFactor; // radians
@@ -148,8 +156,8 @@ public class Constants {
                 brModuleOffset
             );
                     
-            public static final double kPhysicalMaxSpeedMetersPerSecond = 6;
-            public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * Math.PI;
+            //public static final double kPhysicalMaxSpeedMetersPerSecond = ModuleConstants.maxSpeed;
+            //public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = ModuleConstants.kTurningEncoderVelocityFactor;
         }
 
         public static final PPHolonomicDriveController pathFollowerConfig = new PPHolonomicDriveController(

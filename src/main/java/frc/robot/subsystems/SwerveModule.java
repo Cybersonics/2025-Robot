@@ -69,23 +69,15 @@ public class SwerveModule extends SubsystemBase {
   private static final double RAMP_RATE = 0.5;
   //private static final double STEER_P = 3.0, STEER_I = 0.0, STEER_D = 0.1;
 
-  public double encoderCountPerRotation = 1024;
+  //public double encoderCountPerRotation = 1024;
 
   private boolean _driveCorrect;
 
-  private shuffleBoardDrive driveData;
-  private ShuffleboardTab driveTab = Shuffleboard.getTab("DriveTab");
   private GenericEntry setAngleOffset;
 
-  public SwerveModule(int steerNum, int driveNum, boolean invertDrive, boolean invertSteer, shuffleBoardDrive driveData) {
+  public SwerveModule(int steerNum, int driveNum, boolean invertDrive, boolean invertSteer) {
 
-    // Get Drive information from Constants and create a Drive Alignment Tuner on ShuffleBoard
-    this.driveData = driveData;
-
-    // setAngleOffset = driveTab.addPersistent(this.driveData.drivePosition, 0)
-    //     .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", -180, "max", 180, "center", 0))
-    //     .withPosition(this.driveData.colPos, this.driveData.rowPos).withSize(3, 1).getEntry();
-
+  
     // Create and configure a new Drive motor
     driveMotor = new SparkFlex(driveNum, MotorType.kBrushless);
     driveConfig = new SparkFlexConfig();
@@ -314,9 +306,9 @@ public class SwerveModule extends SubsystemBase {
           }
     
           state = SwerveModuleState.optimize(state, getState().angle);
-          double driveMotorSpeed = state.speedMetersPerSecond / DriveConstants.FrameConstants.kPhysicalMaxSpeedMetersPerSecond;
+          double driveMotorSpeed = state.speedMetersPerSecond / DriveConstants.ModuleConstants.kPhysicalMaxSpeedMetersPerSecond;
           double steerMotorAngle = state.angle.getDegrees();
-          setSwerve(steerMotorAngle, driveMotorSpeed, false);
+          setSwerve(steerMotorAngle, driveMotorSpeed, true);
       }
     
       public void stop() {

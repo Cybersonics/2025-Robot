@@ -22,8 +22,8 @@ public class Drive extends SubsystemBase {
 
 	private static Drive instance;
 
-	public static final double kMaxSpeed = 3.0; // 3 meters per second
-	public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
+	//public static final double kMaxSpeed = 3.0; // 3 meters per second
+	//public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
 
 	private static SwerveModule frontLeft;
 	private static SwerveModule backLeft;
@@ -32,11 +32,6 @@ public class Drive extends SubsystemBase {
 
 	public double heading;
 	public double angle;
-
-	// private static final double WHEEL_DIAMETER = 4.0;
-	// TO DO: Correct equation that uses MAX_SPEED
-	//public static final double MAX_SPEED = 0.75; // Max speed is 0 to 1
-	//public static final double MAX_REVERSIBLE_SPEED_DIFFERENCE = 0.7 * MAX_SPEED;
 
 	public static final double OMEGA_SCALE = 1.0 / 30.0;
 
@@ -59,19 +54,19 @@ public class Drive extends SubsystemBase {
 		this._pigeonGyro = gyro;
 
 		frontLeft = new SwerveModule(DriveConstants.FrontLeftSteer, DriveConstants.FrontLeftDrive, invertDrive,
-				invertSteer, DriveConstants.frontLeft);
+				invertSteer);
 
 		frontRight = new SwerveModule(DriveConstants.FrontRightSteer, DriveConstants.FrontRightDrive, invertDrive,
-		 		invertSteer, DriveConstants.frontRight);
+		 		invertSteer);
 
 		backLeft = new SwerveModule(DriveConstants.BackLeftSteer, DriveConstants.BackLeftDrive, invertDrive,
-		 		invertSteer, DriveConstants.backLeft);
+		 		invertSteer);
 
 		backRight = new SwerveModule(DriveConstants.BackRightSteer, DriveConstants.BackRightDrive, invertDrive,
-		 		invertSteer, DriveConstants.backRight);
+		 		invertSteer);
 
 		 odometer = new SwerveDriveOdometry(DriveConstants.FrameConstants.kDriveKinematics,
-		 		this._pigeonGyro.getNavXRotation2D(), getPositions());
+		 		this._pigeonGyro.getGyroRotation2D(), getPositions());
 
 		RobotConfig robotConfig;
 		try{
@@ -115,19 +110,19 @@ public class Drive extends SubsystemBase {
 		this._navXGyro = gyro;
 
 		frontLeft = new SwerveModule(DriveConstants.FrontLeftSteer, DriveConstants.FrontLeftDrive, invertDrive,
-				invertSteer, DriveConstants.frontLeft);
+				invertSteer);
 
 		frontRight = new SwerveModule(DriveConstants.FrontRightSteer, DriveConstants.FrontRightDrive, invertDrive,
-		 		invertSteer, DriveConstants.frontRight);
+		 		invertSteer);
 
 		backLeft = new SwerveModule(DriveConstants.BackLeftSteer, DriveConstants.BackLeftDrive, invertDrive,
-		 		invertSteer, DriveConstants.backLeft);
+		 		invertSteer);
 
 		backRight = new SwerveModule(DriveConstants.BackRightSteer, DriveConstants.BackRightDrive, invertDrive,
-		 		invertSteer, DriveConstants.backRight);
+		 		invertSteer);
 
 		 odometer = new SwerveDriveOdometry(DriveConstants.FrameConstants.kDriveKinematics,
-		 		this._navXGyro.getNavXRotation2D(), getPositions());
+		 		this._navXGyro.getGyroRotation2D(), getPositions());
 
 		RobotConfig robotConfig;
 		try{
@@ -168,9 +163,9 @@ public class Drive extends SubsystemBase {
 
 	public void resetPose(Pose2d pose) {
 		if(this._navXGyro != null) {
-			odometer.resetPosition(this._navXGyro.getNavXRotation2D(), getPositions(), pose);
+			odometer.resetPosition(this._navXGyro.getGyroRotation2D(), getPositions(), pose);
 		} else if (this._pigeonGyro != null) {
-			odometer.resetPosition(this._pigeonGyro.getNavXRotation2D(), getPositions(), pose);
+			odometer.resetPosition(this._pigeonGyro.getGyroRotation2D(), getPositions(), pose);
 		}
 	}
 
@@ -222,6 +217,8 @@ public class Drive extends SubsystemBase {
 		double omegaL2 = omega * (DriveConstants.FrameConstants.WHEEL_BASE_LENGTH / 2.0);
 		double omegaW2 = omega * (DriveConstants.FrameConstants.WHEEL_BASE_WIDTH / 2.0);
 
+		this._driveCorrect = false;
+		
 		SmartDashboard.putNumber("OmegaL2", omegaL2);
 		SmartDashboard.putNumber("OmegaW2", omegaW2);
 		SmartDashboard.putNumber("Forward", forward);
@@ -353,7 +350,7 @@ public class Drive extends SubsystemBase {
 			SmartDashboard.putNumber("Robot Heading", this._navXGyro.getHeading());
 		} else if (this._pigeonGyro != null) {
 			odometer.update(this._pigeonGyro.getRotation2d(), getPositions());
-			SmartDashboard.putNumber("Yaw Value", this._pigeonGyro.getYamValue());
+			SmartDashboard.putNumber("Yaw Value", this._pigeonGyro.getGyroYawValue());
 			SmartDashboard.putNumber("Robot Heading", this._pigeonGyro.getHeading());
 		}
 
@@ -396,7 +393,7 @@ public class Drive extends SubsystemBase {
 
 	public void setModuleStates(SwerveModuleState[] desiredStates) {
 			SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates,
-					DriveConstants.FrameConstants.kPhysicalMaxSpeedMetersPerSecond / 2);
+					DriveConstants.ModuleConstants.kPhysicalMaxSpeedMetersPerSecond);
 			frontLeft.setDesiredState(desiredStates[0]);
 			frontRight.setDesiredState(desiredStates[1]);
 			backLeft.setDesiredState(desiredStates[2]);
