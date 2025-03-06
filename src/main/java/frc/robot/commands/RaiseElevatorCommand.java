@@ -54,7 +54,7 @@ public class RaiseElevatorCommand extends Command {
   @Override
   public void execute() {
     double currentHeight = this._elevatorSubsytem.getAlgeaHeight();
-    System.out.println("Moving from " + currentHeight + " to " + _levelHeight);
+    //System.out.println("Moving from " + currentHeight + " to " + _levelHeight);
 
     double calcVoltage = this._elevatorPIDController.calculate(currentHeight, _levelHeight);
     SmartDashboard.putNumber("Current Elevator Voltage", calcVoltage);

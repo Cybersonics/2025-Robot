@@ -20,7 +20,7 @@ public class ScoreTroughCoralCommand extends Command {
 
     @Override
     public void execute() {
-        this._coralSubsystems.levelOneEjectCoral(.8, .5);
+        this._coralSubsystems.levelOneEjectCoral(.7, .4);
     }
 
     // Called once the command ends or is interrupted.

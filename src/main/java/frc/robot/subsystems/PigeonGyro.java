@@ -68,8 +68,7 @@ public class PigeonGyro extends SubsystemBase {
     }
   
     public Rotation2d getNavXRotation2D() {
-      //return Rotation2d.fromDegrees(navX.getAngle());
-      return pigeon.getRotation2d();
+      return Rotation2d.fromDegrees(getHeading());
     }
   
     /*

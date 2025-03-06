@@ -44,7 +44,7 @@ public class Drive extends SubsystemBase {
 	private final boolean invertSteer = true; //true;
 	private NavXGyro _navXGyro;
 	private PigeonGyro _pigeonGyro;
-	private boolean _driveCorrect;
+	private boolean _driveCorrect= false;
 
 	private final SwerveDriveOdometry odometer;
 
@@ -218,6 +218,8 @@ public class Drive extends SubsystemBase {
 	}
 
 	public void processInput(double forward, double strafe, double omega, boolean deadStick) {
+
+		this._driveCorrect = false;
 
 		double omegaL2 = omega * (DriveConstants.FrameConstants.WHEEL_BASE_LENGTH / 2.0);
 		double omegaW2 = omega * (DriveConstants.FrameConstants.WHEEL_BASE_WIDTH / 2.0);

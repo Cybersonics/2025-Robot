@@ -11,9 +11,28 @@
           }
         },
         {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "ScoreLevelOne"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DriveSlowForward"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "ScoreLevelOne"
+            "name": "IntakeAlgeaFromReef"
           }
         }
       ]

@@ -46,7 +46,7 @@ public class AlgaeMechanismCommand extends Command {
     } else if (this._shouldEject.getAsBoolean()) {
       this._algea.ejectAlgea();
     } else if (this._shouldSlowPull.getAsBoolean()) {
-      this._algea.setSpeed(-.05);
+      this._algea.setSpeed(-.07);
     } else {
       this._algea.stop();
     }

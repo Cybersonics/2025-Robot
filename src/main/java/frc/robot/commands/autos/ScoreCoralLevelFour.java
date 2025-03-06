@@ -5,6 +5,7 @@
 package frc.robot.commands.autos;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.ScoreCoralCommand;
 import frc.robot.commands.RaiseElevatorCommand;
 import frc.robot.subsystems.CoralMechanism;
@@ -16,9 +17,10 @@ public class ScoreCoralLevelFour extends SequentialCommandGroup {
     addCommands(
       new RaiseElevatorCommand(elevator, 1250),
       new RaiseElevatorCommand(elevator, 2000),
-      new RaiseElevatorCommand(elevator, 3150),
-      new ScoreCoralCommand(coral),
-      new RaiseElevatorCommand(elevator, 750)
+      new RaiseElevatorCommand(elevator, 3100),
+      new WaitCommand(.25),
+      new ScoreCoralCommand(coral)
+      //,new RaiseElevatorCommand(elevator, 750)
     );
   }
 }

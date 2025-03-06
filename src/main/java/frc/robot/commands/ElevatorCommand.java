@@ -34,7 +34,7 @@ public class ElevatorCommand extends Command {
                     // "full" speed when moving form bottom
                     this._elevatorSubsystems.setSpeed(stickSpeed * maxSpeedUp);
                 }
-            } else if (this._elevatorSubsystems.getAlgeaHeight() > 100 && stickSpeed < 0) {
+            } else if (this._elevatorSubsystems.getAlgeaHeight() > 95 && stickSpeed < 0) {
                 // 70 is bottom stop before then let it settle on own with gravity.
                 // Don't jam into bottom slow
                 if (this._elevatorSubsystems.getAlgeaHeight() < 1200) {

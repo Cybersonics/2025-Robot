@@ -52,20 +52,20 @@ public class Constants {
     public static class DriveConstants {
         public static final int PigeonCANId = 5;
 
-        public static final int FrontLeftSteer = 20;
-        public static final int FrontLeftDrive = 10;
+        public static final int FrontLeftSteer = 22;//20;
+        public static final int FrontLeftDrive = 12;//10;
         public static final int FrontLeftEncoderOffset = 0;
 
-        public static final int FrontRightSteer = 23;
-        public static final int FrontRightDrive = 13;
+        public static final int FrontRightSteer = 21;//23;
+        public static final int FrontRightDrive = 11;//13;
         public static final int FrontRightEncoderOffset = 0;
 
-        public static final int BackLeftSteer = 21;
-        public static final int BackLeftDrive = 11;
+        public static final int BackLeftSteer = 23;//21;
+        public static final int BackLeftDrive = 13;//11;
         public static final int BackLeftEncoderOffset = 0;
 
-        public static final int BackRightSteer = 22;
-        public static final int BackRightDrive = 12;
+        public static final int BackRightSteer = 20;//22;
+        public static final int BackRightDrive = 10;//12;
         public static final int BackRightEncoderOffset = 0;
 
         public static final shuffleBoardDrive frontLeft = new shuffleBoardDrive("LF Set Angle", 0, 0);
@@ -154,7 +154,7 @@ public class Constants {
 
         public static final PPHolonomicDriveController pathFollowerConfig = new PPHolonomicDriveController(
                 new PIDConstants(7, 0, 0.01), // Translation constants P=5.0, I=0, D=0 kP=2.3
-                new PIDConstants(.65, 0, 0)); // Rotation constants P=5.0, I=0, D=0  kP=2.8
+                new PIDConstants(.68, 0, 0)); // Rotation constants P=5.0, I=0, D=0  kP=2.8 .65
     }
 
     public static class ElevatorConstants {
@@ -215,8 +215,8 @@ public class Constants {
         public static final String CameraName = "limelight"; 
         public static final int AprilTagPipeline = 0;
 
-        public static final double RobotCameraHeight = Units.inchesToMeters(14.75);
-        public static final double RobotCameraAngle = Units.degreesToRadians(30.6);
+        public static final double RobotCameraHeight = Units.inchesToMeters(17.25);
+        public static final double RobotCameraAngle = Units.degreesToRadians(0);
         public static final double RobotDistance = 58;
     }
 

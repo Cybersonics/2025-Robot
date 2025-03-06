@@ -7,9 +7,11 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.IntakeAlgea;
 import frc.robot.commands.AlgaeMechanismCommand;
 import frc.robot.commands.IntakeCoralCommand;
-import frc.robot.commands.RaiseElevatorCommand;
+import frc.robot.commands.autos.DriveForwardSlow;
+import frc.robot.commands.autos.IntakeAlgeaFromReef;
 import frc.robot.commands.autos.ScoreAlgaeInBarge;
 import frc.robot.commands.autos.ScoreCoralLevelFour;
 import frc.robot.commands.autos.ScoreCoralLevelOne;
@@ -21,13 +23,9 @@ import frc.robot.subsystems.Camera;
 import frc.robot.subsystems.CoralMechanism;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.NavXGyro;
 import frc.robot.subsystems.PigeonGyro;
 import frc.robot.subsystems.Pneumatics;
 
-import java.time.InstantSource;
-
-import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -137,6 +135,8 @@ public class RobotContainer {
       NamedCommands.registerCommand("ScoreAlgeaInBarge", new ScoreAlgaeInBarge(_elevator, _algeaMechanism));
 
       NamedCommands.registerCommand("IntakeCoral", new IntakeCoralCommand(_coralMechanism));
+      NamedCommands.registerCommand("IntakeAlgeaFromReef", new IntakeAlgeaFromReef(_elevator, _algeaMechanism, _pneumatics));
+      NamedCommands.registerCommand("DriveSlowForward", new DriveForwardSlow(_drive));
   }
 
   /**

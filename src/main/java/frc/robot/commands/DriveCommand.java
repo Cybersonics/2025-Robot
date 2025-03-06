@@ -274,92 +274,88 @@ public class DriveCommand extends Command {
     }
 
    
-    //var latestResult = _photonCamera.getLatestResult();
-    
-    /*if(_rightJoystickButtonThree.getAsBoolean()) {
-      if(latestResult.hasTargets()) {
-        _bestTarget = latestResult.getBestTarget();
-        _aprilTagID = _bestTarget.getFiducialId();
-         _aprilTagID = LimelightHelpers.getFiducialID("");
-      }
-      if (_aprilTagID>-1){
-        AprilTag target = Constants.AprilTags.AprilTags.get(((int)_aprilTagID-1)); // indexed list is 0-15 not 1-16
-        double targetDistance = target.getDistance();
-        double targetHeight = target.getHeight();
-        double targetHeading = target.getExpectedHeading();
+    // var latestResult = _photonCamera.getLatestResult();
+    // SmartDashboard.putNumber("Camera Target", latestResult.getBestTarget().getFiducialId());
+    // if(_rightJoystickButtonThree.getAsBoolean()) {
+    //   if(latestResult.hasTargets()) {
+    //     _bestTarget = latestResult.getBestTarget();
+    //     _aprilTagID = _bestTarget.getFiducialId();
+    //      _aprilTagID = LimelightHelpers.getFiducialID("");
+    //   }
+    //   if (_aprilTagID>-1){
+    //     AprilTag target = Constants.AprilTags.AprilTags.get(((int)_aprilTagID-1)); // indexed list is 0-21 not 1-22
+    //     double targetDistance = target.getDistance();
+    //     double targetHeading = target.getExpectedHeading();
 
-        SmartDashboard.putNumber("Target Distance", target.getDistance());
-        SmartDashboard.putNumber("Target Height", target.getHeight());
-        SmartDashboard.putNumber("Target Heading", target.getExpectedHeading());
+    //     SmartDashboard.putNumber("Target Distance", target.getDistance());
+    //     SmartDashboard.putNumber("Target Heading", target.getExpectedHeading());
     
     
-        //double rotationEstimate = LimelightHelpers.getTY("");// + Constants.TrapConstants.AngleOffset;
-        //double rotationEstimate = LimelightHelpers.getTX("");// + Constants.TrapConstants.AngleOffset;
-        //double rotationValue = _driveRotationPID.calculate(rotationEstimate, 0);
-        double rotationValue = _driveRotationPID.calculate(-_navXGyro.getNavAngle(), targetHeading);
+    //     //double rotationEstimate = LimelightHelpers.getTY("");// + Constants.TrapConstants.AngleOffset;
+    //     //double rotationEstimate = LimelightHelpers.getTX("");// + Constants.TrapConstants.AngleOffset;
+    //     //double rotationValue = _driveRotationPID.calculate(rotationEstimate, 0);
+    //     double rotationValue = _driveRotationPID.calculate(-_navXGyro.getNavAngle(), targetHeading);
         
-        //SmartDashboard.putNumber("Rotation Estimate", rotationEstimate);
-        SmartDashboard.putNumber("Rotation Value", rotationValue);
+    //     //SmartDashboard.putNumber("Rotation Estimate", rotationEstimate);
+    //     SmartDashboard.putNumber("Rotation Value", rotationValue);
 
 
-        //How many degrees back is limelight rotated from vertical
-        /*Vertical angle calculated by setting bot a fixed distance back from target (measureDistanceToTarget) with 
-        height of target and height of camera lens measured in inches.
-        Use a calculator to get the Total Angle = arcTan(targetHeight-cameraHeight)/measuredDistanceToTaget
-        Using the Limelight webviewer get the ty value. Take the total angle calculated above and subtract the 
-        ty value from the Limelight webvier to get the limelightMountAngleDegrees.
-        */
+    //     //How many degrees back is limelight rotated from vertical
+    //     /*Vertical angle calculated by setting bot a fixed distance back from target (measureDistanceToTarget) with 
+    //     height of target and height of camera lens measured in inches.
+    //     Use a calculator to get the Total Angle = arcTan(targetHeight-cameraHeight)/measuredDistanceToTaget
+    //     Using the Limelight webviewer get the ty value. Take the total angle calculated above and subtract the 
+    //     ty value from the Limelight webvier to get the limelightMountAngleDegrees.
+    //     */
 
-        /*double tx = _bestTarget.getYaw();
-        // double tx = LimelightHelpers.getTX("");
+    //     double tx = _bestTarget.getYaw();
+    //     // double tx = LimelightHelpers.getTX("");
 
-        //Vertical angle of target in view in degrees
-        double ty = _bestTarget.getPitch();
-        // double ty = LimelightHelpers.getTY(""); 
+    //     //Vertical angle of target in view in degrees
+    //     double ty = _bestTarget.getPitch();
+    //     // double ty = LimelightHelpers.getTY(""); 
 
-        double limelightMountAngleDegrees = 30.6; //29.085;//32; 
+    //     double limelightMountAngleDegrees = 30.6; //29.085;//32; 
 
-        //Distance from center of limelight lens to floor
-        double limelightLensHeightInches = 14.75; //14.5;
+    //     //Distance from center of limelight lens to floor
+    //     double limelightLensHeightInches = 14.75; //14.5;
 
-        //Distance fron target to floor
-        //double goalHeightInches = 52.0;//50.5;
+    //     //Distance fron target to floor
+    //     //double goalHeightInches = 52.0;//50.5;
 
-        double angleToGoalDegrees = limelightMountAngleDegrees + ty;
-        double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
+    //     double angleToGoalDegrees = limelightMountAngleDegrees + ty;
+    //     double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
 
-        //Calculate distance
-        double distanceFromLimelight = (targetHeight - limelightLensHeightInches) / Math.tan(angleToGoalRadians);
+    //     //Calculate distance
+    //     double distanceFromLimelight = (12 - limelightLensHeightInches) / Math.tan(angleToGoalRadians);
 
-        SmartDashboard.putNumber("Distance Value", distanceFromLimelight);
+    //     SmartDashboard.putNumber("Distance Value", distanceFromLimelight);
 
-        double distanceValue = _driveDistancePID.calculate(distanceFromLimelight, targetDistance);
+    //     double distanceValue = _driveDistancePID.calculate(distanceFromLimelight, targetDistance);
 
-        double strafeValue = _driveStrafePID.calculate(tx, 0);
+    //     double strafeValue = _driveStrafePID.calculate(tx, 0);
 
-        // This isn't correct either since it doesn't account for the vector movement its only forward/reverse 
-        // and its at the same time as rotaiton maybe we should separate it?     
-        // _drive.processInput(distanceValue, 0.0, -rotationValue, false);
+    //     // This isn't correct either since it doesn't account for the vector movement its only forward/reverse 
+    //     // and its at the same time as rotaiton maybe we should separate it?     
+    //     // _drive.processInput(distanceValue, 0.0, -rotationValue, false);
 
-        //_drive.processInput(distanceValue, -strafeValue, rotationValue, false); //-rotationValue
-        forward = distanceValue;
-        strafe = -strafeValue;
-        omega = rotationValue;
-        deadStick = false;
-      } else {
-        // When losing april tag kill all movement.
-        forward = 0;
-        strafe = 0;
-        omega = 0;
-        deadStick = true;
-      }
-    }/* */
+    //     //_drive.processInput(distanceValue, -strafeValue, rotationValue, false); //-rotationValue
+    //     forward = distanceValue;
+    //     strafe = -strafeValue;
+    //     omega = rotationValue;
+    //     deadStick = false;
+    //   } else {
+    //     // When losing april tag kill all movement.
+    //     forward = 0;
+    //     strafe = 0;
+    //     omega = 0;
+    //     deadStick = true;
+    //   }
+    // }
 
     /*
       * If all of the joysticks are in the deadzone, don't update the motors
     */
-
-
     if (strafe == 0.0 && forward == 0.0 && omega == 0.0) {
       deadStick = true;
     }
@@ -373,7 +369,6 @@ public class DriveCommand extends Command {
      * Take the calculated values from the joysticks and use the values to operate
      * the drive system.
     */
-
     this._drive.processInput(forward, strafe, omega, deadStick);
   }
 

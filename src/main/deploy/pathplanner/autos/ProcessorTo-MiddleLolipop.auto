@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ForwardOneMeterTurn90CC"
+            "pathName": "ProcessorToLolipop"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Calibration Autos",
+  "folder": null,
   "choreoAuto": false
 }
