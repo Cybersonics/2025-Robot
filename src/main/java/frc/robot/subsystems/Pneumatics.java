@@ -17,10 +17,11 @@ public class Pneumatics extends SubsystemBase {
 
    Compressor pcmCompressor = new Compressor(PneumaticConstants.compressorInput, PneumaticsModuleType.REVPH);
    private Solenoid _algeaSolenoid = new Solenoid(PneumaticsModuleType.REVPH, 15);
+   private Solenoid _climberSolenoid = new Solenoid(PneumaticsModuleType.REVPH, 14);
       
   /** Creates a new Pneumatics. */
   private Pneumatics() {
-    pcmCompressor.enableAnalog(80,100);
+    pcmCompressor.enableAnalog(110,120);
   }
 
   public static Pneumatics getInstance() {
@@ -36,6 +37,13 @@ public class Pneumatics extends SubsystemBase {
   
   public void algeaIn() {
     this._algeaSolenoid.set(false);
+  }
+
+  public void climberOut() {
+    this._climberSolenoid.set(true);
+  }
+  public void climberIn() {
+    this._climberSolenoid.set(false);
   }
 
   @Override

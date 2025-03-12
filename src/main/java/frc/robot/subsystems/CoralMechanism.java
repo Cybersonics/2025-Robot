@@ -72,7 +72,7 @@ public class CoralMechanism extends SubsystemBase {
   }
 
   public void intakeCoral() {
-    setSpeed(.5);
+    setSpeed(.4);
   }
 
   public void ejectCoral() {

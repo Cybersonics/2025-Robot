@@ -203,11 +203,10 @@ public class Constants {
     }
 
     public static final class ClimberConstants {
-        public static final int leftClimber = 36;
-        public static final int rightClimber = 35;
+        public static final int climberCANId = 50;
 
         public static final double kSpoolDiameterMeters = Units.inchesToMeters(2); // 4
-        public static final double kClimberMotorGearRatio = 1 / 64;
+        public static final double kClimberMotorGearRatio = 1 / 45;
         public static final double kClimberEncoderRot2Meter = kClimberMotorGearRatio * Math.PI * kSpoolDiameterMeters;
     }
 
