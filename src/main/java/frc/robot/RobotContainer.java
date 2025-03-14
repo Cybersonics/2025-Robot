@@ -23,7 +23,10 @@ import frc.robot.subsystems.Camera;
 import frc.robot.subsystems.CoralMechanism;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Elevator;
+
 import frc.robot.subsystems.PigeonGyro;
+import frc.robot.subsystems.NavXGyro;
+
 import frc.robot.subsystems.Pneumatics;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -38,6 +41,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import static edu.wpi.first.units.Units.*;
+
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a
@@ -49,16 +55,16 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
 
-   // Setting up Gyro must be done before Drive as it is used by the Drive
-  // public static NavXGyro _gyro = NavXGyro.getInstance();
-  public static PigeonGyro _gyro = PigeonGyro.getInstance();
+  // Setting up Gyro must be done before Drive as it is used by the Drive
+  public static NavXGyro _gyro = NavXGyro.getInstance();
+  //public static PigeonGyro _gyro = PigeonGyro.getInstance();
 
   public static Drive _drive = Drive.getInstance(_gyro);
   
-  public static Elevator _elevator = Elevator.getInstance();
-  public static AlgeaMechanism _algeaMechanism = AlgeaMechanism.getInstance();
-  public static CoralMechanism _coralMechanism = CoralMechanism.getInstance();
-  public static Pneumatics _pneumatics = Pneumatics.getInstance();
+  //public static Elevator _elevator = Elevator.getInstance();
+  //public static AlgeaMechanism _algeaMechanism = AlgeaMechanism.getInstance();
+  //public static CoralMechanism _coralMechanism = CoralMechanism.getInstance();
+  //public static Pneumatics _pneumatics = Pneumatics.getInstance();
 
   public static Camera _camera = Camera.getInstance();
   
@@ -69,10 +75,15 @@ public class RobotContainer {
   // Setup Sendable chooser for picking autonomous program in SmartDashboard
   private SendableChooser<Command> autoChooser = new SendableChooser<>();
 
+  //private double MaxSpeed = Constants.DriveConstants.ModuleConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+  //private final Telemetry logger = new Telemetry(MaxSpeed);
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+
+    
     // Configured Named commands for pathplanner
     configureNamedCommands();
     
@@ -86,11 +97,11 @@ public class RobotContainer {
     CommandScheduler.getInstance()
     .setDefaultCommand(_drive, new DriveCommand(_drive, driverController, _gyro, _camera));
 
-    CommandScheduler.getInstance()
-    .setDefaultCommand(_elevator, new ElevatorCommand(_elevator, operatorController));
+    // CommandScheduler.getInstance()
+    // .setDefaultCommand(_elevator, new ElevatorCommand(_elevator, operatorController));
 
-    CommandScheduler.getInstance()
-    .setDefaultCommand(_algeaMechanism, new AlgaeMechanismCommand(_algeaMechanism, operatorController.rightBumper(), operatorController.leftBumper(), operatorController.pov(180), false));
+    // CommandScheduler.getInstance()
+    // .setDefaultCommand(_algeaMechanism, new AlgaeMechanismCommand(_algeaMechanism, operatorController.rightBumper(), operatorController.leftBumper(), operatorController.pov(180), false));
     
   }
 
@@ -110,32 +121,35 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Zero Gyro on Drive B press
-    this.driverController.b().onTrue(new InstantCommand(() -> _gyro.zeroNavHeading()));
+    this.driverController.b().onTrue(new InstantCommand(() -> _gyro.zeroGyroHeading()));
+    
 
     // Score Coral Levels     
-    this.operatorController.pov(90).whileTrue(new ScoreCoralLevelOne(_elevator, _coralMechanism));
-    this.operatorController.b().whileTrue(new ScoreCoralLevelTwo(_elevator, _coralMechanism));
-    this.operatorController.x().whileTrue(new ScoreCoralLevelThree(_elevator, _coralMechanism));
-    this.operatorController.y().whileTrue(new ScoreCoralLevelFour(_elevator, _coralMechanism));
+    // this.operatorController.pov(90).whileTrue(new ScoreCoralLevelOne(_elevator, _coralMechanism));
+    // this.operatorController.b().whileTrue(new ScoreCoralLevelTwo(_elevator, _coralMechanism));
+    // this.operatorController.x().whileTrue(new ScoreCoralLevelThree(_elevator, _coralMechanism));
+    // this.operatorController.y().whileTrue(new ScoreCoralLevelFour(_elevator, _coralMechanism));
 
-    this.operatorController.rightTrigger().onTrue(new IntakeCoralCommand(_coralMechanism));
-    this.operatorController.leftTrigger().onTrue(new ScoreCoralCommand(_coralMechanism));
+    // this.operatorController.rightTrigger().onTrue(new IntakeCoralCommand(_coralMechanism));
+    // this.operatorController.leftTrigger().onTrue(new ScoreCoralCommand(_coralMechanism));
 
-    this.operatorController.a().onChange(new ConditionalCommand(
-      new InstantCommand(() -> _pneumatics.algeaOut()),
-      new InstantCommand(() -> _pneumatics.algeaIn()),
-      this.operatorController.a()));
+    // this.operatorController.a().onChange(new ConditionalCommand(
+    //   new InstantCommand(() -> _pneumatics.algeaOut()),
+    //   new InstantCommand(() -> _pneumatics.algeaIn()),
+    //   this.operatorController.a()));
+
+    //_drive.registerTelemetry(logger::telemeterize);
   }
 
   public void configureNamedCommands() {
-      NamedCommands.registerCommand("ScoreLevelOne", new ScoreCoralLevelOne(_elevator, _coralMechanism));
-      NamedCommands.registerCommand("ScoreLevelTwo", new ScoreCoralLevelTwo(_elevator, _coralMechanism));
-      NamedCommands.registerCommand("ScoreLevelThree", new ScoreCoralLevelThree(_elevator, _coralMechanism));
-      NamedCommands.registerCommand("ScoreLevelFour", new ScoreCoralLevelFour(_elevator, _coralMechanism));  
-      NamedCommands.registerCommand("ScoreAlgeaInBarge", new ScoreAlgaeInBarge(_elevator, _algeaMechanism));
+      // NamedCommands.registerCommand("ScoreLevelOne", new ScoreCoralLevelOne(_elevator, _coralMechanism));
+      // NamedCommands.registerCommand("ScoreLevelTwo", new ScoreCoralLevelTwo(_elevator, _coralMechanism));
+      // NamedCommands.registerCommand("ScoreLevelThree", new ScoreCoralLevelThree(_elevator, _coralMechanism));
+      // NamedCommands.registerCommand("ScoreLevelFour", new ScoreCoralLevelFour(_elevator, _coralMechanism));  
+      // NamedCommands.registerCommand("ScoreAlgeaInBarge", new ScoreAlgaeInBarge(_elevator, _algeaMechanism));
 
-      NamedCommands.registerCommand("IntakeCoral", new IntakeCoralCommand(_coralMechanism));
-      NamedCommands.registerCommand("IntakeAlgeaFromReef", new IntakeAlgeaFromReef(_elevator, _algeaMechanism, _pneumatics));
+      // NamedCommands.registerCommand("IntakeCoral", new IntakeCoralCommand(_coralMechanism));
+      // NamedCommands.registerCommand("IntakeAlgeaFromReef", new IntakeAlgeaFromReef(_elevator, _algeaMechanism, _pneumatics));
       NamedCommands.registerCommand("DriveSlowForward", new DriveForwardSlow(_drive));
   }
 

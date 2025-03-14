@@ -11,10 +11,11 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import frc.robot.utility.shuffleBoardDrive;
+import edu.wpi.first.units.measure.LinearVelocity;
+import frc.robot.Constants.DriveConstants.FrameConstants;
 import frc.robot.utility.AprilTag;
+
+import static edu.wpi.first.units.Units.*;
 
 
 public class Constants {
@@ -24,25 +25,25 @@ public class Constants {
     }
 
     public static class AutoConstants {
-        public static final double kPhysicalMaxSpeedMetersPerSecond = 6;
+        public static final double kPhysicalMaxSpeedMetersPerSecond = FrameConstants.kPhysicalMaxSpeedMetersPerSecond;
         public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * Math.PI;
 
-        public static final double kMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond / 2;
-        public static final double kMaxAngularSpeedRadiansPerSecond = kPhysicalMaxAngularSpeedRadiansPerSecond / 5;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 3;
+        public static final double kMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond;// / 2;
+        public static final double kMaxAngularSpeedRadiansPerSecond = kPhysicalMaxAngularSpeedRadiansPerSecond;// / 5;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 3.5; //3
         public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 2;
-        public static final double kPXController = 5;
-        public static final double kPYController = 5;
-        public static final double kPThetaController = 5;
+        //public static final double kPXController = 5;
+       //public static final double kPYController = 5;
+        //public static final double kPThetaController = 5;
 
-        public static final TrapezoidProfile.Constraints kThetaControllerConstraints = //
-                new TrapezoidProfile.Constraints(
-                        kMaxAngularSpeedRadiansPerSecond,
-                        kMaxAngularAccelerationRadiansPerSecondSquared);
-        public static final double kGoToPointLinearP = 0;
-        public static final double kGoToPointLinearF = 0.5;
-        public static final double kGoToPointAngularP = 0;
-        public static final double kGoToPointAngularF = 0;
+        // public static final TrapezoidProfile.Constraints kThetaControllerConstraints = //
+        //         new TrapezoidProfile.Constraints(
+        //                 kMaxAngularSpeedRadiansPerSecond,
+        //                 kMaxAngularAccelerationRadiansPerSecondSquared);
+        // public static final double kGoToPointLinearP = 0;
+        // public static final double kGoToPointLinearF = 0.5;
+        // public static final double kGoToPointAngularP = 0;
+        // public static final double kGoToPointAngularF = 0;
 
         public static final double maxTrajectoryOverrunSeconds = 3;
         public static final double kMaxDistanceMetersError = 0.1;
@@ -68,24 +69,24 @@ public class Constants {
         public static final int BackRightDrive = 10;//12;
         public static final int BackRightEncoderOffset = 0;
 
-        public static final shuffleBoardDrive frontLeft = new shuffleBoardDrive("LF Set Angle", 0, 0);
-        public static final shuffleBoardDrive backLeft = new shuffleBoardDrive("LB Set Angle", 0, 1);
+        // public static final shuffleBoardDrive frontLeft = new shuffleBoardDrive("LF Set Angle", 0, 0);
+        // public static final shuffleBoardDrive backLeft = new shuffleBoardDrive("LB Set Angle", 0, 1);
 
-        public static final shuffleBoardDrive frontRight = new shuffleBoardDrive("RF Set Angle", 4, 0);
-        public static final shuffleBoardDrive backRight = new shuffleBoardDrive("RBack Set Angle", 4, 1);
+        // public static final shuffleBoardDrive frontRight = new shuffleBoardDrive("RF Set Angle", 4, 0);
+        // public static final shuffleBoardDrive backRight = new shuffleBoardDrive("RBack Set Angle", 4, 1);
 
         public static final class ModuleConstants {
             public static final double kWheelDiameterMeters = Units.inchesToMeters(4.1); // 4
             public static final double kDriveMotorGearRatio = 1 / 6.429;
-            public static final double kTurningMotorGearRatio = 1 / 1024;
-            public static final double kDriveEncoderRot2Meter = kDriveMotorGearRatio * Math.PI * kWheelDiameterMeters;
-            public static final double kTurningEncoderRot2Rad = kTurningMotorGearRatio * 2 * Math.PI;
-            public static final double kDriveEncoderRPM2MeterPerSec = kDriveEncoderRot2Meter / 60;
-            public static final double kTurningEncoderRPM2RadPerSec = kTurningEncoderRot2Rad / 60;
+            //public static final double kTurningMotorGearRatio = 1 / 1024;
+            //public static final double kDriveEncoderRot2Meter = kDriveMotorGearRatio * Math.PI * kWheelDiameterMeters;
+            //public static final double kTurningEncoderRot2Rad = kTurningMotorGearRatio * 2 * Math.PI;
+            //public static final double kDriveEncoderRPM2MeterPerSec = kDriveEncoderRot2Meter / 60;
+           // public static final double kTurningEncoderRPM2RadPerSec = kTurningEncoderRot2Rad / 60;
 
-            public static final double maxSpeed = 6.5; // M/S
+            //public static final double maxSpeed = 6.5; // M/S
 
-            public static final double kPTurning = 0.5;
+            //public static final double kPTurning = 0.5;
 
             // Invert the turning encoder if necessary. If pivots snap back and forth when setting up
             // inversion may be needed as the encoder can be reading in the opposite direction 
@@ -125,15 +126,19 @@ public class Constants {
             public static final double kTurningMinOutput = -1;
             public static final double kTurningMaxOutput = 1;
 
+                // Theoretical free speed (m/s) at 12 V applied output;
+                // This needs to be tuned to your individual robot
+            public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(FrameConstants.kPhysicalMaxSpeedMetersPerSecond);
+
         }
 
         public static final class FrameConstants {
             // Distance between right and left wheels
-            public static final double WHEEL_BASE_WIDTH = 22;
+            public static final double WHEEL_BASE_WIDTH = 21.375;  // Comp Bot is 22;
             public static final double kTrackWidth = Units.inchesToMeters(WHEEL_BASE_WIDTH);
 
             // Distance between front and back wheels
-            public static final double WHEEL_BASE_LENGTH = 22;
+            public static final double WHEEL_BASE_LENGTH = 17.3125; //Comp bot is 22;
             public static final double kWheelBase = Units.inchesToMeters(WHEEL_BASE_LENGTH);
 
             public static final Translation2d flModuleOffset = new Translation2d(kWheelBase / 2, kTrackWidth / 2);
@@ -148,13 +153,13 @@ public class Constants {
                 brModuleOffset
             );
                     
-            public static final double kPhysicalMaxSpeedMetersPerSecond = 6;
+            public static final double kPhysicalMaxSpeedMetersPerSecond = 4.69; //6;
             public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * Math.PI;
         }
 
         public static final PPHolonomicDriveController pathFollowerConfig = new PPHolonomicDriveController(
                 new PIDConstants(7, 0, 0.01), // Translation constants P=5.0, I=0, D=0 kP=2.3
-                new PIDConstants(.68, 0, 0)); // Rotation constants P=5.0, I=0, D=0  kP=2.8 .65
+                new PIDConstants(7.5, 0, 0)); // Rotation constants P=0.68 P=5.0, I=0, D=0  kP=2.8 .65
     }
 
     public static class ElevatorConstants {
@@ -173,22 +178,6 @@ public class Constants {
 
         public final static int coralFeedSesorId = 0;
         public final static int coralTripSensorId = 1;
-    }
-
-    public static final class ShuffleBoardConstants {
-        private static ShuffleboardTab driveTab = Shuffleboard.getTab("Drive Tab");
-    }
-
-    public static class shuffleBoardDrive {
-        public String drivePosition;
-        public int colPos;
-        public int rowPos;
-    
-        public shuffleBoardDrive(String drivePosition, int colPos, int rowPos){
-          this.drivePosition = drivePosition;
-          this.colPos = colPos;
-          this.rowPos = rowPos;
-        }
     }
 
     public static final class VortexMotorConstants {

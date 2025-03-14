@@ -59,19 +59,19 @@ public class Drive extends SubsystemBase {
 		this._pigeonGyro = gyro;
 
 		frontLeft = new SwerveModule(DriveConstants.FrontLeftSteer, DriveConstants.FrontLeftDrive, invertDrive,
-				invertSteer, DriveConstants.frontLeft);
+				invertSteer);
 
 		frontRight = new SwerveModule(DriveConstants.FrontRightSteer, DriveConstants.FrontRightDrive, invertDrive,
-		 		invertSteer, DriveConstants.frontRight);
+		 		invertSteer);
 
 		backLeft = new SwerveModule(DriveConstants.BackLeftSteer, DriveConstants.BackLeftDrive, invertDrive,
-		 		invertSteer, DriveConstants.backLeft);
+		 		invertSteer);
 
 		backRight = new SwerveModule(DriveConstants.BackRightSteer, DriveConstants.BackRightDrive, invertDrive,
-		 		invertSteer, DriveConstants.backRight);
+		 		invertSteer);
 
 		 odometer = new SwerveDriveOdometry(DriveConstants.FrameConstants.kDriveKinematics,
-		 		this._pigeonGyro.getNavXRotation2D(), getPositions());
+		 		this._pigeonGyro.getGyroRotation2D(), getPositions());
 
 		RobotConfig robotConfig;
 		try{
@@ -115,19 +115,19 @@ public class Drive extends SubsystemBase {
 		this._navXGyro = gyro;
 
 		frontLeft = new SwerveModule(DriveConstants.FrontLeftSteer, DriveConstants.FrontLeftDrive, invertDrive,
-				invertSteer, DriveConstants.frontLeft);
+				invertSteer);
 
 		frontRight = new SwerveModule(DriveConstants.FrontRightSteer, DriveConstants.FrontRightDrive, invertDrive,
-		 		invertSteer, DriveConstants.frontRight);
+		 		invertSteer);
 
 		backLeft = new SwerveModule(DriveConstants.BackLeftSteer, DriveConstants.BackLeftDrive, invertDrive,
-		 		invertSteer, DriveConstants.backLeft);
+		 		invertSteer);
 
 		backRight = new SwerveModule(DriveConstants.BackRightSteer, DriveConstants.BackRightDrive, invertDrive,
-		 		invertSteer, DriveConstants.backRight);
+		 		invertSteer);
 
 		 odometer = new SwerveDriveOdometry(DriveConstants.FrameConstants.kDriveKinematics,
-		 		this._navXGyro.getNavXRotation2D(), getPositions());
+		 		this._navXGyro.getGyroRotation2D(), getPositions());
 
 		RobotConfig robotConfig;
 		try{
@@ -168,9 +168,9 @@ public class Drive extends SubsystemBase {
 
 	public void resetPose(Pose2d pose) {
 		if(this._navXGyro != null) {
-			odometer.resetPosition(this._navXGyro.getNavXRotation2D(), getPositions(), pose);
+			odometer.resetPosition(this._navXGyro.getGyroRotation2D(), getPositions(), pose);
 		} else if (this._pigeonGyro != null) {
-			odometer.resetPosition(this._pigeonGyro.getNavXRotation2D(), getPositions(), pose);
+			odometer.resetPosition(this._pigeonGyro.getGyroRotation2D(), getPositions(), pose);
 		}
 	}
 
@@ -328,10 +328,10 @@ public class Drive extends SubsystemBase {
 	}
 
 	public void getSteerEncoderVal() {
-		SmartDashboard.putNumber("angleLF", frontLeft.rawEncoderPosition());
-		SmartDashboard.putNumber("angleRF", frontRight.rawEncoderPosition());
-		SmartDashboard.putNumber("angleLB", backLeft.rawEncoderPosition());
-		SmartDashboard.putNumber("angleRB", backRight.rawEncoderPosition());
+		SmartDashboard.putNumber("angleLF", frontLeft.getTurningPosition());
+		SmartDashboard.putNumber("angleRF", frontRight.getTurningPosition());
+		SmartDashboard.putNumber("angleLB", backLeft.getTurningPosition());
+		SmartDashboard.putNumber("angleRB", backRight.getTurningPosition());
 	}
 
 	public SwerveModulePosition[] getPositions() {
@@ -355,7 +355,7 @@ public class Drive extends SubsystemBase {
 			SmartDashboard.putNumber("Robot Heading", this._navXGyro.getHeading());
 		} else if (this._pigeonGyro != null) {
 			odometer.update(this._pigeonGyro.getRotation2d(), getPositions());
-			SmartDashboard.putNumber("Yaw Value", this._pigeonGyro.getYamValue());
+			SmartDashboard.putNumber("Yaw Value", this._pigeonGyro.getGyroYawValue());
 			SmartDashboard.putNumber("Robot Heading", this._pigeonGyro.getHeading());
 		}
 
