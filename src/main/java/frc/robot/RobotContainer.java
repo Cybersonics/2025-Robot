@@ -23,7 +23,10 @@ import frc.robot.subsystems.Camera;
 import frc.robot.subsystems.CoralMechanism;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Elevator;
+
 import frc.robot.subsystems.PigeonGyro;
+import frc.robot.subsystems.NavXGyro;
+
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.Climber;
 import frc.robot.utility.AprilTag;
@@ -115,7 +118,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Zero Gyro on Drive B press
-    this.driverController.b().onTrue(new InstantCommand(() -> _gyro.zeroNavHeading()));
+    this.driverController.b().onTrue(new InstantCommand(() -> _gyro.zeroGyroHeading()));
 
     // Score Coral Levels     
     this.operatorController.pov(90).whileTrue(new ScoreCoralLevelOne(_elevator, _coralMechanism));

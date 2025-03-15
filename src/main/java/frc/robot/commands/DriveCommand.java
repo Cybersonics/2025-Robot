@@ -23,6 +23,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -44,8 +45,8 @@ public class DriveCommand extends Command {
   private PhotonCamera _photonCamera;
 
   public static final double OMEGA_SCALE = 1.0 / 20.0;//30.0;// 45
-  public static final double DEADZONE_LSTICK = 0.1;
-  private static final double DEADZONE_RSTICK = 0.1;
+  public static final double DEADZONE_LSTICK = 0.05;//0.1
+  private static final double DEADZONE_RSTICK = 0.05;//0.1
   private double originHeading = 0.0;
   private double leftPow = 1;
   private double rightPow = 1;
@@ -139,9 +140,9 @@ public class DriveCommand extends Command {
      * control.
      */
     if(this._navXGyro != null) {
-      originHeading = _navXGyro.getZeroAngle();
+      originHeading = _navXGyro.getGyroZeroAngle();
     } else if (this._pigeonGyro != null) {
-      originHeading = _pigeonGyro.getZeroAngle();
+      originHeading = _pigeonGyro.getGyroZeroAngle();
     }
     // _drive.setDrivesMode(IdleMode.kCoast);
     _driveRotationPID = new PIDController(_driveRotationP, _driveRotationI, _driveRotationD);
@@ -192,13 +193,9 @@ public class DriveCommand extends Command {
       speedMultiplier = 0.50;
     }
 
-    //stickForward = -this.leftStick.getY()*.95;
-    //stickStrafe = -this.leftStick.getX()*.95;
-    //stickOmega = -this.rightStick.getX()*.95;
-
-    stickForward = -this._driveController.getLeftY()*speedMultiplier;
-    stickStrafe = -this._driveController.getLeftX()*speedMultiplier;
-    stickOmega = -this._driveController.getRightX()*.50;
+    stickForward = -MathUtil.applyDeadband(this._driveController.getLeftY()*speedMultiplier, DEADZONE_LSTICK);
+    stickStrafe = -MathUtil.applyDeadband(this._driveController.getLeftX()*speedMultiplier, DEADZONE_LSTICK);
+    stickOmega = -MathUtil.applyDeadband(this._driveController.getRightX()*.50, DEADZONE_RSTICK);
 
     // SmartDashboard.putNumber("Controller Forward", stickForward);
     // SmartDashboard.putNumber("Controller Strafe", stickStrafe);
@@ -231,8 +228,8 @@ public class DriveCommand extends Command {
       forward = 0.0;
     if (Math.abs(omega) < DEADZONE_RSTICK * OMEGA_SCALE)
       omega = 0.0;
+
     boolean stickFieldCentric;
- 
     stickFieldCentric = _driveController.leftTrigger().getAsBoolean();
 
      if (!stickFieldCentric) {
@@ -253,9 +250,11 @@ public class DriveCommand extends Command {
        */
       double originCorrection = 0;
       if(this._navXGyro != null){
-        originCorrection = Math.toRadians(originHeading - this._navXGyro.getNavAngle());
+        originCorrection = Math.toRadians(originHeading - this._navXGyro.getGyroAngle());
       } else if (this._pigeonGyro != null) {
-        originCorrection = Math.toRadians(originHeading - this._pigeonGyro.getHeading());
+        originCorrection = Math.toRadians(this._pigeonGyro.getGyroAngle() - originHeading );
+        //originCorrection = Math.toRadians(originHeading + this._pigeonGyro.getGyroAngle());
+        //originCorrection = Math.toRadians(originHeading - this._pigeonGyro.getHeading());
       }
   
       /*

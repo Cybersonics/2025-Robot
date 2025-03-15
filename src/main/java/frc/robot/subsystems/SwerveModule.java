@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import java.util.Map;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.RelativeEncoder;
@@ -32,16 +33,14 @@ import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstrai
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.DriveConstants.ModuleConstants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.utility.SparkMaxUtil;
-import frc.robot.Constants.shuffleBoardDrive;
+
 
 public class SwerveModule extends SubsystemBase {
 
@@ -63,32 +62,13 @@ public class SwerveModule extends SubsystemBase {
   private final SparkClosedLoopController drivePIDController;
   private final SparkClosedLoopController steerPIDController;
 
-  private double m_chassisAngularOffset = 0;
   private SwerveModuleState m_desiredState = new SwerveModuleState(0.0, new Rotation2d());
 
   private static final double RAMP_RATE = 0.5;
-  // private static final double STEER_P = 3.0, STEER_I = 0.0, STEER_D = 0.1;
-
-  public double encoderCountPerRotation = 1024;
 
   private boolean _driveCorrect;
 
-  private shuffleBoardDrive driveData;
-  private ShuffleboardTab driveTab = Shuffleboard.getTab("DriveTab");
-  private GenericEntry setAngleOffset;
-
-  public SwerveModule(int steerNum, int driveNum, boolean invertDrive, boolean invertSteer,
-      shuffleBoardDrive driveData) {
-
-    // Get Drive information from Constants and create a Drive Alignment Tuner on
-    // ShuffleBoard
-    this.driveData = driveData;
-
-    // setAngleOffset = driveTab.addPersistent(this.driveData.drivePosition, 0)
-    // .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", -180,
-    // "max", 180, "center", 0))
-    // .withPosition(this.driveData.colPos, this.driveData.rowPos).withSize(3,
-    // 1).getEntry();
+  public SwerveModule(int steerNum, int driveNum, boolean invertDrive, boolean invertSteer) {
 
     // Create and configure a new Drive motor
     driveMotor = new SparkFlex(driveNum, MotorType.kBrushless);
@@ -176,7 +156,7 @@ public class SwerveModule extends SubsystemBase {
        * based on the difference of the target angle and the current angle.
        */
 
-      double currentSteerPosition = rawEncoderPosition();
+      double currentSteerPosition = getTurningPosition();
       double currentAngle = ((currentSteerPosition * 360) / (2 * Math.PI)) % 360.0;
 
       // double targetAngle = -angle + getAngleOffset(); // -angle;
@@ -206,7 +186,6 @@ public class SwerveModule extends SubsystemBase {
        * If we need to turn more than 90 degrees, we can reverse the wheel direction
        * instead and only rotate by the complement
        */
-      // if (Math.abs(speed) <= MAX_SPEED){
       if (Math.abs(deltaDegrees) > 90.0) {
         deltaDegrees -= 180.0 * Math.signum(deltaDegrees);
         speed = -speed;
@@ -217,16 +196,12 @@ public class SwerveModule extends SubsystemBase {
       double targetPosition = currentAngle + deltaDegrees;
       // Scale the new position to match the motor encoder
       scaledPosition = (targetPosition * (2 * Math.PI) / 360);
-   // } else {
-     // scaledPosition = (angle * (2 * Math.PI) / 360);
     
 
     steerPIDController.setReference(scaledPosition, SparkMax.ControlType.kPosition);
 
     // SmartDashboard.putNumber(this.driveData.drivePosition + " SSpeed",
     // scaledPosition);
-    // SmartDashboard.putNumber(this.driveData.drivePosition + " ZeroOffset",
-    // steerMotorEncoder.getZeroOffset());
 
     driveMotor.set(speed);
 
@@ -289,33 +264,14 @@ public class SwerveModule extends SubsystemBase {
     steerMotor.set(speed);
   }
 
-  /*
-   * Get the "Trimming" offset for the pivot from the dashboard.
-   * The trimming offset is used to fine tune the pivot angles
-   * so they are all facing the same way.
-   */
-  public double getAngleOffset() {
-    double angleOffset = setAngleOffset.getDouble(0.0);
-    return angleOffset;
-  }
 
-  public double rawEncoderPosition() {
-    return steerMotorEncoder.getPosition();
-  }
-
-  /*
-   * Get the raw pivot angle and add the "trimming" offset from the
-   * dashboard. Convert the pivot angle to radians to be used by the
-   * autonomous routines. The getState and getPosition are used
+   /*
+   * Get the pivot angle.
+   * The getState and getPosition are used
    * by the SweveModuleState system employed by WPILib.
    */
   public double getTurningPosition() {
-    double steerEncoderRaw = rawEncoderPosition();
-    // double angleOffset = (getAngleOffset() / 360) *2 * Math.PI;
-    // double turningEncoder = steerEncoderRaw + angleOffset;
-    double turningEncoder = steerEncoderRaw;
-    return turningEncoder; // -turningEncoder Invert Encoder for odometry as wpilib treats encoders
-                           // backwards.
+    return steerMotorEncoder.getPosition(); 
   }
 
   public void resetEncoders() {
@@ -330,17 +286,21 @@ public class SwerveModule extends SubsystemBase {
     return new SwerveModulePosition(getDriveEncoder(), new Rotation2d(getTurningPosition()));
   }
 
-  public void setDesiredState(SwerveModuleState state) {
-    if (Math.abs(state.speedMetersPerSecond) < 0.001) {
-      stop();
-      return;
-    }
+  public void setDesiredState(SwerveModuleState desiredState) {
 
-    state = SwerveModuleState.optimize(state, getState().angle);
-    double driveMotorSpeed = state.speedMetersPerSecond
-        / DriveConstants.FrameConstants.kPhysicalMaxSpeedMetersPerSecond;
-    double steerMotorAngle = MathUtil.inputModulus(state.angle.getDegrees(), -180, 180);
-    setSwerve(steerMotorAngle, driveMotorSpeed, true);
+    // Apply chassis angular offset to the desired state.
+    SwerveModuleState correctedDesiredState = new SwerveModuleState();
+    correctedDesiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond;
+    correctedDesiredState.angle = desiredState.angle;
+
+    // Optimize the reference state to avoid spinning further than 90 degrees.
+    correctedDesiredState.optimize(new Rotation2d(getTurningPosition()));
+
+    // Command driving and turning SPARKS towards their respective setpoints.
+    drivePIDController.setReference(correctedDesiredState.speedMetersPerSecond, ControlType.kVelocity);
+    steerPIDController.setReference(correctedDesiredState.angle.getRadians(), SparkMax.ControlType.kPosition);
+
+    m_desiredState = desiredState;
   }
 
   public void stop() {
