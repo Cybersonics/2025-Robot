@@ -1,4 +1,11 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.subsystems;
+
+import frc.robot.Constants;
+import frc.robot.Constants.ClimberConstants;
 
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -7,8 +14,8 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ClimberConstants;
 
 public class Climber extends SubsystemBase {
 
@@ -17,12 +24,13 @@ public class Climber extends SubsystemBase {
   private SparkFlex _climberMotor;
   private SparkFlexConfig _climberConfig;
 
-  private Climber() {
-    this._climberMotor = new SparkFlex(ClimberConstants.climberCANId, MotorType.kBrushless);
-    this._climberConfig = new SparkFlexConfig();
-    this._climberConfig.idleMode(IdleMode.kBrake);
-    
-    this._climberMotor.configure(_climberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+  /** Creates a new Climber. */
+  public Climber() {
+    _climberMotor = new SparkFlex(ClimberConstants.climberCANId, MotorType.kBrushless);
+    _climberConfig = new SparkFlexConfig();
+    _climberConfig.idleMode(IdleMode.kBrake);
+
+        this._climberMotor.configure(_climberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   public static Climber getInstance() {
@@ -33,14 +41,24 @@ public class Climber extends SubsystemBase {
   }
 
   public void setSpeed(double speed) {
-    this._climberMotor.set(speed);
+    _climberMotor.set(speed);
   }
 
-  public void retractClimber() {
-    setSpeed(.5);
+  public void stop() {
+    setSpeed(0);
   }
 
-  public void extendClimber() {
-    setSpeed(-.5);
+  public void positionClimber(double expectedPosition, boolean shouldRetract) {
+    this._climberMotor.getEncoder().setPosition(expectedPosition);
+  }
+
+  public double getEncoderPosition() {
+    return this._climberMotor.getEncoder().getPosition();
+  }
+
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Climber Encoder", getEncoderPosition());
   }
 }

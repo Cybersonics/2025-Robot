@@ -7,6 +7,8 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.ExtendClimber;
+import frc.robot.commands.RetractClimber;
 import frc.robot.commands.IntakeAlgea;
 import frc.robot.commands.AlgaeMechanismCommand;
 import frc.robot.commands.IntakeCoralCommand;
@@ -20,6 +22,7 @@ import frc.robot.commands.autos.ScoreCoralLevelTwo;
 import frc.robot.commands.ScoreCoralCommand;
 import frc.robot.subsystems.AlgeaMechanism;
 import frc.robot.subsystems.Camera;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CoralMechanism;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Elevator;
@@ -56,7 +59,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
 
    // Setting up Gyro must be done before Drive as it is used by the Drive
-  // public static NavXGyro _gyro = NavXGyro.getInstance();
+  //public static NavXGyro _gyro = NavXGyro.getInstance();
   public static PigeonGyro _gyro = PigeonGyro.getInstance();
 
   public static Drive _drive = Drive.getInstance(_gyro);
@@ -64,6 +67,7 @@ public class RobotContainer {
   public static Elevator _elevator = Elevator.getInstance();
   public static AlgeaMechanism _algeaMechanism = AlgeaMechanism.getInstance();
   public static CoralMechanism _coralMechanism = CoralMechanism.getInstance();
+  public static Climber _climber = Climber.getInstance();
   public static Pneumatics _pneumatics = Pneumatics.getInstance();
   //public static Climber _climber = Climber.getInstance();
 
@@ -119,6 +123,9 @@ public class RobotContainer {
   private void configureBindings() {
     // Zero Gyro on Drive B press
     this.driverController.b().onTrue(new InstantCommand(() -> _gyro.zeroGyroHeading()));
+    
+    this.driverController.pov(0).onTrue(new ExtendClimber(_pneumatics, _climber));
+    this.driverController.pov(180).onTrue(new RetractClimber(_pneumatics, _climber));
 
     // Score Coral Levels     
     this.operatorController.pov(90).whileTrue(new ScoreCoralLevelOne(_elevator, _coralMechanism));

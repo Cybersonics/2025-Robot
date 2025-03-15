@@ -10,8 +10,8 @@ public class Pneumatics extends SubsystemBase {
   private static Pneumatics instance;
 
    Compressor pcmCompressor = new Compressor(PneumaticConstants.compressorInput, PneumaticsModuleType.REVPH);
-   private Solenoid _algeaSolenoid = new Solenoid(PneumaticsModuleType.REVPH, PneumaticConstants.algeaSolenoid);
-   //private Solenoid _climberSolenoid = new Solenoid(PneumaticsModuleType.REVPH, PneumaticConstants.climberSolenoid);
+   private Solenoid _algeaSolenoid = new Solenoid(PneumaticsModuleType.REVPH, 15);
+   private Solenoid _climberSolenoid = new Solenoid(PneumaticsModuleType.REVPH, 14);
       
   private Pneumatics() {
     pcmCompressor.enableAnalog(100,120);
@@ -32,11 +32,10 @@ public class Pneumatics extends SubsystemBase {
     this._algeaSolenoid.set(false);
   }
 
-  // public void climberOut() {
-  //   this._climberSolenoid.set(true);
-  // }
-  
-  // public void climberIn() {
-  //   this._climberSolenoid.set(false);
-  // }
+  public void climberOut() {
+    this._climberSolenoid.set(true);
+  }
+  public void climberIn() {
+    this._climberSolenoid.set(false);
+  }
 }
