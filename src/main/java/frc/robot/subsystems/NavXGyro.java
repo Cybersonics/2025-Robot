@@ -20,8 +20,8 @@ public class NavXGyro extends SubsystemBase {
   private NavXGyro() {
     navX = new AHRS(NavXComType.kMXP_SPI);
 
-    zeroHeading = getNavHeading();
-    zeroAngle = getNavAngle();
+    zeroHeading = getGyroHeading();
+    zeroAngle = getGyroAngle();
     //System.out.println("Setup ZeroAngle " + zeroAngle);
   }
 
@@ -33,12 +33,12 @@ public class NavXGyro extends SubsystemBase {
     return instance;
   }
 
-  public double getNavHeading() {
+  public double getGyroHeading() {
     double heading = navX.getFusedHeading();
     return heading;
   }
 
-  public double getNavAngle() {
+  public double getGyroAngle() {
     double angle = navX.getAngle();
     return angle;
   }
@@ -47,24 +47,23 @@ public class NavXGyro extends SubsystemBase {
     navX.setAngleAdjustment(offset);
   }
 
-  public void zeroNavHeading() {
-    //navX.zeroYaw();
+  public void zeroGyroHeading() {
     navX.reset();
-    zeroHeading = getNavHeading();
-    zeroAngle = getNavAngle();
+    zeroHeading = getGyroHeading();
+    zeroAngle = getGyroAngle();
     System.out.println("ZeroHeading: " + zeroHeading);
     System.out.println("ZeroAngle: " + zeroAngle);
   }
 
-  public double getZeroHeading() {
+  public double getGyroZeroHeading() {
     return zeroHeading;
   }
 
-  public double getZeroAngle() {
+  public double getGyroZeroAngle() {
     return zeroAngle;
   }
 
-  public Rotation2d getNavXRotation2D() {
+  public Rotation2d getGyroRotation2D() {
     //return Rotation2d.fromDegrees(navX.getAngle());
     return Rotation2d.fromDegrees(-navX.getAngle());
   }
@@ -77,7 +76,7 @@ public class NavXGyro extends SubsystemBase {
    * counter-clockwise positive.
    */
   public double getHeading() {
-    return Math.IEEEremainder(-getNavAngle(), 360);
+    return Math.IEEEremainder(-getGyroAngle(), 360);
   }
 
   public Rotation2d getRotation2d() {
