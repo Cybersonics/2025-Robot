@@ -11,6 +11,7 @@ import frc.robot.commands.ExtendClimber;
 import frc.robot.commands.RetractClimber;
 import frc.robot.commands.IntakeAlgea;
 import frc.robot.commands.AlgaeMechanismCommand;
+import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.IntakeCoralCommand;
 import frc.robot.commands.autos.DriveForwardSlow;
 import frc.robot.commands.autos.IntakeAlgeaFromReef;
@@ -104,6 +105,8 @@ public class RobotContainer {
     CommandScheduler.getInstance()
     .setDefaultCommand(_algeaMechanism, new AlgaeMechanismCommand(_algeaMechanism, operatorController.rightBumper(), operatorController.leftBumper(), operatorController.pov(180), false));
     
+    //CommandScheduler.getInstance()
+    //.setDefaultCommand(_climber, new ClimberCommand(_climber, _pneumatics, driverController.pov(0), driverController.pov(180)));
   }
 
   /**
@@ -124,8 +127,10 @@ public class RobotContainer {
     // Zero Gyro on Drive B press
     this.driverController.b().onTrue(new InstantCommand(() -> _gyro.zeroGyroHeading()));
     
-    this.driverController.pov(0).onTrue(new ExtendClimber(_pneumatics, _climber));
-    this.driverController.pov(180).onTrue(new RetractClimber(_pneumatics, _climber));
+    this.driverController.pov(0).onTrue(new ClimberCommand(_climber, _pneumatics, driverController.pov(0), driverController.pov(180)));
+    this.driverController.pov(180).onTrue(new ClimberCommand(_climber, _pneumatics, driverController.pov(0), driverController.pov(180)));
+    // this.driverController.pov(0).onTrue(new ExtendClimber(_pneumatics, _climber));
+    // this.driverController.pov(180).onTrue(new RetractClimber(_pneumatics, _climber));
 
     // Score Coral Levels     
     this.operatorController.pov(90).whileTrue(new ScoreCoralLevelOne(_elevator, _coralMechanism));
