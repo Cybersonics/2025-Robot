@@ -74,7 +74,7 @@ public class SwerveModule extends SubsystemBase {
     driveMotor = new SparkFlex(driveNum, MotorType.kBrushless);
     driveConfig = new SparkFlexConfig();
     driveConfig.openLoopRampRate(RAMP_RATE);// This provides a motor ramp up time to prevent brown outs.
-    driveConfig.idleMode(IdleMode.kCoast);
+    driveConfig.idleMode(IdleMode.kBrake);
     driveConfig.smartCurrentLimit(55);
     driveConfig.inverted(invertDrive);// setInverted reverses the both the motor and the encoder direction.
 

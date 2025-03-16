@@ -18,27 +18,27 @@ public class RaiseElevatorCommand extends Command {
 
   private Elevator _elevatorSubsytem;
   private double _levelHeight;
-  private double _upSpeed;
-  private double _downSpeed;
+  //private double _upSpeed;
+  //private double _downSpeed;
 
-  private PIDController _elevatorPIDController;
-  private ElevatorFeedforward _feedforward;
+  //private PIDController _elevatorPIDController;
+  //private ElevatorFeedforward _feedforward;
 
   public RaiseElevatorCommand(Elevator elevator, double levelHeight) {
     this._elevatorSubsytem = elevator;
     this._levelHeight = levelHeight;
 
-    double p = .012; //0.0093
-    double i = 0;
-    double d = 0.0005;//0.0002
+    //double p = .012; //0.0093
+    //double i = 0;
+    //double d = 0.0005;//0.0002
 
-    double kS = 0.001;//0.01
-    double kG = 0.01;//0.41
-    double kV = 0.0002;//0.002
-    _feedforward = new ElevatorFeedforward(kS, kG, kV);
+    //double kS = 0.001;//0.01
+    //double kG = 0.01;//0.41
+    //double kV = 0.0002;//0.002
+    //_feedforward = new ElevatorFeedforward(kS, kG, kV);
 
-    this._elevatorPIDController = new PIDController(p, i, d);
-    this._elevatorPIDController.setTolerance(25);
+    //this._elevatorPIDController = new PIDController(p, i, d);
+    //this._elevatorPIDController.setTolerance(25);
 
     addRequirements(elevator);
   }
@@ -46,23 +46,26 @@ public class RaiseElevatorCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    _upSpeed = .7;
-    _downSpeed = .5;
+    //_upSpeed = .7;
+    //_downSpeed = .5;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double currentHeight = this._elevatorSubsytem.getAlgeaHeight();
+
+    this._elevatorSubsytem.setElevatorPosition(_levelHeight);
+
+    //double currentHeight = this._elevatorSubsytem.getAlgeaHeight();
     //System.out.println("Moving from " + currentHeight + " to " + _levelHeight);
 
-    double calcVoltage = this._elevatorPIDController.calculate(currentHeight, _levelHeight);
-    SmartDashboard.putNumber("Current Elevator Voltage", calcVoltage);
+    //double calcVoltage = this._elevatorPIDController.calculate(currentHeight, _levelHeight);
+    //SmartDashboard.putNumber("Current Elevator Voltage", calcVoltage);
 
-    double feedForward = _feedforward.calculate(this._elevatorSubsytem.getEncoderVelocity());
-    SmartDashboard.putNumber("Feed Forward Voltage", feedForward);
+    //double feedForward = _feedforward.calculate(this._elevatorSubsytem.getEncoderVelocity());
+    //SmartDashboard.putNumber("Feed Forward Voltage", feedForward);
 
-    this._elevatorSubsytem.setVoltage(calcVoltage + feedForward);
+    //this._elevatorSubsytem.setVoltage(calcVoltage + feedForward);
 
     // if (currentHeight > _levelHeight) {
     // System.out.println("Lowering Elevator");
@@ -92,7 +95,10 @@ public class RaiseElevatorCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return this._elevatorPIDController.atSetpoint();
+
+    return _elevatorSubsytem.elevatorAtSetpoint();
+
+    //return this._elevatorPIDController.atSetpoint();
     // return this._elevatorSubsytem.getAlgeaHeight() >= _levelHeight - 35
     // && this._elevatorSubsytem.getAlgeaHeight() <= _levelHeight + 35;
   }
