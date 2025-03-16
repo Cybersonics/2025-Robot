@@ -14,6 +14,7 @@ import frc.robot.subsystems.Elevator;
 public class ScoreCoralLevelTwo extends SequentialCommandGroup {
   
   public ScoreCoralLevelTwo(Elevator elevator, CoralMechanism coral) {
+
     addCommands(
       new RaiseElevatorCommand(elevator, 1200),   
       new WaitCommand(.25),
@@ -21,4 +22,5 @@ public class ScoreCoralLevelTwo extends SequentialCommandGroup {
       //,new RaiseElevatorCommand(elevator, 750)
     );
   }
+  
 }

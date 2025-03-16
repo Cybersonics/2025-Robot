@@ -10,44 +10,48 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.CoralMechanism;
 
 public class RaiseElevatorCommand extends Command {
 
   private Elevator _elevatorSubsytem;
   private double _levelHeight;
+  private CoralMechanism _coral;
+  private Timer _commandTimer;
+  private boolean _cycleComplete = false;
   //private double _upSpeed;
   //private double _downSpeed;
 
   //private PIDController _elevatorPIDController;
   //private ElevatorFeedforward _feedforward;
 
+  public RaiseElevatorCommand(Elevator elevator, double levelHeight, CoralMechanism coral) {
+    this._elevatorSubsytem = elevator;
+    this._levelHeight = levelHeight;
+    this._coral = coral;
+
+    addRequirements(elevator, coral);
+  }
+
   public RaiseElevatorCommand(Elevator elevator, double levelHeight) {
     this._elevatorSubsytem = elevator;
     this._levelHeight = levelHeight;
 
-    //double p = .012; //0.0093
-    //double i = 0;
-    //double d = 0.0005;//0.0002
-
-    //double kS = 0.001;//0.01
-    //double kG = 0.01;//0.41
-    //double kV = 0.0002;//0.002
-    //_feedforward = new ElevatorFeedforward(kS, kG, kV);
-
-    //this._elevatorPIDController = new PIDController(p, i, d);
-    //this._elevatorPIDController.setTolerance(25);
-
     addRequirements(elevator);
   }
+
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     //_upSpeed = .7;
     //_downSpeed = .5;
+    this._commandTimer = new Timer(); 
+    this._cycleComplete = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -55,6 +59,19 @@ public class RaiseElevatorCommand extends Command {
   public void execute() {
 
     this._elevatorSubsytem.setElevatorPosition(_levelHeight);
+
+    // if (_elevatorSubsytem.elevatorAtSetpoint()){
+    //   if(!this._commandTimer.isRunning()) {
+    //     this._commandTimer.start();
+    //   }
+    //   if (this._commandTimer.hasElapsed(.25)){
+    //     this._coral.intakeCoral();
+    //   }
+    //   if (this._commandTimer.hasElapsed(.35)){
+    //     this._coral.stop();
+    //     _cycleComplete = true;
+    //   }
+    // }
 
     //double currentHeight = this._elevatorSubsytem.getAlgeaHeight();
     //System.out.println("Moving from " + currentHeight + " to " + _levelHeight);
@@ -89,6 +106,8 @@ public class RaiseElevatorCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    // this._commandTimer.stop();
+    // this._commandTimer.reset();
     this._elevatorSubsytem.stop();
   }
 
@@ -97,6 +116,7 @@ public class RaiseElevatorCommand extends Command {
   public boolean isFinished() {
 
     return _elevatorSubsytem.elevatorAtSetpoint();
+    //return _cycleComplete;
 
     //return this._elevatorPIDController.atSetpoint();
     // return this._elevatorSubsytem.getAlgeaHeight() >= _levelHeight - 35

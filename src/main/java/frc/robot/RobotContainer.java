@@ -13,6 +13,7 @@ import frc.robot.commands.IntakeAlgea;
 import frc.robot.commands.AlgaeMechanismCommand;
 import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.IntakeCoralCommand;
+import frc.robot.commands.RaiseElevatorCommand;
 import frc.robot.commands.autos.DriveForwardSlow;
 import frc.robot.commands.autos.IntakeAlgeaFromReef;
 import frc.robot.commands.autos.ScoreAlgaeInBarge;
@@ -130,6 +131,7 @@ public class RobotContainer {
     // Score Coral Levels     
     this.operatorController.pov(90).whileTrue(new ScoreCoralLevelOne(_elevator, _coralMechanism));
     this.operatorController.b().whileTrue(new ScoreCoralLevelTwo(_elevator, _coralMechanism));
+    //this.operatorController.b().whileTrue(new RaiseElevatorCommand(_elevator, 1200, _coralMechanism));
     this.operatorController.x().whileTrue(new ScoreCoralLevelThree(_elevator, _coralMechanism));
     this.operatorController.y().whileTrue(new ScoreCoralLevelFour(_elevator, _coralMechanism));
 

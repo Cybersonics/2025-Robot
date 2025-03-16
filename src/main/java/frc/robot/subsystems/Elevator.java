@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -69,13 +70,13 @@ public class Elevator extends SubsystemBase {
     _rightMotor.configure(_rightMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     //Setup Elevator PIDs
-    double p = .012; //0.0093
+    double p = .012; //0.012  0.0093
     double i = 0;
-    double d = 0.0005;//0.0002
+    double d = 0.0026;//0.0025;//0.0005  0.0002
 
-    double kS = 0.001;//0.01
-    double kG = 0.01;//0.41
-    double kV = 0.0002;//0.002
+    double kS = 0.0086531;//0.01;//0.001,0.01
+    double kG = 0.029608;//0.01;//0.41
+    double kV = 0.000215;//0.002;//0.0002  0.002
     _feedforward = new ElevatorFeedforward(kS, kG, kV);
 
     this._elevatorPIDController = new PIDController(p, i, d);
@@ -129,6 +130,7 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("Feed Forward Voltage", feedForward);
 
    setVoltage(calcVoltage + feedForward);
+   //setVoltage(calcVoltage);
 
   }
 
