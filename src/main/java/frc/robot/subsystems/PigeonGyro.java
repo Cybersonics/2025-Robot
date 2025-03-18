@@ -52,7 +52,7 @@ public class PigeonGyro extends SubsystemBase {
   
     public void zeroGyroHeading() {
       pigeon.reset();
-      zeroHeading = getGyroHeading();
+      //zeroHeading = getGyroHeading();
       zeroAngle = getGyroAngle();
       System.out.println("ZeroHeading: " + zeroHeading);
       System.out.println("ZeroAngle: " + zeroAngle);

@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.ElevatorDefaultCommand;
 import frc.robot.commands.ExtendClimber;
 import frc.robot.commands.RetractClimber;
 import frc.robot.commands.IntakeAlgea;
@@ -96,6 +97,7 @@ public class RobotContainer {
     .setDefaultCommand(_drive, new DriveCommand(_drive, driverController, _gyro, _camera));
 
     CommandScheduler.getInstance()
+    //.setDefaultCommand(_elevator, new ElevatorDefaultCommand(operatorController));
     .setDefaultCommand(_elevator, new ElevatorCommand(_elevator, operatorController));
 
     CommandScheduler.getInstance()
