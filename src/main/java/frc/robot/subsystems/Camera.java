@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,13 +15,12 @@ public class Camera extends SubsystemBase {
     private PhotonCamera camera;
 
     private static Camera instance;
+    private static AprilTag _aprilTags;
     // private final PhotonCamera camera;
     private final double CAMERA_HEIGHT_METERS = Constants.CameraConstants.RobotCameraHeight;
     // Angle between horizontal and the camera.
     private final double CAMERA_PITCH_RADIANS = Constants.CameraConstants.RobotCameraAngle;
 
-    // The field from AprilTagFields will be different depending on the game. only returns pose objects no height
-    private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
     private double TARGET_HEIGHT_METERS; // Convert to meters when setting
 
     private PhotonPipelineResult result;
@@ -30,13 +28,14 @@ public class Camera extends SubsystemBase {
     private int targetId = 0;
     private boolean hasTarget = false;
 
-    public Camera() { 
+    public Camera(AprilTag aprilTag) {
+        _aprilTags = aprilTag;
         camera = new PhotonCamera("Arducam_OV9281_USB_Camera");
     }
 
-    public static Camera getInstance() {
+    public static Camera getInstance(AprilTag aprilTag) {
         if (instance == null) {
-            instance = new Camera();
+            instance = new Camera(aprilTag);
         }
         return instance;
     }
@@ -83,7 +82,12 @@ public class Camera extends SubsystemBase {
         return this.targetId;
     }
 
-    public AprilTag getTarget() {
-        return Constants.AprilTags.AprilTags.get(getTargetId());
+    public Pose3d getRobotPostForAprilTag(int tagId) {
+       return _aprilTags.getNeededRobotPost(tagId);
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putBoolean("Camera connected", this.camera.isConnected());
     }
 }

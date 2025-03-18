@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ForwardOneMeterTurn90Clockwise"
+            "pathName": "LeftMoveOffLine"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Calibration Autos",
+  "folder": null,
   "choreoAuto": false
 }

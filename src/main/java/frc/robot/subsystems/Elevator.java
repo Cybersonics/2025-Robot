@@ -12,6 +12,7 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -31,12 +32,22 @@ public class Elevator extends SubsystemBase {
 
   private AnalogInput _potInput;
 
+  double p = .012; //0.0093
+    double i = 0;
+    double d = 0.0005;//0.0002
+
+    double kS = 0.001;//0.01
+    double kG = 0.01;//0.41
+    double kV = 0.0002;//0.002
+    
+  private PIDController _elevatorPIDController;
+  private ElevatorFeedforward _feedforward;
+
   /** Creates a new Elevator. */
   private Elevator() {
     // Setup Motors
     _leftMotor = new SparkFlex(ElevatorConstants.leftMotorCANId, MotorType.kBrushless);
     _rightMotor = new SparkFlex(ElevatorConstants.rightMotorCANId, MotorType.kBrushless);
-
 
     // Setup String Pot    
     _potInput = new AnalogInput(ElevatorConstants.stringPotChannel);
@@ -55,6 +66,12 @@ public class Elevator extends SubsystemBase {
     //Flash Flex Controllers
      _leftMotor.configure(_leftMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
      _rightMotor.configure(_rightMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+     
+    _feedforward = new ElevatorFeedforward(kS, kG, kV);
+
+    _elevatorPIDController = new PIDController(p, i, d);
+    _elevatorPIDController.setTolerance(25);
   }
 
   /*
@@ -88,6 +105,10 @@ public class Elevator extends SubsystemBase {
 
   public double getAlgeaHeight() {
     return this._potInput.getValue();
+  }
+
+  public boolean atSetpoint() {
+    return this._elevatorPIDController.atSetpoint();
   }
 
   @Override

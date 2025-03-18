@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ProcessorToLolipop"
+            "pathName": "cal-StrafeOneMeter"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Calibration Autos",
   "choreoAuto": false
 }

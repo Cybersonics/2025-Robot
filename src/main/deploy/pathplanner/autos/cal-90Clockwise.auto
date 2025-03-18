@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ForwardOneMeterTurn90CC"
+            "pathName": "cal-90DegreeTurnC"
           }
         }
       ]

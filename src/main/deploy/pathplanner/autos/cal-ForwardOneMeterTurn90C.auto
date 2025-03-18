@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "AroundReefRight"
+            "pathName": "cal-ForwardOneMeterTurn90Clockwise"
           }
         }
       ]

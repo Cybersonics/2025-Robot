@@ -72,11 +72,11 @@ public class CoralMechanism extends SubsystemBase {
   }
 
   public void intakeCoral() {
-    setSpeed(.5);
+    setSpeed(.45);
   }
 
   public void ejectCoral() {
-    setSpeed(-.5);
+    setSpeed(-1);
   }
 
   public void levelOneEjectCoral(double leftMotorSpeed, double rightMotorSpeed) {

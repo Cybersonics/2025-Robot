@@ -25,10 +25,13 @@ import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.PigeonGyro;
 import frc.robot.subsystems.Pneumatics;
+import frc.robot.subsystems.Climber;
+import frc.robot.utility.AprilTag;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -59,8 +62,10 @@ public class RobotContainer {
   public static AlgeaMechanism _algeaMechanism = AlgeaMechanism.getInstance();
   public static CoralMechanism _coralMechanism = CoralMechanism.getInstance();
   public static Pneumatics _pneumatics = Pneumatics.getInstance();
+  //public static Climber _climber = Climber.getInstance();
 
-  public static Camera _camera = Camera.getInstance();
+  public static AprilTag _aprilTags = new AprilTag(() -> DriverStation.getAlliance().get());
+  public static Camera _camera = Camera.getInstance(_aprilTags);
   
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.DriveController);
@@ -121,6 +126,9 @@ public class RobotContainer {
     this.operatorController.rightTrigger().onTrue(new IntakeCoralCommand(_coralMechanism));
     this.operatorController.leftTrigger().onTrue(new ScoreCoralCommand(_coralMechanism));
 
+    // this.operatorController.start().whileTrue(new InstantCommand(() -> _coralMechanism.ejectCoral()));
+    // this.operatorController.start().onFalse(new InstantCommand(() -> _coralMechanism.stop()));
+
     this.operatorController.a().onChange(new ConditionalCommand(
       new InstantCommand(() -> _pneumatics.algeaOut()),
       new InstantCommand(() -> _pneumatics.algeaIn()),
@@ -153,9 +161,18 @@ public class RobotContainer {
    * Use this to set Autonomous options for selection in Smart Dashboard
    */
   private void autonomousOptions() {
-    // Example adding Autonomous option to chooser
-    autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
-    SmartDashboard.putData("Auto Mode", autoChooser);
+    // For convenience a programmer could change this when going to competition.
+    boolean isCompetition = false;
 
+    // As an example, this will not show autos that start with "cal-" while at
+    // competition as defined by the programmer
+    autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
+      (stream) -> isCompetition
+        ? stream.filter(auto -> !auto.getName().startsWith("cal-"))
+        : stream
+    );
+    // autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
+
+    SmartDashboard.putData("Auto Mode", autoChooser);
   }
 }

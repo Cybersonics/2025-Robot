@@ -198,16 +198,15 @@ public class Constants {
     public static final class PneumaticConstants {
         public static final int compressorInput = 1;
         
-        public static final int algeaOut = 0;
-        public static final int algeaIn = 1;
+        public static final int algeaSolenoid = 15;
+        public static final int climberSolenoid = 14;
     }
 
     public static final class ClimberConstants {
-        public static final int leftClimber = 36;
-        public static final int rightClimber = 35;
+        public static final int climberCANId = 50;
 
         public static final double kSpoolDiameterMeters = Units.inchesToMeters(2); // 4
-        public static final double kClimberMotorGearRatio = 1 / 64;
+        public static final double kClimberMotorGearRatio = 1 / 45;
         public static final double kClimberEncoderRot2Meter = kClimberMotorGearRatio * Math.PI * kSpoolDiameterMeters;
     }
 
@@ -218,9 +217,5 @@ public class Constants {
         public static final double RobotCameraHeight = Units.inchesToMeters(17.25);
         public static final double RobotCameraAngle = Units.degreesToRadians(0);
         public static final double RobotDistance = 58;
-    }
-
-    public static final class AprilTags {
-        public static final ArrayList<AprilTag> AprilTags = AprilTag.LoadAprilTagList();
     }
 }

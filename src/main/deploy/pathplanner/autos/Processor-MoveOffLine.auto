@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "90DegreeTurnCC"
+            "pathName": "ProcessorMoveOffLine"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Calibration Autos",
+  "folder": null,
   "choreoAuto": false
 }
