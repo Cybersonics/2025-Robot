@@ -3,7 +3,8 @@
   "robotLength": 0.897,
   "holonomicMode": true,
   "pathFolders": [
-    "Calibration Paths"
+    "Calibration Paths",
+    "Processor"
   ],
   "autoFolders": [
     "Calibration Autos"
@@ -32,5 +33,9 @@
   "brModuleY": -0.279,
   "bumperOffsetX": 0.0,
   "bumperOffsetY": 0.0,
-  "robotFeatures": []
+  "robotFeatures": [
+    "{\"name\":\"Coral\",\"type\":\"line\",\"data\":{\"start\":{\"x\":-0.2,\"y\":0.25},\"end\":{\"x\":-0.5,\"y\":0.25},\"strokeWidth\":0.051}}",
+    "{\"name\":\"Algea\",\"type\":\"circle\",\"data\":{\"center\":{\"x\":-0.35,\"y\":-0.05},\"radius\":0.203,\"strokeWidth\":0.02,\"filled\":false}}",
+    "{\"name\":\"Frame\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":0.0,\"y\":0.0},\"size\":{\"width\":0.75,\"length\":0.75},\"borderRadius\":0.05,\"strokeWidth\":0.02,\"filled\":false}}"
+  ]
 }

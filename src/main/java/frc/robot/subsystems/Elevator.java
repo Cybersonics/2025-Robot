@@ -37,21 +37,26 @@ public class Elevator extends SubsystemBase {
   private SparkFlexConfig _rightMotorConfig;
 
   private AnalogInput _potInput;
+  private AnalogPotentiometer _elevatorPosition;
   private double _levelHeight;
   private double maxSpeedUp = .7;
   private double slowedSpeed = .3;
   private double maxSpeedDown = .5;
   private PIDController _elevatorPIDController;
   private ElevatorFeedforward _feedforward;
+  private double defaultPose; // = 0;
 
   /** Creates a new Elevator. */
   private Elevator() {
+    
+    // Setup String Pot    
+    _potInput = new AnalogInput(ElevatorConstants.stringPotChannel);
+
+    _elevatorPosition = new AnalogPotentiometer(_potInput,95,0);
+
     // Setup Motors
     _leftMotor = new SparkFlex(ElevatorConstants.leftMotorCANId, MotorType.kBrushless);
     _rightMotor = new SparkFlex(ElevatorConstants.rightMotorCANId, MotorType.kBrushless);
-
-    // Setup String Pot    
-    _potInput = new AnalogInput(ElevatorConstants.stringPotChannel);
     
     //Configure Left motor
     _leftMotorConfig = new SparkFlexConfig();
@@ -69,9 +74,9 @@ public class Elevator extends SubsystemBase {
     _rightMotor.configure(_rightMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     //Setup Elevator PIDs
-    double p = .012; //0.0093
+    double p = 0.012;//  0.0093
     double i = 0;
-    double d = 0.0005;//0.0002
+    double d = 0.0005;//0.0025;//0.0005  0.0002
 
     double kS = 0.001;//0.01
     double kG = 0.01;//0.41
@@ -112,6 +117,22 @@ public class Elevator extends SubsystemBase {
     setSpeed(0);
   }
 
+  public double getPose(){
+    return this._potInput.getValue();
+  }
+
+	public void setDefaultPose(double pose){
+		defaultPose = pose;
+	}
+	
+  public void setPower(double power) {
+		setVoltage(power * 12);
+	}
+
+  public double getDefaultPose(){
+		return defaultPose;
+	}
+
   public double getAlgeaHeight() {
     return this._potInput.getValue();
   }
@@ -119,7 +140,7 @@ public class Elevator extends SubsystemBase {
   public void setElevatorPosition(double levelHeight){
 
     this._levelHeight = levelHeight;
-    double currentHeight = getAlgeaHeight();
+    double currentHeight = getPose();
     //System.out.println("Moving from " + currentHeight + " to " + _levelHeight);
 
     double calcVoltage = this._elevatorPIDController.calculate(currentHeight, _levelHeight);

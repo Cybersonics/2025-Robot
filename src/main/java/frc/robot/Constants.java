@@ -150,9 +150,26 @@ public class Constants {
     }
 
     public static class ElevatorConstants {
-      public final static int leftMotorCANId = 30;
-      public final static int rightMotorCANId = 31;
-      public final static int stringPotChannel = 0;
+        public final static int leftMotorCANId = 30;
+        public final static int rightMotorCANId = 31;
+        public final static int stringPotChannel = 0;
+
+        // Elevator constants
+	    public static final double ELEVATOR_POSITION_TOLERANCE = 20;//0.2;
+	    public static final double ELEVATOR_CONVERSION_FACTOR = 25;
+	    public static final double ELEVATOR_ROLLER_RAIDUS = 3;
+        
+	    public static final double ELEVATOR_MAX_VELO = 50; //3000;
+	    public static final double ELEVATOR_MAX_ACCELLERATION = 100; //5000;
+	    public static final double ELEVATOR_P = 0.00005; //.012; //0.073;
+	    public static final double ELEVATOR_I = 0.0;
+	    public static final double ELEVATOR_D = 0.0; //0.0026;//0.005;
+	    public static final int ELEVATOR_CURRENT_LIMIT = 40;
+  	    public static final double ELEVATOR_MANUAL_POWER = 0.1;
+  	    // public static final double L1_HEIGHT = 0;
+  	    // public static final double L2_HEIGHT = 10.833;
+  	    // public static final double L3_HEIGHT = 26.85;
+  	    // public static final double L4_HEIGHT = 52.16;
     }
 
     public static class AlgeaConstants {
