@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.15,
-        "y": 0.5
+        "x": 1.6,
+        "y": 7.349750000000781
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.973223304703364,
-        "y": 0.6767766952966372
+        "x": 1.8061743062259539,
+        "y": 7.208356381148137
       },
       "isLocked": false,
-      "linkedName": "Processor-Start"
+      "linkedName": "Cages-Side-Station"
     },
     {
       "anchor": {
-        "x": 5.063313678028373,
-        "y": 2.969214322555432
+        "x": 4.212000000000001,
+        "y": 5.28275
       },
       "prevControl": {
-        "x": 5.310140239531874,
-        "y": 2.7223877610519316
+        "x": 3.877047538504405,
+        "y": 5.543647716259474
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -56.0
+    "rotation": 119.99999999999999
   },
   "reversed": false,
-  "folder": "Processor",
+  "folder": "Cages",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 130.0
   },
   "useDefaultConstraints": true
 }

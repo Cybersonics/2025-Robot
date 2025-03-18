@@ -4,6 +4,7 @@
   "holonomicMode": true,
   "pathFolders": [
     "Calibration Paths",
+    "Cages",
     "Processor"
   ],
   "autoFolders": [
