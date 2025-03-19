@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.3485000000000005,
-        "y": 1.34375
+        "x": 4.55325,
+        "y": 1.1
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.5,
-        "y": 0.7
+        "x": 1.21875,
+        "y": 0.905
       },
       "prevControl": {
-        "x": 2.358,
-        "y": 1.2070000000000003
+        "x": 2.0767499999999997,
+        "y": 1.4120000000000004
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +31,14 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "ResetElevator",
+      "waypointRelativePos": 0.05143884892085965,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,

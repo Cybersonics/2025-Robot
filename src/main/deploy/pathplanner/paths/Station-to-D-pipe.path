@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.5,
-        "y": 0.7
+        "x": 1.21875,
+        "y": 0.905
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6704241044434864,
-        "y": 0.8829087877184572
+        "x": 1.3891741044434864,
+        "y": 1.0879087877184572
       },
       "isLocked": false,
       "linkedName": "Process-Side-Station"

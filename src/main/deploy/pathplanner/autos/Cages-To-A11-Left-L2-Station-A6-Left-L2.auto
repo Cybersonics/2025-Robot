@@ -25,6 +25,12 @@
         {
           "type": "named",
           "data": {
+            "name": "ResetElevator"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "IntakeCoral"
           }
         },

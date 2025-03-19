@@ -14,8 +14,10 @@ import frc.robot.commands.IntakeAlgea;
 import frc.robot.commands.AlgaeMechanismCommand;
 import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.IntakeCoralCommand;
+import frc.robot.commands.RaiseElevatorCommand;
 import frc.robot.commands.autos.DriveForwardSlow;
 import frc.robot.commands.autos.IntakeAlgeaFromReef;
+import frc.robot.commands.autos.ResetElevator;
 import frc.robot.commands.autos.ScoreAlgaeInBarge;
 import frc.robot.commands.autos.ScoreCoralLevelFour;
 import frc.robot.commands.autos.ScoreCoralLevelOne;
@@ -159,6 +161,7 @@ public class RobotContainer {
       NamedCommands.registerCommand("ScoreLevelFour", new ScoreCoralLevelFour(_elevator, _coralMechanism));  
       NamedCommands.registerCommand("ScoreAlgeaInBarge", new ScoreAlgaeInBarge(_elevator, _algeaMechanism));
 
+      NamedCommands.registerCommand("ResetElevator", new ResetElevator(_elevator));
       NamedCommands.registerCommand("IntakeCoral", new IntakeCoralCommand(_coralMechanism));
       NamedCommands.registerCommand("IntakeAlgeaFromReef", new IntakeAlgeaFromReef(_elevator, _algeaMechanism, _pneumatics));
       NamedCommands.registerCommand("DriveSlowForward", new DriveForwardSlow(_drive));
