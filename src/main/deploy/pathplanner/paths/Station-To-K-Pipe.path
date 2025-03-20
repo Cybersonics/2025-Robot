@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.6,
-        "y": 7.349750000000781
+        "x": 1.43325,
+        "y": 7.408249999999999
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8061743062259539,
-        "y": 7.208356381148137
+        "x": 1.6394243062259537,
+        "y": 7.266856381147355
       },
       "isLocked": false,
       "linkedName": "Cages-Side-Station"

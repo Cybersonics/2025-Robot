@@ -17,12 +17,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "ResetElevator"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "E-pipe-to-Station"
@@ -44,12 +38,6 @@
           "type": "named",
           "data": {
             "name": "ScoreLevelFour"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ResetElevator"
           }
         }
       ]

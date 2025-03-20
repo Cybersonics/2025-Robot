@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.11,
-        "y": 5.11
+        "x": 7.15,
+        "y": 0.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.40775,
-        "y": 6.6964999999999995
+        "x": 5.3527499999999995,
+        "y": 1.0025
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Processor-Start"
     },
     {
       "anchor": {
-        "x": 1.43325,
-        "y": 7.408249999999999
+        "x": 1.1895,
+        "y": 2.1529999999999996
       },
       "prevControl": {
-        "x": 1.6662500000023135,
-        "y": 6.9987499999999985
+        "x": 1.8622500000000002,
+        "y": 1.9482499999999994
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Cages-Side-Station"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,20 +33,31 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
+      "name": "Raise Elevator",
+      "waypointRelativePos": 0.1,
+      "endWaypointRelativePos": 0.34928057553956215,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "ScoreLevelOne"
+        }
+      }
+    },
+    {
       "name": "Lower Elevator",
-      "waypointRelativePos": 0.05,
+      "waypointRelativePos": 0.5996402877697767,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "ResetElevatorLevelOne"
+          "name": "ResetElevator"
         }
       }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -54,13 +65,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 130.0
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Cages",
+  "folder": "Calibration Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 59.99999999999999
+    "rotation": 0.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

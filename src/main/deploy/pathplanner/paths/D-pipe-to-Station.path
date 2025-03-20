@@ -3,38 +3,50 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2675,
-        "y": 0.9439999999999997
+        "x": 3.793,
+        "y": 2.982
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.3925,
-        "y": 1.1605063509461093
+        "x": 3.491645593811379,
+        "y": 2.712619359462295
       },
       "isLocked": false,
-      "linkedName": "Process-Side-Station"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.48,
-        "y": 3.35
+        "x": 1.2675,
+        "y": 0.9439999999999997
       },
       "prevControl": {
-        "x": 3.355,
-        "y": 3.1334936490538907
+        "x": 2.150001626553863,
+        "y": 1.633814198445839
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Process-Side-Station"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Lower Elevator",
+      "waypointRelativePos": 0.1,
+      "endWaypointRelativePos": 0.9,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "ResetElevator"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -119.99999999999999
+    "rotation": -130.0
   },
   "reversed": false,
   "folder": "Processor",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -130.0
+    "rotation": -119.99999999999999
   },
   "useDefaultConstraints": false
 }

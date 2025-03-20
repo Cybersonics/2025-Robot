@@ -3,35 +3,47 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.43325,
-        "y": 7.408249999999999
+        "x": 3.48,
+        "y": 3.35
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6154748683754607,
-        "y": 7.237094815019976
+        "x": 3.2300000000000004,
+        "y": 2.916987298107781
       },
       "isLocked": false,
-      "linkedName": "Cages-Side-Station"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.8707500000000006,
-        "y": 5.117
+        "x": 1.2675,
+        "y": 0.9439999999999997
       },
       "prevControl": {
-        "x": 3.683961173110903,
-        "y": 5.283162372844741
+        "x": 2.0368990382348486,
+        "y": 1.7478147801399952
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Process-Side-Station"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Lower Elevator",
+      "waypointRelativePos": 0.05,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "ResetElevatorLevelOne"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 2.0,
     "maxAcceleration": 2.0,
@@ -42,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": -130.0
   },
   "reversed": false,
-  "folder": "Cages",
+  "folder": "Processor",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 130.0
+    "rotation": -119.99999999999999
   },
   "useDefaultConstraints": false
 }

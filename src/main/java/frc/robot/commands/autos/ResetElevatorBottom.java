@@ -8,11 +8,10 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.RaiseElevatorCommand;
 import frc.robot.subsystems.Elevator;
 
-public class ResetElevator extends SequentialCommandGroup {
+public class ResetElevatorBottom extends SequentialCommandGroup {
   
-  public ResetElevator(Elevator elevator) {
+  public ResetElevatorBottom(Elevator elevator) {
     addCommands(
-      new RaiseElevatorCommand(elevator, 875),
       new RaiseElevatorCommand(elevator, 90)
     );
   }

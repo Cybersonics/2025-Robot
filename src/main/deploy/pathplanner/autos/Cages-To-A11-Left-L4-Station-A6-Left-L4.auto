@@ -13,19 +13,13 @@
         {
           "type": "named",
           "data": {
-            "name": "ScoreLevelTwo"
+            "name": "ScoreLevelFour"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "J-Pipe-To-Station"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ResetElevator"
           }
         },
         {
@@ -43,7 +37,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ScoreLevelTwo"
+            "name": "ScoreLevelFour"
           }
         }
       ]
