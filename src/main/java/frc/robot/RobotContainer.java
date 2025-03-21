@@ -132,10 +132,8 @@ public class RobotContainer {
     // Zero Gyro on Drive B press
     this.driverController.b().onTrue(new InstantCommand(() -> _gyro.zeroGyroHeading()));
     
-    this.driverController.pov(0).onTrue(new ClimberCommand(_climber, _pneumatics, driverController.pov(0), driverController.pov(180)));
-    this.driverController.pov(180).onTrue(new ClimberCommand(_climber, _pneumatics, driverController.pov(0), driverController.pov(180)));
-    // this.driverController.pov(0).onTrue(new ExtendClimber(_pneumatics, _climber));
-    // this.driverController.pov(180).onTrue(new RetractClimber(_pneumatics, _climber));
+    this.driverController.y().onTrue(new ClimberCommand(_climber, _pneumatics, driverController.y(), driverController.a()));
+    this.driverController.a().onTrue(new ClimberCommand(_climber, _pneumatics, driverController.y(), driverController.a()));
 
     // Score Coral Levels     
     this.operatorController.pov(90).whileTrue(new ScoreCoralLevelOne(_elevator, _coralMechanism));
