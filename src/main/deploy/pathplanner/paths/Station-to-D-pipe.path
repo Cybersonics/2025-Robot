@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2675,
-        "y": 0.9439999999999997
+        "x": 1.1840438741721853,
+        "y": 0.8723923841059604
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5378748689516988,
-        "y": 1.1708836124867938
+        "x": 1.454418743123884,
+        "y": 1.0992759965927545
       },
       "isLocked": false,
       "linkedName": "Process-Side-Station"
@@ -45,7 +45,7 @@
     "rotation": -123.2317110679794
   },
   "reversed": false,
-  "folder": "Processor",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": -130.0

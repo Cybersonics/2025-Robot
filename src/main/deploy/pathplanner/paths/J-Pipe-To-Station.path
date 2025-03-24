@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.11,
-        "y": 5.11
+        "x": 5.172,
+        "y": 5.056
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.40775,
-        "y": 6.6964999999999995
+        "x": 4.469754075703785,
+        "y": 6.642501804067475
       },
       "isLocked": false,
       "linkedName": null
@@ -39,7 +39,7 @@
       "command": {
         "type": "named",
         "data": {
-          "name": "ResetElevatorLevelOne"
+          "name": "ResetElevatorBottom"
         }
       }
     }
@@ -57,7 +57,7 @@
     "rotation": 130.0
   },
   "reversed": false,
-  "folder": "Cages",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 59.99999999999999

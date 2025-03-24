@@ -42,7 +42,7 @@ public class ClimberCommand extends Command {
       this._pneumatics.climberOut();
 
     } else if (this._retract.getAsBoolean()) {
-      this._climber.setSpeed(.75);
+      this._climber.setSpeed(1);
       this._pneumatics.climberIn();
 
     } else {

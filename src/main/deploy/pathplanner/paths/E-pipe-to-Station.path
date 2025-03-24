@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.78,
-        "y": 2.79
+        "x": 4.714,
+        "y": 2.754
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.5432500000000005,
-        "y": 1.12
+        "x": 4.477250000000001,
+        "y": 1.084
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.2675,
-        "y": 0.9439999999999997
+        "x": 1.1840438741721853,
+        "y": 0.8723923841059604
       },
       "prevControl": {
-        "x": 2.1254999999999997,
-        "y": 1.451
+        "x": 2.0420438741721854,
+        "y": 1.379392384105961
       },
       "nextControl": null,
       "isLocked": false,
@@ -37,9 +37,16 @@
       "waypointRelativePos": 0.05,
       "endWaypointRelativePos": null,
       "command": {
-        "type": "named",
+        "type": "sequential",
         "data": {
-          "name": "ResetElevatorLevelOne"
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "ResetElevatorBottom"
+              }
+            }
+          ]
         }
       }
     }
@@ -57,7 +64,7 @@
     "rotation": -130.0
   },
   "reversed": false,
-  "folder": "Processor",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": -59.99999999999999

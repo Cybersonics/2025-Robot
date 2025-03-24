@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.8707500000000006,
-        "y": 5.117
+        "x": 3.9371274834437084,
+        "y": 5.1436672185430465
       },
       "prevControl": {
-        "x": 3.683961173110903,
-        "y": 5.283162372844741
+        "x": 3.750338656554611,
+        "y": 5.309829591387787
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": 119.99999999999999
   },
   "reversed": false,
-  "folder": "Cages",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 130.0

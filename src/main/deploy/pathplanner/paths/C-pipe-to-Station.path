@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 1.2675,
-        "y": 0.9439999999999997
+        "x": 1.1840438741721853,
+        "y": 0.8723923841059604
       },
       "prevControl": {
-        "x": 2.0368990382348486,
-        "y": 1.7478147801399952
+        "x": 1.9534429124070338,
+        "y": 1.676207164245956
       },
       "nextControl": null,
       "isLocked": false,
@@ -57,7 +57,7 @@
     "rotation": -130.0
   },
   "reversed": false,
-  "folder": "Processor",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": -119.99999999999999
