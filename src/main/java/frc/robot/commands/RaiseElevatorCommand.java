@@ -50,7 +50,8 @@ public class RaiseElevatorCommand extends Command {
   @Override
   public void execute() {
 
-    this._elevatorSubsytem.setElevatorPosition(_levelHeight);
+    this._elevatorSubsytem.setElevatorHeight(_levelHeight);
+    //this._elevatorSubsytem.setElevatorPosition(_levelHeight);
 
     //double currentHeight = this._elevatorSubsytem.getAlgeaHeight();
     //System.out.println("Moving from " + currentHeight + " to " + _levelHeight);
@@ -85,14 +86,15 @@ public class RaiseElevatorCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    this._elevatorSubsytem.stop();
+    //this._elevatorSubsytem.stop();
+    //this._elevatorSubsytem.resetPosition(_levelHeight);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
 
-    return _elevatorSubsytem.elevatorAtSetpoint();
+    return _elevatorSubsytem.elevatorAtSetpoint() && _elevatorSubsytem.elevatorAtGoal();
 
     //return this._elevatorPIDController.atSetpoint();
     // return this._elevatorSubsytem.getAlgeaHeight() >= _levelHeight - 35

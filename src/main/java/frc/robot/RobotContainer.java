@@ -104,8 +104,8 @@ public class RobotContainer {
     .setDefaultCommand(_drive, new DriveCommand(_drive, driverController, _gyro, _camera));
 
     CommandScheduler.getInstance()
-    //.setDefaultCommand(_elevator, new ElevatorDefaultCommand(operatorController));
-    .setDefaultCommand(_elevator, new ElevatorCommand(_elevator, operatorController));
+    .setDefaultCommand(_elevator, new ElevatorDefaultCommand(operatorController));
+    //.setDefaultCommand(_elevator, new ElevatorCommand(_elevator, operatorController));
 
     CommandScheduler.getInstance()
     .setDefaultCommand(_algeaMechanism, new AlgaeMechanismCommand(_algeaMechanism, operatorController.rightBumper(), operatorController.leftBumper(), operatorController.pov(180), false));
