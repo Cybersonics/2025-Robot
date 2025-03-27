@@ -67,7 +67,10 @@ public class RobotContainer {
   //public static NavXGyro _gyro = NavXGyro.getInstance();
   public static PigeonGyro _gyro = PigeonGyro.getInstance();
 
-  public static Drive _drive = Drive.getInstance(_gyro);
+  public static AprilTag _aprilTags = new AprilTag(() -> DriverStation.getAlliance().get());
+  public static Camera _camera = Camera.getInstance(_aprilTags);
+
+  public static Drive _drive = Drive.getInstance(_gyro, _aprilTags, _camera);
   
   public static Elevator _elevator = Elevator.getInstance();
   public static AlgeaMechanism _algeaMechanism = AlgeaMechanism.getInstance();
@@ -76,8 +79,7 @@ public class RobotContainer {
   public static Pneumatics _pneumatics = Pneumatics.getInstance();
   //public static Climber _climber = Climber.getInstance();
 
-  public static AprilTag _aprilTags = new AprilTag(() -> DriverStation.getAlliance().get());
-  public static Camera _camera = Camera.getInstance(_aprilTags);
+
   
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.DriveController);

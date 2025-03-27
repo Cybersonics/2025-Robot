@@ -12,7 +12,7 @@ public class ResetElevatorBottom extends SequentialCommandGroup {
   
   public ResetElevatorBottom(Elevator elevator) {
     addCommands(
-      new RaiseElevatorCommand(elevator, 550)
+      new RaiseElevatorCommand(elevator, 85)
     );
   }
 }

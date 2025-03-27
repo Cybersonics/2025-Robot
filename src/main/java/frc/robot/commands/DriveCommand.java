@@ -25,6 +25,7 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -56,7 +57,7 @@ public class DriveCommand extends Command {
   private double _driveDistanceP = 0.015, _driveDistanceD = 0.008, _driveDistanceI = 0.00;//p=0.002
   private double _driveStrafeP = 0.015, _driveStrafeD = 0.00, _driveStrafeI = 0.00;//p=0.015 d=0.008
   private AprilTag _target;
-  private double _aprilTagID;
+  private int _aprilTagID;
   private PhotonTrackedTarget _bestTarget;
 
   private Trigger _rightJoystickButtonThree;
@@ -273,17 +274,18 @@ public class DriveCommand extends Command {
     }
 
    
-    // var latestResult = _photonCamera.getLatestResult();
-    // SmartDashboard.putNumber("Camera Target", latestResult.getBestTarget().getFiducialId());
+      var latestResult = _photonCamera.getLatestResult();
+      SmartDashboard.putNumber("Camera Target", latestResult.getBestTarget().getFiducialId());
     // if(_rightJoystickButtonThree.getAsBoolean()) {
-    //   if(latestResult.hasTargets()) {
-    //     _bestTarget = latestResult.getBestTarget();
-    //     _aprilTagID = _bestTarget.getFiducialId();
+      if(latestResult.hasTargets()) {
+        _bestTarget = latestResult.getBestTarget();
+        _aprilTagID = _bestTarget.getFiducialId();
     //      _aprilTagID = LimelightHelpers.getFiducialID("");
-    //   }
-    //   if (_aprilTagID>-1){
-    //     AprilTag target = Constants.AprilTags.AprilTags.get(((int)_aprilTagID-1)); // indexed list is 0-21 not 1-22
-    //     double targetDistance = target.getDistance();
+      }
+      if (_aprilTagID>-1){
+        Pose3d target = _drive._aprilTag._fieldLayout.getTagPose(_aprilTagID).get();  
+        
+        //double targetDistance = target.  .getDistance();
     //     double targetHeading = target.getExpectedHeading();
 
     //     SmartDashboard.putNumber("Target Distance", target.getDistance());
@@ -350,7 +352,7 @@ public class DriveCommand extends Command {
     //     omega = 0;
     //     deadStick = true;
     //   }
-    // }
+      }
 
     /*
       * If all of the joysticks are in the deadzone, don't update the motors
