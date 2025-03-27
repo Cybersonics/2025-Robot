@@ -67,10 +67,11 @@ public class RobotContainer {
   //public static NavXGyro _gyro = NavXGyro.getInstance();
   public static PigeonGyro _gyro = PigeonGyro.getInstance();
 
-  public static AprilTag _aprilTags = new AprilTag(() -> DriverStation.getAlliance().get());
-  public static Camera _camera = Camera.getInstance(_aprilTags);
+  //public static AprilTag _aprilTags = new AprilTag(() -> DriverStation.getAlliance().get());
+  //public static Camera _camera = Camera.getInstance(_aprilTags);
 
-  public static Drive _drive = Drive.getInstance(_gyro, _aprilTags, _camera);
+  //public static Drive _drive = Drive.getInstance(_gyro, _aprilTags, _camera);
+  public static Drive _drive = Drive.getInstance(_gyro);
   
   public static Elevator _elevator = Elevator.getInstance();
   public static AlgeaMechanism _algeaMechanism = AlgeaMechanism.getInstance();
@@ -103,7 +104,8 @@ public class RobotContainer {
 
     // Default Comands always running
     CommandScheduler.getInstance()
-    .setDefaultCommand(_drive, new DriveCommand(_drive, driverController, _gyro, _camera));
+    //.setDefaultCommand(_drive, new DriveCommand(_drive, driverController, _gyro, _camera));
+    .setDefaultCommand(_drive, new DriveCommand(_drive, driverController, _gyro));
 
     CommandScheduler.getInstance()
     .setDefaultCommand(_elevator, new ElevatorDefaultCommand(operatorController));

@@ -53,9 +53,9 @@ public class Drive extends SubsystemBase {
 	private NavXGyro _navXGyro;
 	private PigeonGyro _pigeonGyro;
 	private boolean _driveCorrect= false;
-	public AprilTag _aprilTag;
-	public Camera _camera;
-	private PhotonCamera _photonCamera;
+	// public AprilTag _aprilTag;
+	// public Camera _camera;
+	// private PhotonCamera _photonCamera;
 
 	private final SwerveDriveOdometry odometer;
 
@@ -65,12 +65,13 @@ public class Drive extends SubsystemBase {
 	 * Note the order that the modules are in. Be consistant with the order in the
 	 * odometry.
 	 */
-	private Drive(PigeonGyro gyro, AprilTag aprilTag, Camera camera) {
+	//private Drive(PigeonGyro gyro, AprilTag aprilTag, Camera camera) {
+	private Drive(PigeonGyro gyro) {
 
 		this._pigeonGyro = gyro;
-		this._aprilTag = aprilTag;
-		this._camera = camera;
-		this._photonCamera = camera.getPhotonCamera();
+		// this._aprilTag = aprilTag;
+		// this._camera = camera;
+		// this._photonCamera = camera.getPhotonCamera();
 
 		frontLeft = new SwerveModule(DriveConstants.FrontLeftSteer, DriveConstants.FrontLeftDrive, invertDrive,
 				invertSteer);
@@ -124,12 +125,13 @@ public class Drive extends SubsystemBase {
 	 * Note the order that the modules are in. Be consistant with the order in the
 	 * odometry.
 	 */
-	private Drive(NavXGyro gyro, AprilTag aprilTag, Camera camera) {
+	//private Drive(NavXGyro gyro, AprilTag aprilTag, Camera camera) {
+	private Drive(NavXGyro gyro) {
 
 		this._navXGyro = gyro;
-		this._aprilTag = aprilTag;
-		this._camera = camera;
-		this._photonCamera = camera.getPhotonCamera();
+		// this._aprilTag = aprilTag;
+		// this._camera = camera;
+		// this._photonCamera = camera.getPhotonCamera();
 
 		frontLeft = new SwerveModule(DriveConstants.FrontLeftSteer, DriveConstants.FrontLeftDrive, invertDrive,
 				invertSteer);
@@ -220,16 +222,20 @@ public class Drive extends SubsystemBase {
 	// odometer.resetPosition(this._gyro.getRotation2d(), getPositions(), pose);
 	// }
 
-	public static Drive getInstance(NavXGyro gyro, AprilTag aprilTag, Camera camera) {
+	//public static Drive getInstance(NavXGyro gyro, AprilTag aprilTag, Camera camera) {
+	public static Drive getInstance(NavXGyro gyro) {
 		if (instance == null) {
-			instance = new Drive(gyro, aprilTag, camera);
+			//instance = new Drive(gyro, aprilTag, camera);
+			instance = new Drive(gyro);
 		}
 		return instance;
 	}
 
-	public static Drive getInstance(PigeonGyro gyro, AprilTag aprilTag, Camera camera) {
+	//public static Drive getInstance(PigeonGyro gyro, AprilTag aprilTag, Camera camera) {
+	public static Drive getInstance(PigeonGyro gyro) {
 		if (instance == null) {
-			instance = new Drive(gyro, aprilTag, camera);
+			//instance = new Drive(gyro, aprilTag, camera);
+			instance = new Drive(gyro);
 		}
 		return instance;
 	}
@@ -361,24 +367,24 @@ public class Drive extends SubsystemBase {
 	@Override()
 	public void periodic() {
 
-		int _aprilTagID=-1;
-		PhotonTrackedTarget _bestTarget;
+	// 	int _aprilTagID=-1;
+	// 	PhotonTrackedTarget _bestTarget;
 
-		var latestResult = _photonCamera.getLatestResult();
-      	SmartDashboard.putNumber("Camera Target", latestResult.getBestTarget().getFiducialId());
-	    if(latestResult.hasTargets()) {
-        	_bestTarget = latestResult.getBestTarget();
-        	_aprilTagID = _bestTarget.getFiducialId();
-    //      _aprilTagID = LimelightHelpers.getFiducialID("");
-      	}
-      	if (_aprilTagID>-1){
-        	Pose3d target = _aprilTag._fieldLayout.getTagPose(_aprilTagID).get();
-			Transform3d robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0)); //Cam mounted facing forward, half a meter forward of center, half a meter up from center.
+	// 	var latestResult = _photonCamera.getLatestResult();
+    //   	SmartDashboard.putNumber("Camera Target", latestResult.getBestTarget().getFiducialId());
+	//     if(latestResult.hasTargets()) {
+    //     	_bestTarget = latestResult.getBestTarget();
+    //     	_aprilTagID = _bestTarget.getFiducialId();
+    // //      _aprilTagID = LimelightHelpers.getFiducialID("");
+    //   	}
+    //   	if (_aprilTagID>-1){
+    //     	Pose3d target = _aprilTag._fieldLayout.getTagPose(_aprilTagID).get();
+	// 		Transform3d robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0)); //Cam mounted facing forward, half a meter forward of center, half a meter up from center.
 
-			// Construct PhotonPoseEstimator
-			PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(_aprilTag._fieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, robotToCam);
+	// 		// Construct PhotonPoseEstimator
+	// 		PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(_aprilTag._fieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, robotToCam);
 
-		}
+	// 	}
 		/*
 		 * The state of the robot gyro and individual swerve modules are
 		 * sent to odometer on each cycle of the program.

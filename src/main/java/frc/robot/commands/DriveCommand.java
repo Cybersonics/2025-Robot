@@ -18,8 +18,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utility.AprilTag;
 import frc.robot.utility.LimelightHelpers;
 
-import org.photonvision.PhotonCamera;
-import org.photonvision.targeting.PhotonTrackedTarget;
+// import org.photonvision.PhotonCamera;
+// import org.photonvision.targeting.PhotonTrackedTarget;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 
@@ -43,7 +43,7 @@ public class DriveCommand extends Command {
   private NavXGyro _navXGyro;
   private PigeonGyro _pigeonGyro;
   private Camera _camera;
-  private PhotonCamera _photonCamera;
+  //private PhotonCamera _photonCamera;
 
   public static final double OMEGA_SCALE = 1.0 / 20.0;//30.0;// 45
   public static final double DEADZONE_LSTICK = 0.05;//0.1
@@ -56,23 +56,23 @@ public class DriveCommand extends Command {
   private double _driveRotationP = 0.0004, _driveRotationD = 0.00, _driveRotationI = 0.00;//p=0.0002
   private double _driveDistanceP = 0.015, _driveDistanceD = 0.008, _driveDistanceI = 0.00;//p=0.002
   private double _driveStrafeP = 0.015, _driveStrafeD = 0.00, _driveStrafeI = 0.00;//p=0.015 d=0.008
-  private AprilTag _target;
-  private int _aprilTagID;
-  private PhotonTrackedTarget _bestTarget;
+  //private AprilTag _target;
+  //private int _aprilTagID;
+  //private PhotonTrackedTarget _bestTarget;
 
   private Trigger _rightJoystickButtonThree;
 
   /**
    * Creates a new DriveCommand using a standard set of joysticks as the driver joysticks.
    */
-  public DriveCommand(Drive drive, CommandJoystick leftStick, CommandJoystick rightStick, NavXGyro gyro, Camera camera) {
+  public DriveCommand(Drive drive, CommandJoystick leftStick, CommandJoystick rightStick, NavXGyro gyro) {
     this._drive = drive;
     this.leftStick = leftStick;
     this.rightStick = rightStick;
     this._navXGyro = gyro;
 
-    this._camera = camera;
-    this._photonCamera = _camera.getPhotonCamera();
+    //this._camera = camera;
+    //this._photonCamera = _camera.getPhotonCamera();
     
     _rightJoystickButtonThree = rightStick.button(3);
 
@@ -83,14 +83,14 @@ public class DriveCommand extends Command {
   /**
   * Creates a new DriveCommand using a standard set of joysticks as the driver joysticks and Pigeon Gyro.
   */
- public DriveCommand(Drive drive, CommandJoystick leftStick, CommandJoystick rightStick, PigeonGyro gyro, Camera camera) {
+ public DriveCommand(Drive drive, CommandJoystick leftStick, CommandJoystick rightStick, PigeonGyro gyro) {
    this._drive = drive;
    this.leftStick = leftStick;
    this.rightStick = rightStick;
    this._pigeonGyro = gyro;
 
-   this._camera = camera;
-   this._photonCamera = _camera.getPhotonCamera();
+   //this._camera = camera;
+   //this._photonCamera = _camera.getPhotonCamera();
    
    _rightJoystickButtonThree = rightStick.button(3);
 
@@ -101,15 +101,15 @@ public class DriveCommand extends Command {
   /*
    * Creates a new DriveCommand using a CommandXboxController for driving
    */
-  public DriveCommand(Drive drive, CommandXboxController driveController, NavXGyro gyro, Camera camera) {
+  public DriveCommand(Drive drive, CommandXboxController driveController, NavXGyro gyro) {
     this._drive = drive;
     this._driveController = driveController;
     this._leftBumper = new JoystickButton(this._driveController.getHID(), XboxController.Button.kLeftBumper.value);
     this._rightBumper = new JoystickButton(this._driveController.getHID(), XboxController.Button.kRightBumper.value);
     this._navXGyro = gyro;
     
-    this._camera = camera;
-    this._photonCamera = _camera.getPhotonCamera();
+    //this._camera = camera;
+    //this._photonCamera = _camera.getPhotonCamera();
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drive);
@@ -118,15 +118,15 @@ public class DriveCommand extends Command {
   /*
   * Creates a new DriveCommand using a CommandXboxController and Pigeon Gyro for driving
   */
- public DriveCommand(Drive drive, CommandXboxController driveController, PigeonGyro gyro, Camera camera) {
+ public DriveCommand(Drive drive, CommandXboxController driveController, PigeonGyro gyro) {
    this._drive = drive;
    this._driveController = driveController;
    this._leftBumper = new JoystickButton(this._driveController.getHID(), XboxController.Button.kLeftBumper.value);
    this._rightBumper = new JoystickButton(this._driveController.getHID(), XboxController.Button.kRightBumper.value);
    this._pigeonGyro = gyro;
    
-   this._camera = camera;
-   this._photonCamera = _camera.getPhotonCamera();
+   //this._camera = camera;
+   //this._photonCamera = _camera.getPhotonCamera();
 
    // Use addRequirements() here to declare subsystem dependencies.
    addRequirements(drive);
@@ -274,16 +274,16 @@ public class DriveCommand extends Command {
     }
 
    
-      var latestResult = _photonCamera.getLatestResult();
-      SmartDashboard.putNumber("Camera Target", latestResult.getBestTarget().getFiducialId());
+      //var latestResult = _photonCamera.getLatestResult();
+      //SmartDashboard.putNumber("Camera Target", latestResult.getBestTarget().getFiducialId());
     // if(_rightJoystickButtonThree.getAsBoolean()) {
-      if(latestResult.hasTargets()) {
-        _bestTarget = latestResult.getBestTarget();
-        _aprilTagID = _bestTarget.getFiducialId();
+     // if(latestResult.hasTargets()) {
+     //   _bestTarget = latestResult.getBestTarget();
+     //   _aprilTagID = _bestTarget.getFiducialId();
     //      _aprilTagID = LimelightHelpers.getFiducialID("");
-      }
-      if (_aprilTagID>-1){
-        Pose3d target = _drive._aprilTag._fieldLayout.getTagPose(_aprilTagID).get();  
+     // }
+      // if (_aprilTagID>-1){
+      //   Pose3d target = _drive._aprilTag._fieldLayout.getTagPose(_aprilTagID).get();  
         
         //double targetDistance = target.  .getDistance();
     //     double targetHeading = target.getExpectedHeading();
@@ -352,7 +352,7 @@ public class DriveCommand extends Command {
     //     omega = 0;
     //     deadStick = true;
     //   }
-      }
+      //}
 
     /*
       * If all of the joysticks are in the deadzone, don't update the motors
