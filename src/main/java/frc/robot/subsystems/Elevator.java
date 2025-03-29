@@ -173,7 +173,7 @@ public class Elevator extends SubsystemBase {
 
   public void setElevatorHeight(double levelHeight){
 
-    System.out.println(pidController.getGoal().position+" , "+pidController.getSetpoint().position);
+   // System.out.println(pidController.getGoal().position+" , "+pidController.getSetpoint().position);
 
     setDefaultPose(levelHeight);
     pidController.setGoal(levelHeight);

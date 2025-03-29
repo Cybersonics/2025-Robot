@@ -24,12 +24,12 @@ public class IntakeCoralCommand extends Command {
     @Override
     public void execute() {
         if (this._coralSubsystems.feedCoral()){    
-            System.out.println("feeding Coral");
+            // System.out.println("feeding Coral");
             this._coralSubsystems.intakeCoral();
         } else if (this._coralSubsystems.hasCoral()) {
-            System.out.println("stopping Coral");
+            // System.out.println("stopping Coral");
             this._coralSubsystems.stop(); 
-            System.out.println("positioning Coral");
+            // System.out.println("positioning Coral");
             this._coralSubsystems.setPosition(15);
             this._isFinished = true;
         }

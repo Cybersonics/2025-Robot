@@ -17,9 +17,8 @@ public class ScoreAlgaeInBarge extends SequentialCommandGroup {
       //new RaiseElevatorCommand(elevator, 1250),
       //new RaiseElevatorCommand(elevator, 2000),
       //new RaiseElevatorCommand(elevator, 3150),
-      new RaiseElevatorCommand(elevator, 3675),
-      new AlgaeMechanismCommand(algea, () -> false, () -> true, () -> false, true)//,
-      //new RaiseElevatorCommand(elevator, 70)
+      // new RaiseElevatorCommand(elevator, 3690),
+      new AlgaeMechanismCommand(algea, () -> true, () -> false, () -> false, true)
     );
   }
 }

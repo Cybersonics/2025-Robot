@@ -58,8 +58,23 @@ public class AlgeaMechanism extends SubsystemBase {
     setSpeed(0);
   }
 
+  private int spikeCount = 0;
+  public boolean HasAmpCurrentSpiked() {
+    if(_algeaSparkMax.getOutputCurrent() > 19) {
+      if(spikeCount > 10) {  // Starting the intake spikes to 33amps look for x+ spikes before returning true
+        spikeCount = 0;
+        return true;
+      } else {
+        spikeCount += 1;
+      }
+    }
+    return false;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    // System.out.println("Algea Amp Spike: "+_algeaSparkMax.getOutputCurrent());
+    SmartDashboard.putNumber("Algea Amp Spike", _algeaSparkMax.getOutputCurrent());
   }
 }

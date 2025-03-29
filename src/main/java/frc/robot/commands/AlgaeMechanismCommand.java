@@ -57,13 +57,14 @@ public class AlgaeMechanismCommand extends Command {
   public void end(boolean interrupted) {
     this._timer.stop();
     this._timer.reset();
+    this._algea.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     if (this._isAuto) {
-      return this._timer.hasElapsed(.5);
+      return this._timer.hasElapsed(.25);
     } else {
       return false;
     }

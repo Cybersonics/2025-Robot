@@ -16,9 +16,13 @@ import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.IntakeCoralCommand;
 import frc.robot.commands.RaiseElevatorCommand;
 import frc.robot.commands.autos.DriveForwardSlow;
-import frc.robot.commands.autos.IntakeAlgeaFromReef;
+import frc.robot.commands.autos.ElevatorBargeLevel;
+import frc.robot.commands.autos.ElevatorLevelFour;
+import frc.robot.commands.autos.IntakeL2AlgeaFromReef;
+import frc.robot.commands.autos.IntakeL3AlgeaFromReef;
 import frc.robot.commands.autos.ResetElevatorBottom;
 import frc.robot.commands.autos.ResetElevatorLevelOne;
+import frc.robot.commands.autos.ResetElevatorLevelThree;
 import frc.robot.commands.autos.ScoreAlgaeInBarge;
 import frc.robot.commands.autos.ScoreCoralLevelFour;
 import frc.robot.commands.autos.ScoreCoralLevelOne;
@@ -164,10 +168,16 @@ public class RobotContainer {
       NamedCommands.registerCommand("ScoreLevelFour", new ScoreCoralLevelFour(_elevator, _coralMechanism));  
       NamedCommands.registerCommand("ScoreAlgeaInBarge", new ScoreAlgaeInBarge(_elevator, _algeaMechanism));
 
+      NamedCommands.registerCommand("ElevatorBargeLevel", new ElevatorBargeLevel(_elevator));
+      NamedCommands.registerCommand("ElevatorLevelFour", new RaiseElevatorCommand(_elevator, 3200));
+      NamedCommands.registerCommand("ResetElevatorLevelThree", new ResetElevatorLevelThree(_elevator));
       NamedCommands.registerCommand("ResetElevatorLevelOne", new ResetElevatorLevelOne(_elevator));
       NamedCommands.registerCommand("ResetElevatorBottom", new ResetElevatorBottom(_elevator));
+
       NamedCommands.registerCommand("IntakeCoral", new IntakeCoralCommand(_coralMechanism));
-      NamedCommands.registerCommand("IntakeAlgeaFromReef", new IntakeAlgeaFromReef(_elevator, _algeaMechanism, _pneumatics));
+      NamedCommands.registerCommand("ScoreCoral", new ScoreCoralCommand(_coralMechanism));
+      NamedCommands.registerCommand("IntakeL2AlgeaFromReef", new IntakeL2AlgeaFromReef(_elevator, _algeaMechanism, _pneumatics));
+      NamedCommands.registerCommand("IntakeL3AlgeaFromReef", new IntakeL3AlgeaFromReef(_algeaMechanism, _pneumatics));
       NamedCommands.registerCommand("DriveSlowForward", new DriveForwardSlow(_drive));
   }
 

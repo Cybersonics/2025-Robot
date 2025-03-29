@@ -34,7 +34,7 @@ public class RetractAlgeaIntake extends Command {
   @Override
   public void execute() {
     this._pneumatics.algeaIn();
-    if(this._timer.hasElapsed(.5)) {
+    if(this._timer.hasElapsed(.25)) {
     System.out.println("Algea In Timer passed");
       this._isFinished = true;
     }
