@@ -61,7 +61,7 @@ public class AlgeaMechanism extends SubsystemBase {
   private int spikeCount = 0;
   public boolean HasAmpCurrentSpiked() {
     if(_algeaSparkMax.getOutputCurrent() > 19) {
-      if(spikeCount > 10) {  // Starting the intake spikes to 33amps look for x+ spikes before returning true
+      if(spikeCount > 7) {  // Starting the intake spikes to 33amps look for x+ spikes before returning true
         spikeCount = 0;
         return true;
       } else {

@@ -28,7 +28,10 @@ import frc.robot.commands.autos.ScoreCoralLevelFour;
 import frc.robot.commands.autos.ScoreCoralLevelOne;
 import frc.robot.commands.autos.ScoreCoralLevelThree;
 import frc.robot.commands.autos.ScoreCoralLevelTwo;
+import frc.robot.commands.autos.ScoreL1LeftCoralCommand;
+import frc.robot.commands.autos.ScoreL1RightCoralCommand;
 import frc.robot.commands.ScoreCoralCommand;
+import frc.robot.commands.ScoreTroughCoralCommand;
 import frc.robot.subsystems.AlgeaMechanism;
 import frc.robot.subsystems.Camera;
 import frc.robot.subsystems.Climber;
@@ -162,6 +165,8 @@ public class RobotContainer {
   }
 
   public void configureNamedCommands() {
+      NamedCommands.registerCommand("ScoreLevelOneLeft", new ScoreL1LeftCoralCommand(_coralMechanism));
+      NamedCommands.registerCommand("ScoreLevelOneRight", new ScoreL1RightCoralCommand(_coralMechanism));
       NamedCommands.registerCommand("ScoreLevelOne", new ScoreCoralLevelOne(_elevator, _coralMechanism));
       NamedCommands.registerCommand("ScoreLevelTwo", new ScoreCoralLevelTwo(_elevator, _coralMechanism));
       NamedCommands.registerCommand("ScoreLevelThree", new ScoreCoralLevelThree(_elevator, _coralMechanism));
@@ -176,6 +181,7 @@ public class RobotContainer {
 
       NamedCommands.registerCommand("IntakeCoral", new IntakeCoralCommand(_coralMechanism));
       NamedCommands.registerCommand("ScoreCoral", new ScoreCoralCommand(_coralMechanism));
+      NamedCommands.registerCommand("ScoreL1Coral", new ScoreTroughCoralCommand(_coralMechanism));
       NamedCommands.registerCommand("IntakeL2AlgeaFromReef", new IntakeL2AlgeaFromReef(_elevator, _algeaMechanism, _pneumatics));
       NamedCommands.registerCommand("IntakeL3AlgeaFromReef", new IntakeL3AlgeaFromReef(_algeaMechanism, _pneumatics));
       NamedCommands.registerCommand("DriveSlowForward", new DriveForwardSlow(_drive));
