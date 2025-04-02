@@ -37,7 +37,19 @@
         {
           "type": "named",
           "data": {
-            "name": "ScoreLevelOne"
+            "name": "ScoreLevelThree"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "L-Pipe-To-Algea"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeL2AlgeaFromReef"
           }
         }
       ]

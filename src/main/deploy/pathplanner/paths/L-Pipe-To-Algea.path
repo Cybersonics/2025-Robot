@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.43325,
-        "y": 7.408249999999999
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 1.6154748683754607,
-        "y": 7.237094815019976
-      },
-      "isLocked": false,
-      "linkedName": "Cages-Side-Station"
-    },
-    {
-      "anchor": {
         "x": 3.895,
         "y": 5.115
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.6784936490538906,
+        "y": 4.99
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.74,
+        "y": 5.07
+      },
       "prevControl": {
-        "x": 3.7082111731109024,
-        "y": 5.281162372844741
+        "x": 3.95650635094611,
+        "y": 5.195
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,22 +31,10 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Raise Elevator",
-      "waypointRelativePos": 0.7,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "ResetElevatorLevelThree"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -60,7 +48,7 @@
   "folder": "Cages",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 130.0
+    "rotation": 119.99999999999999
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

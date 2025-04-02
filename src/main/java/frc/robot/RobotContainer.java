@@ -202,7 +202,7 @@ public class RobotContainer {
    */
   private void autonomousOptions() {
     // For convenience a programmer could change this when going to competition.
-    boolean isCompetition = false;
+    boolean isCompetition = true;
 
     // As an example, this will not show autos that start with "cal-" while at
     // competition as defined by the programmer
