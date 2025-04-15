@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -46,6 +47,18 @@ public class Elevator extends SubsystemBase {
   private ElevatorFeedforward _feedforward;
   private double defaultPose; // = 0;
 
+
+  private double outputVoltage;
+	private final TrapezoidProfile.Constraints m_constraints = new TrapezoidProfile.Constraints(
+			Constants.ElevatorConstants.ELEVATOR_MAX_VELO,
+			Constants.ElevatorConstants.ELEVATOR_MAX_ACCELLERATION);
+
+	private final ProfiledPIDController pidController = new ProfiledPIDController(Constants.ElevatorConstants.ELEVATOR_P,
+			Constants.ElevatorConstants.ELEVATOR_I, Constants.ElevatorConstants.ELEVATOR_D, m_constraints);
+
+	ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0.0086531, 0.15, 0.000215);//ks=0.0086531, kg=0.029608, kv=0.000215
+
+
   /** Creates a new Elevator. */
   private Elevator() {
     
@@ -62,12 +75,12 @@ public class Elevator extends SubsystemBase {
     _leftMotorConfig = new SparkFlexConfig();
     _leftMotorConfig.follow(_rightMotor);
     _leftMotorConfig.idleMode(IdleMode.kBrake);
-    _leftMotorConfig.openLoopRampRate(1);
+    _leftMotorConfig.openLoopRampRate(.5);
 
     //Configure Right Motor
     _rightMotorConfig = new SparkFlexConfig();
     _rightMotorConfig.idleMode(IdleMode.kBrake);
-    _rightMotorConfig.openLoopRampRate(1);
+    _rightMotorConfig.openLoopRampRate(.5);
 
     //Flash Flex Controllers
     _leftMotor.configure(_leftMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -85,6 +98,11 @@ public class Elevator extends SubsystemBase {
 
     this._elevatorPIDController = new PIDController(p, i, d);
     this._elevatorPIDController.setTolerance(25);
+    this.defaultPose=1000;
+
+
+    pidController.setTolerance(Constants.ElevatorConstants.ELEVATOR_POSITION_TOLERANCE);
+		pidController.reset(getPose());
   }
 
   /*
@@ -153,8 +171,34 @@ public class Elevator extends SubsystemBase {
 
   }
 
+  public void setElevatorHeight(double levelHeight){
+
+   // System.out.println(pidController.getGoal().position+" , "+pidController.getSetpoint().position);
+
+    setDefaultPose(levelHeight);
+    pidController.setGoal(levelHeight);
+      //this.outputVoltage = pidController.calculate(elevator.getPose(), elevator.getDefaultPose())//;
+    this.outputVoltage = pidController.calculate(getPose())
+    + elevatorFeedforward.calculate(pidController.getSetpoint().velocity);
+
+    // SmartDashboard.putNumber("Current Elevator Pose", getPose());
+    // SmartDashboard.putNumber("Default Elevator Pose", getDefaultPose());
+    // SmartDashboard.putNumber("Elevator Power", this.outputVoltage);
+
+    setVoltage(this.outputVoltage);
+  }
+
+  public void resetPosition(double position){
+		pidController.reset(position);
+	}
+
   public boolean elevatorAtSetpoint(){
-    return _elevatorPIDController.atSetpoint();
+    //return _elevatorPIDController.atSetpoint();
+    return pidController.atSetpoint();
+  }
+
+  public boolean elevatorAtGoal(){
+    return pidController.atGoal();
   }
 
   @Override

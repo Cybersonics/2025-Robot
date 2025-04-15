@@ -3,8 +3,9 @@
   "robotLength": 0.897,
   "holonomicMode": true,
   "pathFolders": [
-    "Calibration Paths",
     "Cages",
+    "Calibration Paths",
+    "Center",
     "Processor"
   ],
   "autoFolders": [

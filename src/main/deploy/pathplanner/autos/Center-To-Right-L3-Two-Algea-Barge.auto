@@ -7,31 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start-to-J-pipe"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ScoreLevelFour"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "J-Pipe-To-Station"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "IntakeCoral"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Station-To-L-pipe"
+            "pathName": "CenterToA10"
           }
         },
         {
@@ -43,13 +19,49 @@
         {
           "type": "path",
           "data": {
-            "pathName": "L-Pipe-To-Algea"
+            "pathName": "H-Pipe-to-algea"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "IntakeL2AlgeaFromReef"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A10-Algea-to-Barge"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreAlgeaInBarge"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Barge-To-A11-Algea"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeL3AlgeaFromReef"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A11-To-Barge"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreAlgeaInBarge"
           }
         }
       ]

@@ -16,15 +16,22 @@ import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.IntakeCoralCommand;
 import frc.robot.commands.RaiseElevatorCommand;
 import frc.robot.commands.autos.DriveForwardSlow;
-import frc.robot.commands.autos.IntakeAlgeaFromReef;
+import frc.robot.commands.autos.ElevatorBargeLevel;
+import frc.robot.commands.autos.ElevatorLevelFour;
+import frc.robot.commands.autos.IntakeL2AlgeaFromReef;
+import frc.robot.commands.autos.IntakeL3AlgeaFromReef;
 import frc.robot.commands.autos.ResetElevatorBottom;
 import frc.robot.commands.autos.ResetElevatorLevelOne;
+import frc.robot.commands.autos.ResetElevatorLevelThree;
 import frc.robot.commands.autos.ScoreAlgaeInBarge;
 import frc.robot.commands.autos.ScoreCoralLevelFour;
 import frc.robot.commands.autos.ScoreCoralLevelOne;
 import frc.robot.commands.autos.ScoreCoralLevelThree;
 import frc.robot.commands.autos.ScoreCoralLevelTwo;
+import frc.robot.commands.autos.ScoreL1LeftCoralCommand;
+import frc.robot.commands.autos.ScoreL1RightCoralCommand;
 import frc.robot.commands.ScoreCoralCommand;
+import frc.robot.commands.ScoreTroughCoralCommand;
 import frc.robot.subsystems.AlgeaMechanism;
 import frc.robot.subsystems.Camera;
 import frc.robot.subsystems.Climber;
@@ -67,6 +74,10 @@ public class RobotContainer {
   //public static NavXGyro _gyro = NavXGyro.getInstance();
   public static PigeonGyro _gyro = PigeonGyro.getInstance();
 
+  //public static AprilTag _aprilTags = new AprilTag(() -> DriverStation.getAlliance().get());
+  //public static Camera _camera = Camera.getInstance(_aprilTags);
+
+  //public static Drive _drive = Drive.getInstance(_gyro, _aprilTags, _camera);
   public static Drive _drive = Drive.getInstance(_gyro);
   
   public static Elevator _elevator = Elevator.getInstance();
@@ -76,8 +87,7 @@ public class RobotContainer {
   public static Pneumatics _pneumatics = Pneumatics.getInstance();
   //public static Climber _climber = Climber.getInstance();
 
-  public static AprilTag _aprilTags = new AprilTag(() -> DriverStation.getAlliance().get());
-  public static Camera _camera = Camera.getInstance(_aprilTags);
+
   
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.DriveController);
@@ -101,11 +111,12 @@ public class RobotContainer {
 
     // Default Comands always running
     CommandScheduler.getInstance()
-    .setDefaultCommand(_drive, new DriveCommand(_drive, driverController, _gyro, _camera));
+    //.setDefaultCommand(_drive, new DriveCommand(_drive, driverController, _gyro, _camera));
+    .setDefaultCommand(_drive, new DriveCommand(_drive, driverController, _gyro));
 
     CommandScheduler.getInstance()
-    //.setDefaultCommand(_elevator, new ElevatorDefaultCommand(operatorController));
-    .setDefaultCommand(_elevator, new ElevatorCommand(_elevator, operatorController));
+    .setDefaultCommand(_elevator, new ElevatorDefaultCommand(operatorController));
+    //.setDefaultCommand(_elevator, new ElevatorCommand(_elevator, operatorController));
 
     CommandScheduler.getInstance()
     .setDefaultCommand(_algeaMechanism, new AlgaeMechanismCommand(_algeaMechanism, operatorController.rightBumper(), operatorController.leftBumper(), operatorController.pov(180), false));
@@ -154,16 +165,25 @@ public class RobotContainer {
   }
 
   public void configureNamedCommands() {
+      NamedCommands.registerCommand("ScoreLevelOneLeft", new ScoreL1LeftCoralCommand(_coralMechanism));
+      NamedCommands.registerCommand("ScoreLevelOneRight", new ScoreL1RightCoralCommand(_coralMechanism));
       NamedCommands.registerCommand("ScoreLevelOne", new ScoreCoralLevelOne(_elevator, _coralMechanism));
       NamedCommands.registerCommand("ScoreLevelTwo", new ScoreCoralLevelTwo(_elevator, _coralMechanism));
       NamedCommands.registerCommand("ScoreLevelThree", new ScoreCoralLevelThree(_elevator, _coralMechanism));
       NamedCommands.registerCommand("ScoreLevelFour", new ScoreCoralLevelFour(_elevator, _coralMechanism));  
       NamedCommands.registerCommand("ScoreAlgeaInBarge", new ScoreAlgaeInBarge(_elevator, _algeaMechanism));
 
+      NamedCommands.registerCommand("ElevatorBargeLevel", new ElevatorBargeLevel(_elevator));
+      NamedCommands.registerCommand("ElevatorLevelFour", new RaiseElevatorCommand(_elevator, 3200));
+      NamedCommands.registerCommand("ResetElevatorLevelThree", new ResetElevatorLevelThree(_elevator));
       NamedCommands.registerCommand("ResetElevatorLevelOne", new ResetElevatorLevelOne(_elevator));
       NamedCommands.registerCommand("ResetElevatorBottom", new ResetElevatorBottom(_elevator));
+
       NamedCommands.registerCommand("IntakeCoral", new IntakeCoralCommand(_coralMechanism));
-      NamedCommands.registerCommand("IntakeAlgeaFromReef", new IntakeAlgeaFromReef(_elevator, _algeaMechanism, _pneumatics));
+      NamedCommands.registerCommand("ScoreCoral", new ScoreCoralCommand(_coralMechanism));
+      NamedCommands.registerCommand("ScoreL1Coral", new ScoreTroughCoralCommand(_coralMechanism));
+      NamedCommands.registerCommand("IntakeL2AlgeaFromReef", new IntakeL2AlgeaFromReef(_elevator, _algeaMechanism, _pneumatics));
+      NamedCommands.registerCommand("IntakeL3AlgeaFromReef", new IntakeL3AlgeaFromReef(_algeaMechanism, _pneumatics));
       NamedCommands.registerCommand("DriveSlowForward", new DriveForwardSlow(_drive));
   }
 
@@ -182,7 +202,7 @@ public class RobotContainer {
    */
   private void autonomousOptions() {
     // For convenience a programmer could change this when going to competition.
-    boolean isCompetition = false;
+    boolean isCompetition = true;
 
     // As an example, this will not show autos that start with "cal-" while at
     // competition as defined by the programmer

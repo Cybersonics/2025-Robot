@@ -1,13 +1,13 @@
-package frc.robot.commands;
+package frc.robot.commands.autos;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CoralMechanism;
 
-public class ScoreTroughCoralCommand extends Command {
+public class ScoreL1LeftCoralCommand extends Command {
 
     private CoralMechanism _coralSubsystems;
 
-    public ScoreTroughCoralCommand(CoralMechanism coral) {
+    public ScoreL1LeftCoralCommand(CoralMechanism coral) {
         this._coralSubsystems = coral;
 
         addRequirements(_coralSubsystems);
@@ -20,7 +20,7 @@ public class ScoreTroughCoralCommand extends Command {
 
     @Override
     public void execute() {
-        this._coralSubsystems.levelOneEjectCoral(.7, .4);// was 0.7, 0.4
+        this._coralSubsystems.levelOneEjectCoral(.4, .7);
     }
 
     // Called once the command ends or is interrupted.
