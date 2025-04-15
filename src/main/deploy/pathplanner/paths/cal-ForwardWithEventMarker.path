@@ -1,0 +1,77 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.15,
+        "y": 0.5
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.3527499999999995,
+        "y": 1.0025
+      },
+      "isLocked": false,
+      "linkedName": "Processor-Start"
+    },
+    {
+      "anchor": {
+        "x": 1.1895,
+        "y": 2.1529999999999996
+      },
+      "prevControl": {
+        "x": 1.8622500000000002,
+        "y": 1.9482499999999994
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Raise Elevator",
+      "waypointRelativePos": 0.1,
+      "endWaypointRelativePos": 0.34928057553956215,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "ScoreLevelOne"
+        }
+      }
+    },
+    {
+      "name": "Lower Elevator",
+      "waypointRelativePos": 0.5996402877697767,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "ResetElevator"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": "Calibration Paths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}

@@ -1,0 +1,49 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start-to-J-pipe"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreLevelFour"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "J-Pipe-To-Station"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeCoral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Station-To-L-pipe"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreLevelOne"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

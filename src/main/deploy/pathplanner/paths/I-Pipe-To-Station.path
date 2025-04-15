@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.44,
+        "y": 4.914
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.8555,
+        "y": 6.5489999999999995
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.43325,
+        "y": 7.408249999999999
+      },
+      "prevControl": {
+        "x": 1.7734999999999999,
+        "y": 6.667249999999218
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Cages-Side-Station"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 130.0
+  },
+  "reversed": false,
+  "folder": "Cages",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 59.99999999999999
+  },
+  "useDefaultConstraints": true
+}
