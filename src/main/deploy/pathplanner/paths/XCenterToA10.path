@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.43325,
-        "y": 7.408249999999999
+        "x": 7.15,
+        "y": 4.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6154748683754607,
-        "y": 7.237094815019976
+        "x": 6.863673249323784,
+        "y": 4.0396752632274495
       },
       "isLocked": false,
-      "linkedName": "Cages-Side-Station"
+      "linkedName": "Center-Start"
     },
     {
       "anchor": {
-        "x": 4.04,
-        "y": 5.2
+        "x": 5.85,
+        "y": 4.185
       },
       "prevControl": {
-        "x": 3.8532111731109024,
-        "y": 5.366162372844741
+        "x": 6.097255495695073,
+        "y": 4.148057885163632
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,19 +34,19 @@
   "eventMarkers": [
     {
       "name": "Raise Elevator",
-      "waypointRelativePos": 0.7,
+      "waypointRelativePos": 0.5,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "ResetElevatorLevelThree"
+          "name": "ResetElevatorLevelOne"
         }
       }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -54,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Cages",
+  "folder": "Experiment Algae Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 130.0
+    "rotation": 0.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

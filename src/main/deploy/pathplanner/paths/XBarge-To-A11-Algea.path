@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.43325,
-        "y": 7.408249999999999
+        "x": 7.78,
+        "y": 4.9
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6154748683754607,
-        "y": 7.237094815019976
+        "x": 7.57799031407229,
+        "y": 4.73282806406182
       },
       "isLocked": false,
-      "linkedName": "Cages-Side-Station"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.04,
+        "x": 5.1,
         "y": 5.2
       },
       "prevControl": {
-        "x": 3.8532111731109024,
-        "y": 5.366162372844741
+        "x": 5.822246846886714,
+        "y": 5.2
       },
       "nextControl": null,
       "isLocked": false,
@@ -29,12 +29,26 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.5032374100719397,
+      "constraints": {
+        "maxVelocity": 2.1,
+        "maxAcceleration": 2.1,
+        "maxAngularVelocity": 450.0,
+        "maxAngularAcceleration": 630.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Raise Elevator",
-      "waypointRelativePos": 0.7,
+      "name": "Lower Elevator",
+      "waypointRelativePos": 0.30467625899280526,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -45,8 +59,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -54,13 +68,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": 57.00000000000001
   },
   "reversed": false,
-  "folder": "Cages",
+  "folder": "Experiment Algae Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 130.0
+    "rotation": 180.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

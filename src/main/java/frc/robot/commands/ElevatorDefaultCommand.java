@@ -20,9 +20,9 @@ public class ElevatorDefaultCommand extends Command {
 	private double power;
 	
 
-	private double maxSpeedUp = .7;
+	private double maxSpeedUp = .9; //was 0.7, 0.8
   	private double slowedSpeed = .3;
-  	private double maxSpeedDown = .5;
+  	private double maxSpeedDown = .7; //was 0.5, 0.6
 	private static final double DEADZONE_LSTICK = 0.05;//0.1
 
 	private double outputVoltage;
@@ -59,7 +59,7 @@ public class ElevatorDefaultCommand extends Command {
 
     	if (Math.abs(manualElevatorStick)>0.01){
       		if(this.elevator.getAlgeaHeight() < 3700 && manualElevatorStick > 0) {
-        		if(this.elevator.getAlgeaHeight() > 3000) {
+        		if(this.elevator.getAlgeaHeight() > 2850) { //was 3000
             	// Go slow close to top out
             	this.elevator.setSpeed(manualElevatorStick * slowedSpeed);
         		} else {
