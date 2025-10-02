@@ -17,7 +17,7 @@ public class ScoreCoralLevelFour extends SequentialCommandGroup {
     addCommands(
       //new RaiseElevatorCommand(elevator, 1250),
       //new RaiseElevatorCommand(elevator, 2000),
-      new RaiseElevatorCommand(elevator, 3200),// original 3050
+      new RaiseElevatorCommand(elevator, 3200),// original 3050    3200    3275
       new ScoreCoralCommand(coral)
       //,new RaiseElevatorCommand(elevator, 750)
     );

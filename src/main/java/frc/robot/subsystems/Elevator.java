@@ -56,7 +56,7 @@ public class Elevator extends SubsystemBase {
 	private final ProfiledPIDController pidController = new ProfiledPIDController(Constants.ElevatorConstants.ELEVATOR_P,
 			Constants.ElevatorConstants.ELEVATOR_I, Constants.ElevatorConstants.ELEVATOR_D, m_constraints);
 
-	ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0.0086531, 0.15, 0.000215);//ks=0.0086531, kg=0.029608, kv=0.000215
+	ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0.0086531, 0.265, 0.0005);//ks=0.0086531, 0.15 kg=0.029608, kv=0.000215
 
 
   /** Creates a new Elevator. */
@@ -87,12 +87,12 @@ public class Elevator extends SubsystemBase {
     _rightMotor.configure(_rightMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     //Setup Elevator PIDs
-    double p = 0.012;//  0.0093
+    double p = 0.01175;//  0.012/ 0.0125 /0.0093
     double i = 0;
     double d = 0.0005;//0.0025;//0.0005  0.0002
 
-    double kS = 0.001;//0.01
-    double kG = 0.01;//0.41
+    double kS = 0.103;//0.5//0.02//0.01//0.001//0.01
+    double kG = 0.015;//0.01//0.41
     double kV = 0.0002;//0.002
     _feedforward = new ElevatorFeedforward(kS, kG, kV);
 
@@ -181,9 +181,9 @@ public class Elevator extends SubsystemBase {
     this.outputVoltage = pidController.calculate(getPose())
     + elevatorFeedforward.calculate(pidController.getSetpoint().velocity);
 
-    // SmartDashboard.putNumber("Current Elevator Pose", getPose());
-    // SmartDashboard.putNumber("Default Elevator Pose", getDefaultPose());
-    // SmartDashboard.putNumber("Elevator Power", this.outputVoltage);
+    SmartDashboard.putNumber("Current Elevator Pose", getPose());
+    SmartDashboard.putNumber("Default Elevator Pose", getDefaultPose());
+    SmartDashboard.putNumber("Elevator Power", this.outputVoltage);
 
     setVoltage(this.outputVoltage);
   }
