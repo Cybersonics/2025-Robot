@@ -204,11 +204,22 @@ public class Constants {
     }
 
     public static final class CameraConstants {
-        public static final String CameraName = "limelight"; 
+        public static final String CameraName = "Arducam_OV9281_USB_Camera"; 
         public static final int AprilTagPipeline = 0;
 
-        public static final double RobotCameraHeight = Units.inchesToMeters(17.25);
-        public static final double RobotCameraAngle = Units.degreesToRadians(0);
-        public static final double RobotDistance = 58;
+        public static final double cameraPositionX = Units.inchesToMeters(-1.5);//-2.0//-2.5//-3//20.375
+        public static final double cameraPositionY = Units.inchesToMeters(0);//0
+        public static final double cameraPositionZ = Units.inchesToMeters(14.25);//14.5
+
+        public static final double cameraPositionRoll = Units.degreesToRadians(0);
+        public static final double cameraPositionPitch = Units.degreesToRadians(0);
+        public static final double cameraPositionYaw = Units.degreesToRadians(0);
+
+        
+
     }
+
+    // public static final class AprilTags {
+    //     public static final ArrayList<AprilTag> AprilTags = AprilTag.LoadAprilTagList();
+    // }
 }
