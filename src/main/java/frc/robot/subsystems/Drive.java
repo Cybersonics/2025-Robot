@@ -54,8 +54,8 @@ public class Drive extends SubsystemBase {
 	private PigeonGyro _pigeonGyro;
 	private boolean _driveCorrect= false;
 	// public AprilTag _aprilTag;
-	// public Camera _camera;
-	// private PhotonCamera _photonCamera;
+	public Camera _camera;
+	private PhotonCamera _photonCamera;
 
 	private final SwerveDriveOdometry odometer;
 

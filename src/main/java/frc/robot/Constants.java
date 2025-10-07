@@ -159,9 +159,9 @@ public class Constants {
 	    public static final double ELEVATOR_CONVERSION_FACTOR = 25;
 	    public static final double ELEVATOR_ROLLER_RAIDUS = 3;
         
-	    public static final double ELEVATOR_MAX_VELO = 3000;//1000; //3000;
-	    public static final double ELEVATOR_MAX_ACCELLERATION = 5000;//1000; //5000;
-	    public static final double ELEVATOR_P = 0.02; //.012; //0.073;
+	    public static final double ELEVATOR_MAX_VELO = 7500; //3000 //1000; //3000;
+	    public static final double ELEVATOR_MAX_ACCELLERATION = 7500; //5000//1000; //5000;
+	    public static final double ELEVATOR_P = 0.027;  //0.02 //.012; //0.073;
 	    public static final double ELEVATOR_I = 0.0;
 	    public static final double ELEVATOR_D = 0.0005; //0.0026;//0.005;
 	    public static final int ELEVATOR_CURRENT_LIMIT = 40;

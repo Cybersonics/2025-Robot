@@ -56,7 +56,7 @@ public class Elevator extends SubsystemBase {
 	private final ProfiledPIDController pidController = new ProfiledPIDController(Constants.ElevatorConstants.ELEVATOR_P,
 			Constants.ElevatorConstants.ELEVATOR_I, Constants.ElevatorConstants.ELEVATOR_D, m_constraints);
 
-	ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0.0086531, 0.15, 0.000215);//ks=0.0086531, kg=0.029608, kv=0.000215
+	ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0.0086531, 0.265, 0.0005);//ks=0.0086531, kg=0.029608  0.15, kv=0.000215
 
 
   /** Creates a new Elevator. */
