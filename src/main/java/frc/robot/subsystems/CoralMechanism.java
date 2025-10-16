@@ -102,7 +102,7 @@ public class CoralMechanism extends SubsystemBase {
     SmartDashboard.putBoolean("MechanismHasCoral", hasCoral());   
     SmartDashboard.putBoolean("FeedHasCoral", feedCoral());
 
-    SmartDashboard.putNumber("LeftEncoder", this._coralLeftSparkMax.getEncoder().getPosition());
-    SmartDashboard.putNumber("RightEncoder", this._coralRightSparkMax.getEncoder().getPosition());
+    //SmartDashboard.putNumber("LeftEncoder", this._coralLeftSparkMax.getEncoder().getPosition());
+    //SmartDashboard.putNumber("RightEncoder", this._coralRightSparkMax.getEncoder().getPosition());
   }
 }

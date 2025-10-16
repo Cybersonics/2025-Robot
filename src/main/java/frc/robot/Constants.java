@@ -4,10 +4,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.photonvision.targeting.PhotonPipelineResult;
+
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -15,7 +21,7 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants.DriveConstants.FrameConstants;
-import frc.robot.utility.AprilTag;
+
 
 import static edu.wpi.first.units.Units.*;
 
@@ -203,23 +209,99 @@ public class Constants {
         public static final double kClimberEncoderRot2Meter = kClimberMotorGearRatio * Math.PI * kSpoolDiameterMeters;
     }
 
-    public static final class CameraConstants {
-        public static final String CameraName = "Arducam_OV9281_USB_Camera"; 
-        public static final int AprilTagPipeline = 0;
+    // public static final class CameraConstants {
+    //     public static final String CameraName = "Arducam_OV9281_USB_Camera"; 
+    //     public static final int AprilTagPipeline = 0;
 
-        public static final double cameraPositionX = Units.inchesToMeters(-1.5);//-2.0//-2.5//-3//20.375
-        public static final double cameraPositionY = Units.inchesToMeters(0);//0
-        public static final double cameraPositionZ = Units.inchesToMeters(14.25);//14.5
+    //     public static final double cameraPositionX = Units.inchesToMeters(-1.5);//-2.0//-2.5//-3//20.375
+    //     public static final double cameraPositionY = Units.inchesToMeters(0);//0
+    //     public static final double cameraPositionZ = Units.inchesToMeters(14.25);//14.5
 
-        public static final double cameraPositionRoll = Units.degreesToRadians(0);
-        public static final double cameraPositionPitch = Units.degreesToRadians(0);
-        public static final double cameraPositionYaw = Units.degreesToRadians(0);
+    //     public static final double cameraPositionRoll = Units.degreesToRadians(0);
+    //     public static final double cameraPositionPitch = Units.degreesToRadians(0);
+    //     public static final double cameraPositionYaw = Units.degreesToRadians(0);
 
         
 
-    }
-
-    // public static final class AprilTags {
-    //     public static final ArrayList<AprilTag> AprilTags = AprilTag.LoadAprilTagList();
     // }
+
+   public static final class VisionConstants {
+    // For the robot to camera transforms, the robot coordinates are used.
+    // The input to the transform is the distance, in meters, from the center
+    // of the robot to the location where the camera is mounted.  Check the FRC
+    // site for additional information on the robot coordinate system.
+    // Looking at the robot from above with the front on top:
+    // X is positive towards the front of the robot and negative towards the rear
+    // Y is positive towards the left and negative towards the right
+    // Z is positive away from the ground and negative towards the ground
+    // For the rotations, the angle is in radians as follows:
+    // Roll is rotation around the X axis (not used) 
+    // Pitch is rotation around the Y axis (not used)
+    // Yaw is rotation around the Z axis and it is positive counter clockwise and
+    // negative clockwise
+    public static final Transform3d BOT_TO_LEFT_CAM = new Transform3d(
+     new Translation3d(
+        Units.inchesToMeters(-10.0), //10.0 Forward/back/ X
+        Units.inchesToMeters(-11.125), //11,125 Left/Right/ Y
+        Units.inchesToMeters(13.25)),//13.25 Up/down/ Z
+      new Rotation3d(Math.toRadians(0), Math.toRadians(5.0), Math.toRadians(153.3))//0,5,-26.7
+      ); 
+
+    public static final Transform3d BOT_TO_RIGHT_CAM = new Transform3d(
+      new Translation3d(
+        Units.inchesToMeters(-6.125), //6.125 Forward/back/ X
+        Units.inchesToMeters(7.5), //-7.5 Left/Right/ Y
+        Units.inchesToMeters(10.75)), //10.75 Up/Down/ Z
+      new Rotation3d(Math.toRadians(0), 0, Math.toRadians(175.5))//0,0,4.5
+    );
+
+    public static final double AMBIGUITY_THRESHOLD = 0.3;
+    public static final double minAprilTagSize = 0.8; // This is the minimum size for an AprilTag to be considered good to work with.
+    public static final double midRangeAprilTagSize = 0.4;
+    public static final double minAprilTagAngleToRobot = Math.PI/4;  // This is the minimum angle delta bewteen robot and AprilTag for an AprilTag to be considered good to work with.
+
+    public static final Pose2d noPose = new Pose2d();
+    public static final PhotonPipelineResult noPipeResult = new PhotonPipelineResult();
+  }
+
+
+  public static final class AutoScore{
+    // Constants to select which coral branch to score, the left or the right, from the perspective of the driver.
+    public static final boolean RIGHT  = true;  // Scoring position is to the right of the driver's perspective.
+    public static final boolean LEFT = false;   // Scoring position is to the left of the driver's perspective.
+
+    // Distance from scoring position (referenced to the center of the robot) to the AprilTag.  This distance is
+    // measured along a line perpendicular to the AprilTag.
+    public static final double scorePosDistance = 0.47;  // Units are meters. This distance should be adjected depending on robot length.
+    public static final double algaePosDistance = 0.47;  // Units are meters.  This is the distance from the coral reef to the center of the robot.
+    public static final double scoreL1Distance = 0.40;   // Units are meters.  
+
+    // Distance from the center of the AprilTag to scoring position to either the left or right or the AprilTag.
+    // The scoring positions are symetric to the left or right (i.e., same distance to the right or left or the
+    // AprilTag)
+    public static final double scorePosOffset_LEFT = 0.165; // In meters.  Scoring position distance to the LEFT of the AprilTag for LEFT branch scoring.
+    public static final double scorePosOffset_RIGHT = 0.165; // In meters.  Scoring position distance to the RIGHT of the AprilTag for RIGHT branch scoring.
+
+    public static final double scoreL1Offset_LEFT = 0.5158; // In meters.  Scoring position distance to the LEFT of the AprilTag for LEFT branch scoring.
+    public static final double scoreL1Offset_RIGHT = 0.5158; // In meters.  Scoring position distance to the RIGHT of the AprilTag for RIGHT branch scoring.
+
+    public static final double scoreL1Oangle_LEFT = 0; // In degrees.  This is the end robot angle with respect to the reef.  NOTE: adjusting this angle may require adjusting the distance.
+    public static final double scoreL1Oangle_RIGHT = 0; // In degrees.  This is the end robot angle with respect to the reef. NOTE: adjusting this angle may require adjusting the distance.
+
+    // Maximum time allowed for executing the GoToScoringPosition command
+    public static final double maxTime = 2.0;  // Time out in seconds.
+    public static final double distToShootCoral = 0.2; // This is the distance from the scoring position to shoot the coral for auton.
+  }
+
+  public static enum ScoringPresets{
+    STOW,
+    ALGAE_LOW,
+    ALGAE_HIGH,
+    L1,
+    L2,
+    L3,
+    L4
+  }
+
+  
 }

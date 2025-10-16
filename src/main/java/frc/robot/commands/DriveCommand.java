@@ -16,7 +16,7 @@ import frc.robot.subsystems.PigeonGyro;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utility.AprilTag;
-import frc.robot.utility.LimelightHelpers;
+
 
 // import org.photonvision.PhotonCamera;
 // import org.photonvision.targeting.PhotonTrackedTarget;
@@ -43,7 +43,7 @@ public class DriveCommand extends Command {
 
   private NavXGyro _navXGyro;
   private PigeonGyro _pigeonGyro;
-  private Camera _camera;
+  //private Camera _camera;
   //private PhotonCamera _photonCamera;
 
   public static final double OMEGA_SCALE = 1.0 / 20.0;//30.0;// 45
@@ -162,9 +162,7 @@ public class DriveCommand extends Command {
     // _aprilTagID = LimelightHelpers.getFiducialID("");
     //_target = Constants.AprilTags.AprilTags.get(((int)LimelightHelpers.getFiducialID("")-1)); // indexed list is 0-15 not 1-16
 
-    SmartDashboard.putNumber("Target Distance", 0);
-    SmartDashboard.putNumber("Target Height", 0);
-    SmartDashboard.putNumber("Target Heading", 0);
+  
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -173,8 +171,8 @@ public class DriveCommand extends Command {
 
     boolean stickFieldCentricLeft, stickFieldCentricRight;
  
-    stickFieldCentricLeft = _driveController.leftTrigger().getAsBoolean();
-    stickFieldCentricRight = _driveController.rightTrigger().getAsBoolean();
+    //stickFieldCentricLeft = _driveController.leftTrigger().getAsBoolean();
+    //stickFieldCentricRight = _driveController.rightTrigger().getAsBoolean();
     // final double originOffset = 360 - originHeading;
     // originCorr = _navXGyro.getNavAngle() + originOffset;
 
@@ -240,9 +238,9 @@ public class DriveCommand extends Command {
     //stickFieldCentric = _driveController.leftTrigger().getAsBoolean();
 
      //if (!stickFieldCentric) {
-      if (((!stickFieldCentricLeft && !stickFieldCentricRight)) || (stickFieldCentricLeft && stickFieldCentricRight)) {//if (!stickFieldCentric) {
+      //if (((!stickFieldCentricLeft && !stickFieldCentricRight)) || (stickFieldCentricLeft && stickFieldCentricRight)) {//if (!stickFieldCentric) {
      
-        this._camera.visionPoseEstimator(false);
+        //this._camera.visionPoseEstimator(false);
 
       /*
        * When the Left Joystick trigger is not pressed, The robot is in Field Centric
@@ -280,39 +278,39 @@ public class DriveCommand extends Command {
       final double temp = forward * Math.cos(originCorrection) + strafe * Math.sin(originCorrection);
       strafe = strafe * Math.cos(originCorrection) - forward * Math.sin(originCorrection);
       forward = temp;
-    } else {
-      this._camera.visionPoseEstimator(true);
-      double curCameraY = this._camera.getYVal();
-      double curCameraYaw = this._camera.getYawVal();
-      double desiredY=0;
+    //} else {
+      // this._camera.visionPoseEstimator(true);
+      // double curCameraY = this._camera.getYVal();
+      // double curCameraYaw = this._camera.getYawVal();
+      // double desiredY=0;
 
-      if (stickFieldCentricLeft){
-        desiredY = Units.inchesToMeters(-4);
-      }
+      // if (stickFieldCentricLeft){
+      //   desiredY = Units.inchesToMeters(-4);
+      // }
       
-      if (stickFieldCentricRight){
-        desiredY = Units.inchesToMeters(4);
-      }
+      // if (stickFieldCentricRight){
+      //   desiredY = Units.inchesToMeters(4);
+      // }
 
-      double desiredYaw = 0;
-      double errorY = curCameraY - desiredY;
-      double errorYaw = desiredYaw - curCameraYaw;
+      // double desiredYaw = 0;
+      // double errorY = curCameraY - desiredY;
+      // double errorYaw = desiredYaw - curCameraYaw;
 
 
-      if (Math.abs(errorYaw) < 1){
-        errorYaw = 0;
-      }
+      // if (Math.abs(errorYaw) < 1){
+      //   errorYaw = 0;
+      // }
 
-      if (Math.abs(errorY) < Units.inchesToMeters(0.5)){
-        errorY = 0;
-      }
+      // if (Math.abs(errorY) < Units.inchesToMeters(0.5)){
+      //   errorY = 0;
+      // }
 
-      double kP_Y = 0.65; // 0.001   0.01   0.1   0.15   0.2   0.3   0.4   0.5   0.6
-      double kP_Yaw = 0.000325; // 0.001   0.00075   0.0005   0.00025   0.000375   0.00045   0.0004   0.000375   0.00035   0.0003
+      // double kP_Y = 0.65; // 0.001   0.01   0.1   0.15   0.2   0.3   0.4   0.5   0.6
+      // double kP_Yaw = 0.000325; // 0.001   0.00075   0.0005   0.00025   0.000375   0.00045   0.0004   0.000375   0.00035   0.0003
 
-      strafe = errorY * kP_Y;//0
-      omega = errorYaw * kP_Yaw;//0
-    }
+      // strafe = errorY * kP_Y;//0
+      // omega = errorYaw * kP_Yaw;//0
+    //}
 
    
       

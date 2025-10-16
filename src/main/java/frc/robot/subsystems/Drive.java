@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -14,15 +17,19 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.DriveConstants.FrameConstants;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 import frc.robot.utility.AprilTag;
-import frc.robot.subsystems.Camera;
+//import frc.robot.subsystems.Camera;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -57,7 +64,8 @@ public class Drive extends SubsystemBase {
 	// public Camera _camera;
 	// private PhotonCamera _photonCamera;
 
-	private final SwerveDriveOdometry odometer;
+	//private final SwerveDriveOdometry odometer;
+	private final SwerveDrivePoseEstimator poseEstimator;
 
 	/*
 	 * Set up the drive by passing in the gyro and then configuring the individual
@@ -85,8 +93,8 @@ public class Drive extends SubsystemBase {
 		backRight = new SwerveModule(DriveConstants.BackRightSteer, DriveConstants.BackRightDrive, invertDrive,
 		 		invertSteer);
 
-		 odometer = new SwerveDriveOdometry(DriveConstants.FrameConstants.kDriveKinematics,
-		 		this._pigeonGyro.getGyroRotation2D(), getPositions());
+		//odometer = new SwerveDriveOdometry(DriveConstants.FrameConstants.kDriveKinematics,
+		 		//this._pigeonGyro.getGyroRotation2D(), getPositions());
 
 		RobotConfig robotConfig;
 		try{
@@ -117,6 +125,21 @@ public class Drive extends SubsystemBase {
 			// Handle exception as needed
 			e.printStackTrace();
 		}
+
+		// Define the standard deviations for the pose estimator, which determine how fast the pose
+        // estimate converges to the vision measurement. This should depend on the vision measurement
+        // noise
+        // and how many or how frequently vision measurements are applied to the pose estimator.
+        var stateStdDevs = VecBuilder.fill(0.1, 0.1, 0.1);
+        var visionStdDevs = VecBuilder.fill(1, 1, 1);
+        poseEstimator =
+                new SwerveDrivePoseEstimator(
+					FrameConstants.kDriveKinematics,
+					this._pigeonGyro.getGyroRotation2D(),
+					getPositions(),
+                    new Pose2d(),
+                    stateStdDevs,
+                    visionStdDevs);
 	}
 
 	/*
@@ -145,8 +168,8 @@ public class Drive extends SubsystemBase {
 		backRight = new SwerveModule(DriveConstants.BackRightSteer, DriveConstants.BackRightDrive, invertDrive,
 		 		invertSteer);
 
-		 odometer = new SwerveDriveOdometry(DriveConstants.FrameConstants.kDriveKinematics,
-		 		this._navXGyro.getGyroRotation2D(), getPositions());
+		 //odometer = new SwerveDriveOdometry(DriveConstants.FrameConstants.kDriveKinematics,
+		 		//this._navXGyro.getGyroRotation2D(), getPositions());
 
 		RobotConfig robotConfig;
 		try{
@@ -177,19 +200,37 @@ public class Drive extends SubsystemBase {
 			// Handle exception as needed
 			e.printStackTrace();
 		}
+
+		// Define the standard deviations for the pose estimator, which determine how fast the pose
+        // estimate converges to the vision measurement. This should depend on the vision measurement
+        // noise
+        // and how many or how frequently vision measurements are applied to the pose estimator.
+        var stateStdDevs = VecBuilder.fill(0.1, 0.1, 0.1);
+        var visionStdDevs = VecBuilder.fill(1, 1, 1);
+        poseEstimator =
+                new SwerveDrivePoseEstimator(
+                    FrameConstants.kDriveKinematics,
+                    this._navXGyro.getGyroRotation2D(),
+                    getPositions(),
+                    new Pose2d(),
+                    stateStdDevs,
+                    visionStdDevs);
 	}
 
 	// Public Methods
 
 	public Pose2d getPose() {
-		return odometer.getPoseMeters();
+		//return odometer.getPoseMeters();
+		return poseEstimator.getEstimatedPosition();
 	}
 
 	public void resetPose(Pose2d pose) {
 		if(this._navXGyro != null) {
-			odometer.resetPosition(this._navXGyro.getGyroRotation2D(), getPositions(), pose);
+			//odometer.resetPosition(this._navXGyro.getGyroRotation2D(), getPositions(), pose);
+			poseEstimator.resetPosition(this._navXGyro.getGyroRotation2D(), getPositions(), pose);
 		} else if (this._pigeonGyro != null) {
-			odometer.resetPosition(this._pigeonGyro.getGyroRotation2D(), getPositions(), pose);
+			//odometer.resetPosition(this._pigeonGyro.getGyroRotation2D(), getPositions(), pose);
+			poseEstimator.resetPosition(this._pigeonGyro.getGyroRotation2D(), getPositions(), pose);
 		}
 	}
 
@@ -210,9 +251,11 @@ public class Drive extends SubsystemBase {
 
 	public void resetOdometry(Pose2d pose) {
 		if(this._navXGyro != null) {
-			odometer.resetPosition(this._navXGyro.getRotation2d(), getPositions(), pose);
+			//odometer.resetPosition(this._navXGyro.getRotation2d(), getPositions(), pose);
+			poseEstimator.resetPosition(this._navXGyro.getGyroRotation2D(), getPositions(), pose);
 		} else if (this._pigeonGyro != null) {
-			odometer.resetPosition(this._pigeonGyro.getRotation2d(), getPositions(), pose);
+			//odometer.resetPosition(this._pigeonGyro.getRotation2d(), getPositions(), pose);
+			poseEstimator.resetPosition(this._pigeonGyro.getGyroRotation2D(), getPositions(), pose);
 		}
 	}
 
@@ -247,10 +290,10 @@ public class Drive extends SubsystemBase {
 		double omegaL2 = omega * (DriveConstants.FrameConstants.WHEEL_BASE_LENGTH / 2.0);
 		double omegaW2 = omega * (DriveConstants.FrameConstants.WHEEL_BASE_WIDTH / 2.0);
 
-		SmartDashboard.putNumber("OmegaL2", omegaL2);
-		SmartDashboard.putNumber("OmegaW2", omegaW2);
-		SmartDashboard.putNumber("Forward", forward);
-		SmartDashboard.putNumber("Strafe", strafe);
+		//SmartDashboard.putNumber("OmegaL2", omegaL2);
+		//SmartDashboard.putNumber("OmegaW2", omegaW2);
+		//SmartDashboard.putNumber("Forward", forward);
+		//SmartDashboard.putNumber("Strafe", strafe);
 		// SmartDashboard.putNumber("NavX", _gyro.getNavAngle());
 		// Compute the constants used later for calculating speeds and angles
 		double A = strafe - omegaL2;
@@ -367,43 +410,40 @@ public class Drive extends SubsystemBase {
 	@Override()
 	public void periodic() {
 
-	// 	int _aprilTagID=-1;
-	// 	PhotonTrackedTarget _bestTarget;
-
-	// 	var latestResult = _photonCamera.getLatestResult();
-    //   	SmartDashboard.putNumber("Camera Target", latestResult.getBestTarget().getFiducialId());
-	//     if(latestResult.hasTargets()) {
-    //     	_bestTarget = latestResult.getBestTarget();
-    //     	_aprilTagID = _bestTarget.getFiducialId();
-    // //      _aprilTagID = LimelightHelpers.getFiducialID("");
-    //   	}
-    //   	if (_aprilTagID>-1){
-    //     	Pose3d target = _aprilTag._fieldLayout.getTagPose(_aprilTagID).get();
-	// 		Transform3d robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0)); //Cam mounted facing forward, half a meter forward of center, half a meter up from center.
-
-	// 		// Construct PhotonPoseEstimator
-	// 		PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(_aprilTag._fieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, robotToCam);
-
-	// 	}
 		/*
 		 * The state of the robot gyro and individual swerve modules are
 		 * sent to odometer on each cycle of the program.
 		 */
 		if(this._navXGyro != null) {
-			odometer.update(this._navXGyro.getRotation2d(), getPositions());		
+			poseEstimator.update(this._navXGyro.getRotation2d(), getPositions());
+			//odometer.update(this._navXGyro.getRotation2d(), getPositions());		
 			SmartDashboard.putNumber("Yaw Value", this._navXGyro.getGyroAngle());
 			SmartDashboard.putNumber("Robot Heading", this._navXGyro.getHeading());
 		} else if (this._pigeonGyro != null) {
-			odometer.update(this._pigeonGyro.getRotation2d(), getPositions());
-			SmartDashboard.putNumber("Yaw Value", this._pigeonGyro.getGyroYawValue());
+			poseEstimator.update(this._pigeonGyro.getRotation2d(), getPositions());
+			//odometer.update(this._pigeonGyro.getRotation2d(), getPositions());
+			//SmartDashboard.putNumber("Yaw Value", this._pigeonGyro.getGyroYawValue());
 			SmartDashboard.putNumber("Robot Heading", this._pigeonGyro.getHeading());
 		}
 
 		SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
-		SmartDashboard.putNumber("Robot DistanceX", odometer.getPoseMeters().getX());
-		SmartDashboard.putNumber("Robot DistanceY", odometer.getPoseMeters().getY());
+		SmartDashboard.putNumber("Robot DistanceX", Units.metersToInches(poseEstimator.getEstimatedPosition().getX()));
+		SmartDashboard.putNumber("Robot DistanceY", Units.metersToInches(poseEstimator.getEstimatedPosition().getY()));
+		SmartDashboard.putNumber("Robot angle", poseEstimator.getEstimatedPosition().getRotation().getDegrees());
+		//SmartDashboard.putNumber("Robot DistanceX", odometer.getPoseMeters().getX());
+		//SmartDashboard.putNumber("Robot DistanceY", odometer.getPoseMeters().getY());
 	}
 
+	/** See {@link SwerveDrivePoseEstimator#addVisionMeasurement(Pose2d, double)}. */
+    public void addVisionMeasurement(Pose2d visionMeasurement, double timestampSeconds) {
+        poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds);
+    }
+
+    /** See {@link SwerveDrivePoseEstimator#addVisionMeasurement(Pose2d, double, Matrix)}. */
+    public void addVisionMeasurement(
+            Pose2d visionMeasurement, double timestampSeconds, Matrix<N3, N1> stdDevs) {
+        poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds, stdDevs);
+    }
 	public void stopModules() {
 		frontLeft.stop();
 		frontRight.stop();
@@ -438,7 +478,7 @@ public class Drive extends SubsystemBase {
 
 	public void setModuleStates(SwerveModuleState[] desiredStates) {
 			SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates,
-					DriveConstants.FrameConstants.kPhysicalMaxSpeedMetersPerSecond / 2);
+			DriveConstants.FrameConstants.kPhysicalMaxSpeedMetersPerSecond / 2);
 			frontLeft.setDesiredState(desiredStates[0]);
 			frontRight.setDesiredState(desiredStates[1]);
 			backLeft.setDesiredState(desiredStates[2]);

@@ -37,7 +37,7 @@ public class AprilTag {
     public AprilTagFieldLayout _fieldLayout;
 
     public AprilTag(Supplier<Alliance> alliance) {
-        this._fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+        this._fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
         this._alliance = alliance.get();
 

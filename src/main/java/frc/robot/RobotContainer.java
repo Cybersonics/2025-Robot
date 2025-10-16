@@ -4,11 +4,13 @@
 
 package frc.robot;
 
+import frc.robot.Constants.AutoScore;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.ElevatorDefaultCommand;
 import frc.robot.commands.ExtendClimber;
+import frc.robot.commands.FullScoringSequence;
 import frc.robot.commands.RetractClimber;
 import frc.robot.commands.IntakeAlgea;
 import frc.robot.commands.AlgaeMechanismCommand;
@@ -44,12 +46,15 @@ import frc.robot.subsystems.NavXGyro;
 
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.Climber;
-import frc.robot.utility.AprilTag;
+
+import frc.robot.subsystems.PiCameraSubsystem;
+
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -70,7 +75,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
 
-   // Setting up Gyro must be done before Drive as it is used by the Drive
+  
+  public Field2d field = new Field2d();
+
+  // Setting up Gyro must be done before Drive as it is used by the Drive
   //public static NavXGyro _gyro = NavXGyro.getInstance();
   public static PigeonGyro _gyro = PigeonGyro.getInstance();
 
@@ -78,7 +86,7 @@ public class RobotContainer {
   //public static Camera _camera = Camera.getInstance(_aprilTags);
 
   //public static Drive _drive = Drive.getInstance(_gyro, _aprilTags, _camera);
-  public static Drive _drive = Drive.getInstance(_gyro);
+  public final Drive _drive = Drive.getInstance(_gyro);//static
   
   public static Elevator _elevator = Elevator.getInstance();
   public static AlgeaMechanism _algeaMechanism = AlgeaMechanism.getInstance();
@@ -86,7 +94,7 @@ public class RobotContainer {
   public static Climber _climber = Climber.getInstance();
   public static Pneumatics _pneumatics = Pneumatics.getInstance();
   //public static Climber _climber = Climber.getInstance();
-
+  public final PiCameraSubsystem PiCamera = new PiCameraSubsystem(this);
 
   
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -145,6 +153,9 @@ public class RobotContainer {
     
     this.driverController.y().onTrue(new ClimberCommand(_climber, _pneumatics, driverController.y(), driverController.a()));
     this.driverController.a().onTrue(new ClimberCommand(_climber, _pneumatics, driverController.y(), driverController.a()));
+
+    this.driverController.rightTrigger().onTrue(new FullScoringSequence(this, AutoScore.RIGHT));
+    this.driverController.leftTrigger().onTrue(new FullScoringSequence(this, AutoScore.LEFT));
 
     // Score Coral Levels     
     this.operatorController.pov(90).whileTrue(new ScoreCoralLevelOne(_elevator, _coralMechanism));
