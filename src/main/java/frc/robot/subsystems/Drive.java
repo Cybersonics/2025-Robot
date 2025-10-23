@@ -1,22 +1,57 @@
 package frc.robot.subsystems;
 
+import java.lang.annotation.Target;
 import java.util.Arrays;
 import java.util.Collections;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
+import edu.wpi.first.math.util.Units;
+
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import java.util.List;
+import java.util.Optional;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
+
+import frc.robot.subsystems.Camera;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.Matrix;
+
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.targeting.MultiTargetPNPResult;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
+
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 
 public class Drive extends SubsystemBase {
 
@@ -33,10 +68,8 @@ public class Drive extends SubsystemBase {
 	public double heading;
 	public double angle;
 
-	// private static final double WHEEL_DIAMETER = 4.0;
-	// TO DO: Correct equation that uses MAX_SPEED
-	//public static final double MAX_SPEED = 0.75; // Max speed is 0 to 1
-	//public static final double MAX_REVERSIBLE_SPEED_DIFFERENCE = 0.7 * MAX_SPEED;
+	public static final double length_with_bumpers = .9271;
+	public static final Pose2d in_front_of_tag_18 = new Pose2d(3.6576-length_with_bumpers/2,4.0259,Rotation2d.fromDegrees(0));
 
 	public static final double OMEGA_SCALE = 1.0 / 30.0;
 
@@ -46,7 +79,25 @@ public class Drive extends SubsystemBase {
 	private PigeonGyro _pigeonGyro;
 	private boolean _driveCorrect= false;
 
-	private final SwerveDriveOdometry odometer;
+	//private final SwerveDriveOdometry odometer;
+
+	private SwerveDrivePoseEstimator robotPoseEstimate;
+
+	public Camera _camera;
+	private PhotonCamera _photonCamera;
+
+
+	private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
+	//private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2025Reefscape.loadAprilTagLayoutField();
+	public PhotonPoseEstimator photonPoseEstimator;
+    public Transform3d robotToCam;
+
+	private Matrix<N3, N1> curStdDevs;
+
+	        // The standard deviations of our vision estimated poses, which affect correction rate
+        // (Fake values. Experiment and determine estimation noise on an actual robot.)
+        public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
+        public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
 
 	/*
 	 * Set up the drive by passing in the gyro and then configuring the individual
@@ -54,9 +105,12 @@ public class Drive extends SubsystemBase {
 	 * Note the order that the modules are in. Be consistant with the order in the
 	 * odometry.
 	 */
-	private Drive(PigeonGyro gyro) {
+	private Drive(PigeonGyro gyro, Camera camera) {
+	//private Drive(PigeonGyro gyro) {
 
 		this._pigeonGyro = gyro;
+		this._camera = camera;
+		this._photonCamera = camera.getPhotonCamera();
 
 		frontLeft = new SwerveModule(DriveConstants.FrontLeftSteer, DriveConstants.FrontLeftDrive, invertDrive,
 				invertSteer);
@@ -70,8 +124,14 @@ public class Drive extends SubsystemBase {
 		backRight = new SwerveModule(DriveConstants.BackRightSteer, DriveConstants.BackRightDrive, invertDrive,
 		 		invertSteer);
 
-		 odometer = new SwerveDriveOdometry(DriveConstants.FrameConstants.kDriveKinematics,
-		 		this._pigeonGyro.getGyroRotation2D(), getPositions());
+		// odometer = new SwerveDriveOdometry(DriveConstants.FrameConstants.kDriveKinematics,
+		//  		this._pigeonGyro.getGyroRotation2D(), getPositions());
+
+		robotPoseEstimate = new SwerveDrivePoseEstimator(DriveConstants.FrameConstants.kDriveKinematics, 
+			this._pigeonGyro.getGyroRotation2D(), getPositions(), Pose2d.kZero,
+			VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
+			VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
+
 
 		RobotConfig robotConfig;
 		try{
@@ -80,6 +140,7 @@ public class Drive extends SubsystemBase {
 			// Configure AutoBuilder
 			AutoBuilder.configure(
 					this::getPose,
+					//this::getRobotPose,
 					this::resetPose,
 					this::getSpeeds,
 					this::driveRobotRelative,
@@ -101,6 +162,22 @@ public class Drive extends SubsystemBase {
 		} catch (Exception e) {
 			// Handle exception as needed
 			e.printStackTrace();
+
+			robotToCam = new Transform3d(new Translation3d(
+				Constants.CameraConstants.cameraPositionX,
+				Constants.CameraConstants.cameraPositionY,
+				Constants.CameraConstants.cameraPositionZ), 
+				new Rotation3d(
+				Constants.CameraConstants.cameraPositionRoll,
+				Constants.CameraConstants.cameraPositionPitch,
+				Constants.CameraConstants.cameraPositionYaw));
+	
+			// Construct PhotonPoseEstimator
+			photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,
+				PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+				robotToCam);
+			
+			photonPoseEstimator.setMultiTagFallbackStrategy((PoseStrategy.LOWEST_AMBIGUITY));
 		}
 	}
 
@@ -110,9 +187,12 @@ public class Drive extends SubsystemBase {
 	 * Note the order that the modules are in. Be consistant with the order in the
 	 * odometry.
 	 */
-	private Drive(NavXGyro gyro) {
+	//private Drive(NavXGyro gyro) {
+	private Drive(NavXGyro gyro, Camera camera) {
 
 		this._navXGyro = gyro;
+		this._camera = camera;
+		this._photonCamera = camera.getPhotonCamera();
 
 		frontLeft = new SwerveModule(DriveConstants.FrontLeftSteer, DriveConstants.FrontLeftDrive, invertDrive,
 				invertSteer);
@@ -126,8 +206,15 @@ public class Drive extends SubsystemBase {
 		backRight = new SwerveModule(DriveConstants.BackRightSteer, DriveConstants.BackRightDrive, invertDrive,
 		 		invertSteer);
 
-		 odometer = new SwerveDriveOdometry(DriveConstants.FrameConstants.kDriveKinematics,
-		 		this._navXGyro.getGyroRotation2D(), getPositions());
+		// odometer = new SwerveDriveOdometry(DriveConstants.FrameConstants.kDriveKinematics,
+		//  		this._navXGyro.getGyroRotation2D(), getPositions());
+
+		resetOdometry(in_front_of_tag_18);
+		
+		robotPoseEstimate = new SwerveDrivePoseEstimator(DriveConstants.FrameConstants.kDriveKinematics, 
+			this._navXGyro.getGyroRotation2D(), getPositions(), in_front_of_tag_18,
+			VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
+			VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
 
 		RobotConfig robotConfig;
 		try{
@@ -136,6 +223,7 @@ public class Drive extends SubsystemBase {
 			// Configure AutoBuilder
 			AutoBuilder.configure(
 					this::getPose,
+					//this::getRobotPose,
 					this::resetPose,
 					this::getSpeeds,
 					this::driveRobotRelative,
@@ -158,19 +246,41 @@ public class Drive extends SubsystemBase {
 			// Handle exception as needed
 			e.printStackTrace();
 		}
+		robotToCam = new Transform3d(new Translation3d(
+            Constants.CameraConstants.cameraPositionX,
+            Constants.CameraConstants.cameraPositionY,
+            Constants.CameraConstants.cameraPositionZ), 
+            new Rotation3d(
+            Constants.CameraConstants.cameraPositionRoll,
+            Constants.CameraConstants.cameraPositionPitch,
+            Constants.CameraConstants.cameraPositionYaw));
+
+    	// Construct PhotonPoseEstimator
+		photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,
+			PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+			robotToCam);
+		
+		photonPoseEstimator.setMultiTagFallbackStrategy((PoseStrategy.LOWEST_AMBIGUITY));
 	}
 
 	// Public Methods
 
 	public Pose2d getPose() {
-		return odometer.getPoseMeters();
+		return robotPoseEstimate.getEstimatedPosition();
+	 	// return odometer.getPoseMeters();
 	}
+
+	//public Pose2d getRobotPose(){
+	//	return robotPoseEstimate.getEstimatedPosition();
+	//}
 
 	public void resetPose(Pose2d pose) {
 		if(this._navXGyro != null) {
-			odometer.resetPosition(this._navXGyro.getGyroRotation2D(), getPositions(), pose);
+			//odometer.resetPosition(this._navXGyro.getGyroRotation2D(), getPositions(), pose);
+			robotPoseEstimate.resetPosition(this._navXGyro.getRotation2d(),getPositions(), pose);
 		} else if (this._pigeonGyro != null) {
-			odometer.resetPosition(this._pigeonGyro.getGyroRotation2D(), getPositions(), pose);
+			//odometer.resetPosition(this._pigeonGyro.getGyroRotation2D(), getPositions(), pose);
+			robotPoseEstimate.resetPosition(this._pigeonGyro.getRotation2d(),getPositions(), pose);
 		}
 	}
 
@@ -180,6 +290,7 @@ public class Drive extends SubsystemBase {
 
 	public void driveFieldRelative(ChassisSpeeds fieldRelativeSpeeds) {
 		driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(fieldRelativeSpeeds, getPose().getRotation()));
+		//driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(fieldRelativeSpeeds, getRobotPose().getRotation()));
 	}
 
 	public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {	
@@ -191,9 +302,11 @@ public class Drive extends SubsystemBase {
 
 	public void resetOdometry(Pose2d pose) {
 		if(this._navXGyro != null) {
-			odometer.resetPosition(this._navXGyro.getRotation2d(), getPositions(), pose);
+			//odometer.resetPosition(this._navXGyro.getRotation2d(), getPositions(), pose);
+			robotPoseEstimate.resetPosition(this._navXGyro.getRotation2d(),getPositions(), pose);
 		} else if (this._pigeonGyro != null) {
-			odometer.resetPosition(this._pigeonGyro.getRotation2d(), getPositions(), pose);
+			//odometer.resetPosition(this._pigeonGyro.getRotation2d(), getPositions(), pose);
+			robotPoseEstimate.resetPosition(this._pigeonGyro.getRotation2d(),getPositions(), pose);
 		}
 	}
 
@@ -203,16 +316,20 @@ public class Drive extends SubsystemBase {
 	// odometer.resetPosition(this._gyro.getRotation2d(), getPositions(), pose);
 	// }
 
-	public static Drive getInstance(NavXGyro gyro) {
+	//public static Drive getInstance(NavXGyro gyro) {
+	public static Drive getInstance(NavXGyro gyro, Camera camera) {
 		if (instance == null) {
-			instance = new Drive(gyro);
+			instance = new Drive(gyro, camera);
+			//instance = new Drive(gyro);
 		}
 		return instance;
 	}
 
-	public static Drive getInstance(PigeonGyro gyro) {
+	//public static Drive getInstance(PigeonGyro gyro) {
+	public static Drive getInstance(PigeonGyro gyro, Camera camera) {
 		if (instance == null) {
-			instance = new Drive(gyro);
+			instance = new Drive(gyro, camera);
+			//instance = new Drive(gyro);
 		}
 		return instance;
 	}
@@ -224,11 +341,6 @@ public class Drive extends SubsystemBase {
 		double omegaL2 = omega * (DriveConstants.FrameConstants.WHEEL_BASE_LENGTH / 2.0);
 		double omegaW2 = omega * (DriveConstants.FrameConstants.WHEEL_BASE_WIDTH / 2.0);
 
-		SmartDashboard.putNumber("OmegaL2", omegaL2);
-		SmartDashboard.putNumber("OmegaW2", omegaW2);
-		SmartDashboard.putNumber("Forward", forward);
-		SmartDashboard.putNumber("Strafe", strafe);
-		// SmartDashboard.putNumber("NavX", _gyro.getNavAngle());
 		// Compute the constants used later for calculating speeds and angles
 		double A = strafe - omegaL2;
 		double B = strafe + omegaL2;
@@ -346,22 +458,159 @@ public class Drive extends SubsystemBase {
 	@Override()
 	public void periodic() {
 
+		int _aprilTagID=-1;
+	 	PhotonTrackedTarget _bestTarget;
+
 		/*
 		 * The state of the robot gyro and individual swerve modules are
 		 * sent to odometer on each cycle of the program.
 		 */
 		if(this._navXGyro != null) {
-			odometer.update(this._navXGyro.getRotation2d(), getPositions());
-			SmartDashboard.putNumber("Robot Heading", this._navXGyro.getHeading());
-		} else if (this._pigeonGyro != null) {
-			odometer.update(this._pigeonGyro.getRotation2d(), getPositions());
-			SmartDashboard.putNumber("Yaw Value", this._pigeonGyro.getGyroYawValue());
-			SmartDashboard.putNumber("Robot Heading", this._pigeonGyro.getHeading());
-		}
+			//odometer.update(this._navXGyro.getRotation2d(), getPositions());
+			//SmartDashboard.putNumber("Robot Heading", this._navXGyro.getHeading());
 
-		SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
-		SmartDashboard.putNumber("Robot DistanceX", odometer.getPoseMeters().getX());
-		SmartDashboard.putNumber("Robot DistanceY", odometer.getPoseMeters().getY());
+			robotPoseEstimate.update(this._navXGyro.getRotation2d(),getPositions());
+			SmartDashboard.putNumber("Yaw Value", -this._navXGyro.getGyroAngle());
+			//SmartDashboard.putNumber("Robot Heading", this._navXGyro.getHeading());
+
+		} else if (this._pigeonGyro != null) {
+			//odometer.update(this._pigeonGyro.getRotation2d(), getPositions());
+			//SmartDashboard.putNumber("Yaw Value", this._pigeonGyro.getGyroYawValue());
+			//SmartDashboard.putNumber("Robot Heading", this._pigeonGyro.getHeading());
+
+			robotPoseEstimate.update(this._pigeonGyro.getRotation2d(),getPositions());
+		}
+		
+		
+		Optional<EstimatedRobotPose> testVisionEst = Optional.empty();
+		
+		// Get latest frame from Camera 
+		var latestResults = _photonCamera.getAllUnreadResults();
+		if(!latestResults.isEmpty()){
+			double vision_time_stamp = latestResults.get(latestResults.size()-1).getTimestampSeconds();
+            var result = latestResults.get(latestResults.size() - 1);
+
+            if (result.hasTargets()) {
+				_bestTarget = null;
+				double bestX = 9999;
+				for (PhotonTrackedTarget target : result.getTargets()) {
+					if(target.getBestCameraToTarget().getX() < bestX) {
+						_bestTarget = target;
+						bestX = target.getBestCameraToTarget().getX();
+					}
+				}
+				//List<Pose3d> testResult = latestResults.sort((result) => result.targets.sort(null););
+
+				// At least one Apriltag was seen by the camera
+
+				_aprilTagID = _bestTarget.getFiducialId();
+				Optional<Pose3d> field_to_april_tag = aprilTagFieldLayout.getTagPose(_aprilTagID);
+				if(field_to_april_tag.isPresent()){
+					Pose3d tagPose = field_to_april_tag.get();
+					Transform3d fieldToTag = new Transform3d(tagPose.getTranslation(),tagPose.getRotation());
+					Transform3d bestCameraToTag = _bestTarget.getBestCameraToTarget();
+					Transform3d bestTagToCamera = bestCameraToTag.inverse();
+					Transform3d fieldToCamera = fieldToTag.plus(bestTagToCamera);
+					Transform3d estimated_robot_position_kal_3d = fieldToCamera.plus(robotToCam.inverse());
+					Pose3d estimated_robot_position_kal = new Pose3d(estimated_robot_position_kal_3d.getTranslation(), estimated_robot_position_kal_3d.getRotation());
+					Pose2d estimated_robot_position_kal_2d = estimated_robot_position_kal.toPose2d();
+					Pose3d camera_pose = new Pose3d(fieldToCamera.getTranslation(),fieldToCamera.getRotation());
+					Pose3d robot_pose = new Pose3d(robotPoseEstimate.getEstimatedPosition());
+					
+					Transform3d robot_to_camera_transform = new Transform3d(robot_pose,camera_pose);
+
+					//SmartDashboard.putNumber("poseod X", odometer.getPoseMeters().getX());
+					//SmartDashboard.putNumber("poseod y", odometer.getPoseMeters().getY());
+					//SmartDashboard.putNumber("poseod theta", odometer.getPoseMeters().getRotation().getDegrees());
+
+					SmartDashboard.putNumber("poseest X", robotPoseEstimate.getEstimatedPosition().getX());
+					SmartDashboard.putNumber("poseest y", robotPoseEstimate.getEstimatedPosition().getY());
+					SmartDashboard.putNumber("poseest theta", robotPoseEstimate.getEstimatedPosition().getRotation().getDegrees());
+					SmartDashboard.putNumber("r2c X", robot_to_camera_transform.getX());
+					SmartDashboard.putNumber("r2c y", robot_to_camera_transform.getY());
+					SmartDashboard.putNumber("r2c z", robot_to_camera_transform.getZ());
+					SmartDashboard.putNumber("r2c aboutx", Units.radiansToDegrees(robot_to_camera_transform.getRotation().getX()));
+					SmartDashboard.putNumber("r2c abouty", Units.radiansToDegrees(robot_to_camera_transform.getRotation().getY()));
+					SmartDashboard.putNumber("r2c aboutz", Units.radiansToDegrees(robot_to_camera_transform.getRotation().getZ()));
+				
+					testVisionEst = photonPoseEstimator.update(result);
+					if( testVisionEst.isPresent()){
+						
+						robotPoseEstimate.addVisionMeasurement(estimated_robot_position_kal_2d,vision_time_stamp);
+					}
+				}
+				// double poseAmbiguity = _bestTarget.getPoseAmbiguity();
+				// SmartDashboard.putNumber("Cam TagID", _aprilTagID);
+				// SmartDashboard.putNumber("Cam Yaw", _bestTarget.yaw);
+				// SmartDashboard.putNumber("Cam X", (Units.metersToInches(bestCameraToTarget.getX()) - 2.0));
+				// SmartDashboard.putNumber("Cam Y", Units.metersToInches(bestCameraToTarget.getY()));
+				// SmartDashboard.putNumber("Cam Z", Units.metersToInches(bestCameraToTarget.getZ()));
+				// SmartDashboard.putNumber("Cam Ambiguity", poseAmbiguity);
+			
+
+				// testVisionEst.ifPresent(p->{
+				// 	SmartDashboard.putNumber("X-ValCam", Units.metersToInches(p.estimatedPose.getX()));
+				// 	SmartDashboard.putNumber("Y-ValCam", Units.metersToInches(p.estimatedPose.getY()));
+				// 	SmartDashboard.putNumber("Z-ValCam", Units.metersToInches(p.estimatedPose.getZ()));
+				// 	SmartDashboard.putNumber("Yaw-ValCam", Math.toDegrees(p.estimatedPose.getRotation().getZ()));
+				// });
+			}
+
+       	}
+		
+      	//if (_aprilTagID>-1){
+         	  //Pose3d target = _aprilTag._fieldLayout.getTagPose(_aprilTagID).get();
+			//Pose3d target = aprilTagFieldLayout.getTagPose(_aprilTagID).get();
+
+
+
+
+			// Optional<EstimatedRobotPose> visionEst = Optional.empty();
+        	// for (var change : _photonCamera.getAllUnreadResults()) {
+            // 	visionEst = photonPoseEstimator.update(change);
+            // 	updateEstimationStdDevs(visionEst, change.getTargets());
+			// 	visionEst.ifPresent(
+            //         est -> {
+            //             // Change our trust in the measurement based on the tags we can see
+            //             var estStdDevs = getEstimationStdDevs();
+
+            //             estConsumer.accept(est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+            //         });
+        	// }
+
+			  //Pose2d test2d = photonPoseEstimator.getReferencePose().toPose2d();
+				
+			//Pose2d visionMeasurement2d = target.toPose2d();
+
+    		  // Apply vision measurements. For simulation purposes only, we don't input a latency delay -- on
+   			  // a real robot, this must be calculated based either on known latency or timestamps
+
+   			  //robotPoseEstimate.addVisionMeasurement(visionMeasurement2d, Timer.getFPGATimestamp());
+			  //robotPoseEstimate.addVisionMeasurement(test2d, Timer.getFPGATimestamp());
+			
+	 	//}
+
+
+		//SmartDashboard.putString("Robot Location", getRobotPose().getTranslation().toString());
+		//SmartDashboard.putNumber("Robot DistanceX", robotPoseEstimate.getEstimatedPosition().getX());
+		//SmartDashboard.putNumber("Robot DistanceY", robotPoseEstimate.getEstimatedPosition().getY());
+
+		// if (this._camera.hasTargets()){
+		// 	SmartDashboard.putNumber("Cam TagID", this._camera.getTargetId());
+		// 	SmartDashboard.putNumber("Cam Yaw", this._camera.getYawVal());
+		// 	SmartDashboard.putNumber("Cam X", (Units.metersToInches(this._camera.getXVal()) - 2.0));
+		// 	SmartDashboard.putNumber("Cam Y", Units.metersToInches(this._camera.getYVal()));
+		// 	SmartDashboard.putNumber("Cam Z", Units.metersToInches(this._camera.getZVal()));
+		// 	SmartDashboard.putNumber("Cam Ambiguity", this._camera.getPoseAmbiguityVal());
+				
+		// 	SmartDashboard.putNumber("X-ValCam", Units.metersToInches(this._camera.getEstPoseXVal()));
+		// 	SmartDashboard.putNumber("Y-ValCam", Units.metersToInches(this._camera.getEstPoseYVal()));
+		// 	SmartDashboard.putNumber("Z-ValCam", Units.metersToInches(this._camera.getEstPoseZVal()));
+		// 	SmartDashboard.putNumber("Yaw-ValCam", Math.toDegrees(this._camera.getEstPoseYawVal()));
+
+		// 	//SmartDashboard.putNumber("Robot DistanceX", odometer.getPoseMeters().getX());
+		// 	//SmartDashboard.putNumber("Robot DistanceY", odometer.getPoseMeters().getY());
+		// }
 	}
 
 	public void stopModules() {
@@ -419,4 +668,62 @@ public class Drive extends SubsystemBase {
 	public boolean toggleMode() {
 		return isCoastMode;
 	}
+ 
+	// private void updateEstimationStdDevs(
+    //         Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
+    //     if (estimatedPose.isEmpty()) {
+    //         // No pose input. Default to single-tag std devs
+    //         curStdDevs = kSingleTagStdDevs;
+
+    //     } else {
+    //         // Pose present. Start running Heuristic
+    //         var estStdDevs = kSingleTagStdDevs;
+    //         int numTags = 0;
+    //         double avgDist = 0;
+
+    //         // Precalculation - see how many tags we found, and calculate an average-distance metric
+    //         for (var tgt : targets) {
+    //             var tagPose = photonPoseEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
+    //             if (tagPose.isEmpty()) continue;
+    //             numTags++;
+    //             avgDist +=
+    //                     tagPose
+    //                             .get()
+    //                             .toPose2d()
+    //                             .getTranslation()
+    //                             .getDistance(estimatedPose.get().estimatedPose.toPose2d().getTranslation());
+    //         }
+
+    //         if (numTags == 0) {
+    //             // No tags visible. Default to single-tag std devs
+    //             curStdDevs = kSingleTagStdDevs;
+    //         } else {
+    //             // One or more tags visible, run the full heuristic.
+    //             avgDist /= numTags;
+    //             // Decrease std devs if multiple targets are visible
+    //             if (numTags > 1) estStdDevs = kMultiTagStdDevs;
+    //             // Increase std devs based on (average) distance
+    //             if (numTags == 1 && avgDist > 4)
+    //                 estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+    //             else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
+    //             curStdDevs = estStdDevs;
+    //         }
+    //     }
+    // }
+
+    /**
+     * Returns the latest standard deviations of the estimated pose from {@link
+     * #getEstimatedGlobalPose()}, for use with {@link
+     * edu.wpi.first.math.estimator.SwerveDrivePoseEstimator SwerveDrivePoseEstimator}. This should
+     * only be used when there are targets visible.
+     */
+    public Matrix<N3, N1> getEstimationStdDevs() {
+        return curStdDevs;
+    }
+
+    // @FunctionalInterface
+    // public static interface EstimateConsumer {
+    //     public void accept(Pose2d pose, double timestamp, Matrix<N3, N1> estimationStdDevs);
+    // }
+
 }

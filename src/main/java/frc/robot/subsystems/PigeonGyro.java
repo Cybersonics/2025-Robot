@@ -81,7 +81,7 @@ public class PigeonGyro extends SubsystemBase {
      */
     public double getHeading() {
       //return Math.IEEEremainder(-getNavAngle(), 360);
-      return Math.IEEEremainder(-getGyroAngle(), 360);
+      return Math.IEEEremainder(getGyroAngle(), 360);
     }
   
     public Rotation2d getRotation2d() {

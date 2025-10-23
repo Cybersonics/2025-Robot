@@ -19,29 +19,18 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.AlternateEncoderConfig.Type;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.AbsoluteEncoder;
 
-import edu.wpi.first.math.MathUtil; // Use for RoboRio PID
-import edu.wpi.first.math.controller.PIDController; //Use for Roborio PID
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.DriveConstants.ModuleConstants;
 import frc.robot.commands.DriveCommand;
-import frc.robot.utility.SparkMaxUtil;
+
 
 
 public class SwerveModule extends SubsystemBase {
@@ -73,9 +62,6 @@ public class SwerveModule extends SubsystemBase {
   private SwerveModuleState m_desiredState = new SwerveModuleState(0.0, new Rotation2d());
 
   private static final double RAMP_RATE = 0.5;
-  // private static final double STEER_P = 3.0, STEER_I = 0.0, STEER_D = 0.1;
-
-  //public double encoderCountPerRotation = 1024;
 
   private boolean _driveCorrect;
 
@@ -86,7 +72,7 @@ public class SwerveModule extends SubsystemBase {
     driveMotor = new SparkMax(driveNum, MotorType.kBrushless);
     driveConfig = new SparkMaxConfig();
     driveConfig.openLoopRampRate(RAMP_RATE);// This provides a motor ramp up time to prevent brown outs.
-    driveConfig.idleMode(IdleMode.kCoast);
+    driveConfig.idleMode(IdleMode.kBrake);
     driveConfig.smartCurrentLimit(55);
     driveConfig.inverted(invertDrive);// setInverted reverses the both the motor and the encoder direction.
 
@@ -175,12 +161,6 @@ public class SwerveModule extends SubsystemBase {
       double targetAngle = angle; // -angle;
       double deltaDegrees = targetAngle - currentAngle;
 
-      // SmartDashboard.putNumber(this.driveData.drivePosition + " Raw Angle",
-      // currentAngle);
-      // SmartDashboard.putNumber(this.driveData.drivePosition + " Offset Angle",
-      // getAngleOffset());
-      // SmartDashboard.putNumber(this.driveData.drivePosition + " cur Angle",
-      // targetAngle);
       /*
        * The encoder reads in degrees from 0 to 360 where the 0/360 degree position is
        * straight ahead.
@@ -208,31 +188,11 @@ public class SwerveModule extends SubsystemBase {
       double targetPosition = currentAngle + deltaDegrees;
       // Scale the new position to match the motor encoder
       scaledPosition = (targetPosition * (2 * Math.PI) / 360);
-      // } else {
-      // scaledPosition = (angle * (2 * Math.PI) / 360);
-    
+
     //steerPIDController.setReference(scaledPosition, SparkFlex.ControlType.kPosition);
     steerPIDController.setReference(scaledPosition, SparkMax.ControlType.kPosition);
 
-    // SmartDashboard.putNumber(this.driveData.drivePosition + " SSpeed",
-    // scaledPosition);
-
     driveMotor.set(speed);
-
-    // Use Dashboard items to help debug
-    // SmartDashboard.putNumber(this.driveData.drivePosition+" Incoming Angle",
-    // angle);
-    // SmartDashboard.putNumber(this.driveData.drivePosition+" CurAngle",
-    // currentAngle);
-    // SmartDashboard.putNumber(this.driveData.drivePosition+" TargetAngle",
-    // targetAngle);
-    // SmartDashboard.putNumber(this.driveData.drivePosition+"
-    // currentSteerPosition", currentSteerPosition);
-    // SmartDashboard.putNumber("DeltaDegrees", deltaDegrees);
-    // SmartDashboard.putNumber("TargetPosition", targetPosition);
-    // SmartDashboard.putNumber("Steer Output", scaledPosition);
-    // SmartDashboard.putNumber("currentPosition", currentAngle);
-    // SmartDashboard.putNumber("Steer Output", steerOutput);
   }
 
   /*
@@ -305,8 +265,7 @@ public class SwerveModule extends SubsystemBase {
     //   return;
     // }
 
-
- // Apply chassis angular offset to the desired state.
+    // Apply chassis angular offset to the desired state.
     SwerveModuleState correctedDesiredState = new SwerveModuleState();
     correctedDesiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond;
     correctedDesiredState.angle = desiredState.angle;
@@ -320,22 +279,6 @@ public class SwerveModule extends SubsystemBase {
 
     m_desiredState = desiredState;
 
-
-
-    // // Apply chassis angular offset to the desired state.
-    // SwerveModuleState desiredState = new SwerveModuleState();
-    // desiredState.speedMetersPerSecond = state.speedMetersPerSecond;
-    // desiredState.angle = state.angle;
-
-    // // Optimize the reference state to avoid spinning further than 90 degrees.
-    // desiredState.optimize(new Rotation2d(getTurningPosition()));
-
-    // //state = SwerveModuleState.optimize(state, getState().angle);
-    // state.optimize(getState().angle);
-    // double driveMotorSpeed = state.speedMetersPerSecond
-    //     / DriveConstants.FrameConstants.kPhysicalMaxSpeedMetersPerSecond;
-    // double steerMotorAngle = MathUtil.inputModulus(state.angle.getDegrees(), -180, 180);
-    // setSwerve(steerMotorAngle, driveMotorSpeed, true);
   }
 
   public void stop() {
