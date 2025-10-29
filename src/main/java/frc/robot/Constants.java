@@ -241,10 +241,10 @@ public class Constants {
     // negative clockwise
     public static final Transform3d BOT_TO_LEFT_CAM = new Transform3d(
      new Translation3d(
-        Units.inchesToMeters(-10.0), //10.0 Forward/back/ X
-        Units.inchesToMeters(-11.125), //11,125 Left/Right/ Y
+        Units.inchesToMeters(-10.5), //10.0 Forward/back/ X
+        Units.inchesToMeters(-10.6875), //11,125 Left/Right/ Y
         Units.inchesToMeters(13.25)),//13.25 Up/down/ Z
-      new Rotation3d(Math.toRadians(0), Math.toRadians(5.0), Math.toRadians(153.3))//0,5,-26.7
+      new Rotation3d(Math.toRadians(0), Math.toRadians(5.0), Math.toRadians(151.5))//152.5  151  153.3    0,5,-26.7
       ); 
 
     public static final Transform3d BOT_TO_RIGHT_CAM = new Transform3d(
@@ -272,15 +272,15 @@ public class Constants {
 
     // Distance from scoring position (referenced to the center of the robot) to the AprilTag.  This distance is
     // measured along a line perpendicular to the AprilTag.
-    public static final double scorePosDistance = 0.47;  // Units are meters. This distance should be adjected depending on robot length.
+    public static final double scorePosDistance = 0.508;//0.508;//0.47;  // Units are meters. This distance should be adjected depending on robot length.
     public static final double algaePosDistance = 0.47;  // Units are meters.  This is the distance from the coral reef to the center of the robot.
     public static final double scoreL1Distance = 0.40;   // Units are meters.  
 
     // Distance from the center of the AprilTag to scoring position to either the left or right or the AprilTag.
     // The scoring positions are symetric to the left or right (i.e., same distance to the right or left or the
     // AprilTag)
-    public static final double scorePosOffset_LEFT = 0.165; // In meters.  Scoring position distance to the LEFT of the AprilTag for LEFT branch scoring.
-    public static final double scorePosOffset_RIGHT = 0.165; // In meters.  Scoring position distance to the RIGHT of the AprilTag for RIGHT branch scoring.
+    public static final double scorePosOffset_LEFT = 0.4128;//0.3874;//0.165; // In meters.  Scoring position distance to the LEFT of the AprilTag for LEFT branch scoring.
+    public static final double scorePosOffset_RIGHT = -0.0762;//-0.1715;//0.4382;//03366;//0.08255;//0.165; // In meters.  Scoring position distance to the RIGHT of the AprilTag for RIGHT branch scoring.
 
     public static final double scoreL1Offset_LEFT = 0.5158; // In meters.  Scoring position distance to the LEFT of the AprilTag for LEFT branch scoring.
     public static final double scoreL1Offset_RIGHT = 0.5158; // In meters.  Scoring position distance to the RIGHT of the AprilTag for RIGHT branch scoring.

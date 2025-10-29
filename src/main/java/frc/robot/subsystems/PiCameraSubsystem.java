@@ -23,7 +23,7 @@ public class PiCameraSubsystem extends SubsystemBase {
   /** Creates a new PiCameraSubsystem. */
   //private CommandSwerveDrivetrain m_driveTrain;
   private Drive m_driveTrain;
-  boolean visionOn = true;
+  boolean visionOn = false;//true;
   private boolean initPoseSet = false;
   PhotonPipelineResult leftPipeline, rightPipeline;
 
@@ -45,6 +45,8 @@ public class PiCameraSubsystem extends SubsystemBase {
   private CameraTest leftCamera, rightCamera;
   private Pose2d lastRobotPose;
 
+  private boolean _visionEnable;
+
   RobotContainer m_robot;
 
 
@@ -55,6 +57,8 @@ public class PiCameraSubsystem extends SubsystemBase {
   public PiCameraSubsystem(RobotContainer robot) {
       m_robot = robot;
       m_driveTrain = robot._drive;
+      _visionEnable = robot.visionEnable;
+      
 
       // leftCamera = new CameraTest(m_robot,"Left_Camera",Constants.VisionConstants.BOT_TO_LEFT_CAM);
       // rightCamera = new CameraTest(m_robot,"Right_Camera",Constants.VisionConstants.BOT_TO_RIGHT_CAM);
@@ -181,7 +185,7 @@ public class PiCameraSubsystem extends SubsystemBase {
     
     
     // Check if AprilTag vision correction is enabled.  If enabled, then proceed to update the odometer
-    if (visionOn)
+    if (_visionEnable)
     {
       m_driveTrain.addVisionMeasurement(finalVisionPose, Utils.fpgaToCurrentTime(finalTimeStamp),finalStdDev); // TO DO. Make corrections to the base if necessary.
       SmartDashboard.putBoolean("Updated Odometer", true);

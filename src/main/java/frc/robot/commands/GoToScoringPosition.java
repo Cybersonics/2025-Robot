@@ -49,6 +49,7 @@ public class GoToScoringPosition extends Command {
     m_robot = robot;
     m_side = side; // True is right branch and false is left branch from the driver's perspective.
     m_drivetrain = m_robot._drive;
+    m_robot.visionEnable = true;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_drivetrain);
@@ -110,11 +111,13 @@ public class GoToScoringPosition extends Command {
       m_path = new PathPlannerPath(
           waypoints,
           new PathConstraints(
-              5.41, 2.5,
+              4.5, 2.5,
               Units.degreesToRadians(270), Units.degreesToRadians(360)),
           null, // Ideal starting state can be null for on-the-fly paths
           new GoalEndState(0.0, endRobotHeading) // The rotation should be (tagHeading - 180 degrees)
       );
+
+      //maxVelocityMPS 5.41
 
     // Prevent this path from being flipped on the red alliance, since the given
     // positions are absolute positions

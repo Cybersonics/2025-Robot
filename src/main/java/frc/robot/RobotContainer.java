@@ -104,6 +104,8 @@ public class RobotContainer {
   // Setup Sendable chooser for picking autonomous program in SmartDashboard
   private SendableChooser<Command> autoChooser = new SendableChooser<>();
 
+  public boolean visionEnable = false;
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */

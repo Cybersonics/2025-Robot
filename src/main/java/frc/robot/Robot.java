@@ -18,6 +18,8 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
 
+  public boolean visionOn = false;
+  
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -37,6 +39,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    visionOn = true;
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
@@ -64,7 +67,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    visionOn = false;
+  }
 
   @Override
   public void teleopInit() {
