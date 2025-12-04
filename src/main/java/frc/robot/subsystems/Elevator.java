@@ -116,8 +116,8 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setSpeed(double speed) {
-    SmartDashboard.putNumber("Current Elevator Position", getAlgeaHeight());
-    SmartDashboard.putNumber("Current Elevator Speed", speed);
+    //SmartDashboard.putNumber("Current Elevator Position", getAlgeaHeight());
+    //SmartDashboard.putNumber("Current Elevator Speed", speed);
     this._leftMotor.set(speed);
     this._rightMotor.set(speed);
   }
@@ -162,10 +162,10 @@ public class Elevator extends SubsystemBase {
     //System.out.println("Moving from " + currentHeight + " to " + _levelHeight);
 
     double calcVoltage = this._elevatorPIDController.calculate(currentHeight, _levelHeight);
-    SmartDashboard.putNumber("Current Elevator Voltage", calcVoltage);
+    //SmartDashboard.putNumber("Current Elevator Voltage", calcVoltage);
 
     double feedForward = _feedforward.calculate(getEncoderVelocity());
-    SmartDashboard.putNumber("Feed Forward Voltage", feedForward);
+    //SmartDashboard.putNumber("Feed Forward Voltage", feedForward);
 
    setVoltage(calcVoltage + feedForward);
 

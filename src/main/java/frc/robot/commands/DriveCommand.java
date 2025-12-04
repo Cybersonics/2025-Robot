@@ -161,9 +161,9 @@ public class DriveCommand extends Command {
     // _aprilTagID = LimelightHelpers.getFiducialID("");
     //_target = Constants.AprilTags.AprilTags.get(((int)LimelightHelpers.getFiducialID("")-1)); // indexed list is 0-15 not 1-16
 
-    SmartDashboard.putNumber("Target Distance", 0);
-    SmartDashboard.putNumber("Target Height", 0);
-    SmartDashboard.putNumber("Target Heading", 0);
+    //SmartDashboard.putNumber("Target Distance", 0);
+    //SmartDashboard.putNumber("Target Height", 0);
+    //SmartDashboard.putNumber("Target Heading", 0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

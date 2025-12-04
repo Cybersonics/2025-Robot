@@ -75,6 +75,6 @@ public class AlgeaMechanism extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     // System.out.println("Algea Amp Spike: "+_algeaSparkMax.getOutputCurrent());
-    SmartDashboard.putNumber("Algea Amp Spike", _algeaSparkMax.getOutputCurrent());
+    //SmartDashboard.putNumber("Algea Amp Spike", _algeaSparkMax.getOutputCurrent());
   }
 }

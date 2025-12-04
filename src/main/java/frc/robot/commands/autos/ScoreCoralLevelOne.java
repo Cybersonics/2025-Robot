@@ -14,7 +14,7 @@ public class ScoreCoralLevelOne extends SequentialCommandGroup {
   
   public ScoreCoralLevelOne(Elevator elevator, CoralMechanism coral) {
     addCommands(
-      new RaiseElevatorCommand(elevator, 750), //825   680  700
+      new RaiseElevatorCommand(elevator, 750), //750   825   680  700
       new ScoreTroughCoralCommand(coral)
     );
   }
